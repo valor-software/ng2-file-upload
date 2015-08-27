@@ -1,0 +1,26 @@
+{
+  "name": "ng2-file-upload",
+  "version": "0.0.0",
+  "description": "Easy to use Angular2 components for files upload",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/valor-software/ng2-file-upload.git"
+  },
+  "keywords": [
+    "angular2",
+    "ng2",
+    "file-upload",
+    "angular2-file-upload",
+    "ng2-file-upload"
+  ],
+  "author": "Dmitriy Shekhovtsov <valorkin@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/valor-software/ng2-file-upload/issues"
+  },
+  "homepage": "https://github.com/valor-software/ng2-file-upload#readme"
+}
