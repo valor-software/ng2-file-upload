@@ -1,0 +1,31 @@
+{
+    "version": "1.5.3",
+    "compilerOptions": {
+        "target": "es5",
+        "module": "commonjs",
+        "outDir": "dist",
+        "sourceMap": true,
+        "declaration": true,
+        "removeComments": true,
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "listFiles": false,
+        "noLib": false,
+        "noEmitOnError": false,
+        "noImplicitAny": false
+    },
+    "filesGlob": [
+        "./**/*.ts",
+        "!./node_modules/**/*.ts"
+    ],
+    "files": [
+        "./components/file-upload/file-select.ts",
+        "./components/index.ts",
+        "./components/module.ts",
+        "./demo/components/file-upload-section.ts",
+        "./demo/components/file-upload/simple-demo.ts",
+        "./demo/index.ts",
+        "./tsd.d.ts",
+        "./typings/tsd.d.ts"
+    ]
+}
