@@ -64,6 +64,15 @@ var config = {
     inline: true,
     colors: true,
     historyApiFallback: true,
+    proxy: {
+      '*/api/*': 'http://localhost:3000/'
+    },
+
+    /*noInfo: false,
+    hot: true,
+    inline: true,
+    devtool: 'eval',*/
+
     contentBase: src,
     publicPath: dest
   },

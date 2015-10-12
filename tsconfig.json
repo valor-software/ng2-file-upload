@@ -20,6 +20,10 @@
     ],
     "files": [
         "./components/file-upload/file-select.ts",
+        "./components/file-upload/file-item.ts",
+        "./components/file-upload/file-like-object.ts",
+        "./components/file-upload/file-drop.ts",
+        "./components/file-upload/file-uploader.ts",
         "./components/index.ts",
         "./components/module.ts",
         "./demo/components/file-upload-section.ts",
