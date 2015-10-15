@@ -1,6 +1,6 @@
 /// <reference path="../../tsd.d.ts" />
 
-import {Component, View, CORE_DIRECTIVES, NgNonBindable} from 'angular2/angular2';
+import {Component, View, CORE_DIRECTIVES} from 'angular2/angular2';
 
 import {tabs} from 'ng2-bootstrap';
 import {SimpleDemo} from './file-upload/simple-demo';
@@ -65,7 +65,7 @@ tabDesc.forEach(desc => {
     </div>
   </section>
   `,
-  directives: [SimpleDemo, tabs, CORE_DIRECTIVES, NgNonBindable]
+  directives: [SimpleDemo, tabs, CORE_DIRECTIVES]
 })
 export class FileUploadSection {
   private currentHeading:string = 'Simple';

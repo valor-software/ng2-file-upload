@@ -1,7 +1,6 @@
 import {
   Component, View, OnInit, OnDestroy, OnChanges,
-  Directive, LifecycleEvent,
-  EventEmitter, ElementRef, Renderer,
+  Directive, EventEmitter, ElementRef, Renderer,
   CORE_DIRECTIVES, FORM_DIRECTIVES, NgClass
 } from 'angular2/angular2';
 

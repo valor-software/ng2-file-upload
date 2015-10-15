@@ -1,6 +1,6 @@
 {
   "name": "ng2-file-upload",
-  "version": "0.0.1",
+  "version": "0.40.0",
   "description": "angular2 file upload directives",
   "scripts": {
     "deploy": "NODE_ENV=production webpack -p --progress --color --optimize-minimize --optimize-dedupe --optimize-occurence-order",
@@ -40,14 +40,11 @@
   },
   "homepage": "https://github.com/valor-software/ng2-file-upload#readme",
   "dependencies": {
-    "angular2": "2.0.0-alpha.37",
-    "es6-promise": "3.0.2",
-    "moment": "^2.10.6",
-    "ng2-bootstrap": "^0.37.0",
-    "reflect-metadata": "0.1.1",
-    "rtts_assert": "2.0.0-alpha.37",
-    "traceur-runtime": "0.0.59",
-    "zone.js": "0.5.4"
+    "angular2": "^2.0.0-alpha.40",
+    "ng2-bootstrap": "^0.40.0",
+    "reflect-metadata": "0.1.2",
+    "ts-loader": "0.5.6",
+    "zone.js": "0.5.8"
   },
   "devDependencies": {
     "bootstrap": "^3.3.5",
@@ -65,14 +62,14 @@
     "html-loader": "^0.3.0",
     "markdown-loader": "^0.1.7",
     "marked": "^0.3.5",
+    "moment": "^2.10.6",
     "pre-commit": "^1.1.1",
     "prismjs": "valorkin/prism",
     "prismjs-loader": "0.0.2",
     "raw-loader": "^0.5.1",
     "require-dir": "^0.3.0",
-    "typescript": "^1.5.3",
-    "typescript-simple-loader": "^0.3.4",
-    "webpack": "^1.11.0",
-    "webpack-dev-server": "^1.10.1"
+    "typescript": "^1.6.2",
+    "webpack": "^1.12.2",
+    "webpack-dev-server": "^1.12.0"
   }
 }

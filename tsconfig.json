@@ -1,5 +1,5 @@
 {
-    "version": "1.5.3",
+    "version": "1.6.2",
     "compilerOptions": {
         "target": "es5",
         "module": "commonjs",
@@ -15,21 +15,16 @@
         "noImplicitAny": false
     },
     "filesGlob": [
-        "./**/*.ts",
         "!./node_modules/**/*.ts"
     ],
     "files": [
+        "./tsd.d.ts",
         "./components/file-upload/file-select.ts",
         "./components/file-upload/file-item.ts",
         "./components/file-upload/file-like-object.ts",
         "./components/file-upload/file-drop.ts",
         "./components/file-upload/file-uploader.ts",
         "./components/index.ts",
-        "./components/module.ts",
-        "./demo/components/file-upload-section.ts",
-        "./demo/components/file-upload/simple-demo.ts",
-        "./demo/index.ts",
-        "./tsd.d.ts",
-        "./typings/tsd.d.ts"
+        "./components/module.ts"
     ]
 }
