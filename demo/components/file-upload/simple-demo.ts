@@ -5,14 +5,13 @@ import {
   CORE_DIRECTIVES, FORM_DIRECTIVES, NgClass, NgStyle
 } from 'angular2/angular2';
 
-import {FileSelect, FileDrop} from '../../../components/index';
-import {FileUploader} from '../../../components/file-upload/file-uploader';
+import {FileSelect, FileDrop, FileUploader} from '../../../components/index';
 
 // webpack html imports
 let template = require('./simple-demo.html');
 
-// const URL = '/api/';
-const URL = 'https://evening-anchorage-3159.herokuapp.com/api/';
+const URL = '/api/';
+// const URL = 'https://evening-anchorage-3159.herokuapp.com/api/';
 
 @Component({
   selector: 'simple-demo'

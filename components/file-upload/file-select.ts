@@ -10,14 +10,13 @@ import {FileUploader} from './file-uploader';
 
 @Directive({
   selector: '[ng2-file-select]',
-  properties: ['config: ng2FileSelect', 'uploader'],
+  properties: ['uploader'],
   host: {
     '(change)': 'onChange()'
   }
 })
 export class FileSelect {
   public uploader:FileUploader;
-  public config:any = {};
 
   constructor(private element:ElementRef) {
   }

@@ -8,7 +8,7 @@ import {FileUploader} from './file-uploader';
 
 @Directive({
   selector: '[ng2-file-drop]',
-  properties: ['config: ng2FileDrop', 'uploader'],
+  properties: ['uploader'],
   events: ['fileOver'],
   host: {
     '(drop)': 'onDrop($event)',
@@ -18,7 +18,6 @@ import {FileUploader} from './file-uploader';
 })
 export class FileDrop {
   public uploader:FileUploader;
-  public config:any = {};
   private fileOver:EventEmitter = new EventEmitter();
 
   constructor(private element:ElementRef) {
