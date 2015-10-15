@@ -10,7 +10,6 @@ npm-debug.log
 .idea
 
 # ignore build and dist for now
-/build
 /dist
 
 /demo/**/*.js
