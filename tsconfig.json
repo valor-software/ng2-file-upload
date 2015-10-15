@@ -14,17 +14,10 @@
         "noEmitOnError": false,
         "noImplicitAny": false
     },
-    "filesGlob": [
-        "!./node_modules/**/*.ts"
+    "exclude": [
+        "node_modules"
     ],
     "files": [
-        "./tsd.d.ts",
-        "./components/file-upload/file-select.ts",
-        "./components/file-upload/file-item.ts",
-        "./components/file-upload/file-like-object.ts",
-        "./components/file-upload/file-drop.ts",
-        "./components/file-upload/file-uploader.ts",
-        "./components/index.ts",
-        "./components/module.ts"
+        "./components/index.ts"
     ]
 }

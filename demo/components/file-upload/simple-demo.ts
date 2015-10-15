@@ -11,6 +11,9 @@ import {FileUploader} from '../../../components/file-upload/file-uploader';
 // webpack html imports
 let template = require('./simple-demo.html');
 
+// const URL = '/api/';
+const URL = 'https://evening-anchorage-3159.herokuapp.com/api/';
+
 @Component({
   selector: 'simple-demo'
 })
@@ -19,7 +22,7 @@ let template = require('./simple-demo.html');
   directives: [FileSelect, FileDrop, NgClass, NgStyle, CORE_DIRECTIVES, FORM_DIRECTIVES]
 })
 export class SimpleDemo {
-  private uploader:FileUploader = new FileUploader({url: '/api/'});
+  private uploader:FileUploader = new FileUploader({url: URL});
   private hasBaseDropZoneOver:boolean = false;
   private hasAnotherDropZoneOver:boolean = false;
 

@@ -1,6 +1,5 @@
 import {FileLikeObject} from './file-like-object';
 import {FileUploader} from './file-uploader';
-import Form = ng.Form;
 
 export class FileItem {
   public file:FileLikeObject;
