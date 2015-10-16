@@ -3296,7 +3296,7 @@ webpackJsonp([1],[
 	    return Ng2BootstrapConfig;
 	})();
 	exports.Ng2BootstrapConfig = Ng2BootstrapConfig;
-	//# sourceMappingURL=../components/dist/ng2-bootstrap-config.js.map
+	//# sourceMappingURL=ng2-bootstrap-config.js.map
 
 /***/ },
 /* 30 */,
@@ -3610,7 +3610,7 @@ webpackJsonp([1],[
 	    return DatePickerInner;
 	})();
 	exports.DatePickerInner = DatePickerInner;
-	//# sourceMappingURL=../../components/dist/datepicker/datepicker-inner.js.map
+	//# sourceMappingURL=datepicker-inner.js.map
 
 /***/ },
 /* 55 */
@@ -3749,13 +3749,12 @@ webpackJsonp([1],[
 	    return Dropdown;
 	})();
 	exports.Dropdown = Dropdown;
-	//# sourceMappingURL=../../components/dist/dropdown/dropdown.js.map
+	//# sourceMappingURL=dropdown.js.map
 
 /***/ },
 /* 56 */
 /***/ function(module, exports) {
 
-	/// <reference path="../tsd.d.ts" />
 	var PositionService = (function () {
 	    function PositionService() {
 	    }
@@ -3884,7 +3883,7 @@ webpackJsonp([1],[
 	})();
 	exports.PositionService = PositionService;
 	exports.positionService = new PositionService();
-	//# sourceMappingURL=../components/dist/position.js.map
+	//# sourceMappingURL=position.js.map
 
 /***/ },
 /* 57 */,
@@ -12712,7 +12711,7 @@ webpackJsonp([1],[
 	    return Collapse;
 	})();
 	exports.Collapse = Collapse;
-	//# sourceMappingURL=../../components/dist/collapse/collapse.js.map
+	//# sourceMappingURL=collapse.js.map
 
 /***/ },
 /* 245 */
@@ -12762,7 +12761,7 @@ webpackJsonp([1],[
 	    return NgTransclude;
 	})();
 	exports.NgTransclude = NgTransclude;
-	//# sourceMappingURL=../components/dist/common.js.map
+	//# sourceMappingURL=common.js.map
 
 /***/ },
 /* 246 */
@@ -12853,7 +12852,7 @@ webpackJsonp([1],[
 	    return DatePicker;
 	})();
 	exports.DatePicker = DatePicker;
-	//# sourceMappingURL=../../components/dist/datepicker/datepicker.js.map
+	//# sourceMappingURL=datepicker.js.map
 
 /***/ },
 /* 247 */
@@ -12895,7 +12894,7 @@ webpackJsonp([1],[
 	    return DropdownMenu;
 	})();
 	exports.DropdownMenu = DropdownMenu;
-	//# sourceMappingURL=../../components/dist/dropdown/dropdown-menu.js.map
+	//# sourceMappingURL=dropdown-menu.js.map
 
 /***/ },
 /* 248 */
@@ -12963,7 +12962,7 @@ webpackJsonp([1],[
 	})();
 	exports.DropdownService = DropdownService;
 	exports.dropdownService = new DropdownService();
-	//# sourceMappingURL=../../components/dist/dropdown/dropdown-service.js.map
+	//# sourceMappingURL=dropdown-service.js.map
 
 /***/ },
 /* 249 */
@@ -13027,7 +13026,7 @@ webpackJsonp([1],[
 	    return DropdownToggle;
 	})();
 	exports.DropdownToggle = DropdownToggle;
-	//# sourceMappingURL=../../components/dist/dropdown/dropdown-toggle.js.map
+	//# sourceMappingURL=dropdown-toggle.js.map
 
 /***/ },
 /* 250 */,
@@ -13300,7 +13299,6 @@ webpackJsonp([1],[
 /* 318 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/// <reference path="../../tsd.d.ts" />
 	var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
 	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
 	    switch (arguments.length) {
@@ -13439,7 +13437,7 @@ webpackJsonp([1],[
 	})();
 	exports.AccordionHeading = AccordionHeading;
 	exports.accordion = [Accordion, AccordionGroup, AccordionHeading];
-	//# sourceMappingURL=../../components/dist/accordion/accordion.js.map
+	//# sourceMappingURL=accordion.js.map
 
 /***/ },
 /* 319 */
@@ -13508,7 +13506,7 @@ webpackJsonp([1],[
 	    return Alert;
 	})();
 	exports.Alert = Alert;
-	//# sourceMappingURL=../../components/dist/alert/alert.js.map
+	//# sourceMappingURL=alert.js.map
 
 /***/ },
 /* 320 */
@@ -13588,7 +13586,7 @@ webpackJsonp([1],[
 	    return ButtonCheckbox;
 	})();
 	exports.ButtonCheckbox = ButtonCheckbox;
-	//# sourceMappingURL=../../components/dist/buttons/button-checkbox.js.map
+	//# sourceMappingURL=button-checkbox.js.map
 
 /***/ },
 /* 321 */
@@ -13674,7 +13672,7 @@ webpackJsonp([1],[
 	    return ButtonRadio;
 	})();
 	exports.ButtonRadio = ButtonRadio;
-	//# sourceMappingURL=../../components/dist/buttons/button-radio.js.map
+	//# sourceMappingURL=button-radio.js.map
 
 /***/ },
 /* 322 */
@@ -13876,7 +13874,7 @@ webpackJsonp([1],[
 	exports.Slide = Slide;
 	exports.carousel = [Carousel, Slide];
 	var _a;
-	//# sourceMappingURL=../../components/dist/carousel/carousel.js.map
+	//# sourceMappingURL=carousel.js.map
 
 /***/ },
 /* 323 */
@@ -13892,7 +13890,7 @@ webpackJsonp([1],[
 	    return DateFormatter;
 	})();
 	exports.DateFormatter = DateFormatter;
-	//# sourceMappingURL=../../components/dist/datepicker/date-formatter.js.map
+	//# sourceMappingURL=date-formatter.js.map
 
 /***/ },
 /* 324 */
@@ -14060,7 +14058,7 @@ webpackJsonp([1],[
 	    return DatePickerPopup;
 	})();
 	exports.DatePickerPopup = DatePickerPopup;
-	//# sourceMappingURL=../../components/dist/datepicker/datepicker-popup.js.map
+	//# sourceMappingURL=datepicker-popup.js.map
 
 /***/ },
 /* 325 */
@@ -14177,7 +14175,7 @@ webpackJsonp([1],[
 	})();
 	exports.DayPicker = DayPicker;
 	var _a;
-	//# sourceMappingURL=../../components/dist/datepicker/daypicker.js.map
+	//# sourceMappingURL=daypicker.js.map
 
 /***/ },
 /* 326 */
@@ -14187,7 +14185,7 @@ webpackJsonp([1],[
 	var datepicker_popup_1 = __webpack_require__(324);
 	var datepicker_1 = __webpack_require__(246);
 	exports.datepicker = [datepicker_1.DatePicker, datepicker_popup_1.DatePickerPopup];
-	//# sourceMappingURL=../../components/dist/datepicker/index.js.map
+	//# sourceMappingURL=index.js.map
 
 /***/ },
 /* 327 */
@@ -14258,7 +14256,7 @@ webpackJsonp([1],[
 	    return MonthPicker;
 	})();
 	exports.MonthPicker = MonthPicker;
-	//# sourceMappingURL=../../components/dist/datepicker/monthpicker.js.map
+	//# sourceMappingURL=monthpicker.js.map
 
 /***/ },
 /* 328 */
@@ -14329,7 +14327,7 @@ webpackJsonp([1],[
 	    return YearPicker;
 	})();
 	exports.YearPicker = YearPicker;
-	//# sourceMappingURL=../../components/dist/datepicker/yearpicker.js.map
+	//# sourceMappingURL=yearpicker.js.map
 
 /***/ },
 /* 329 */
@@ -14339,13 +14337,12 @@ webpackJsonp([1],[
 	var dropdown_menu_1 = __webpack_require__(247);
 	var dropdown_toggle_1 = __webpack_require__(249);
 	exports.dropdown = [dropdown_1.Dropdown, dropdown_menu_1.DropdownMenu, dropdown_toggle_1.DropdownToggle];
-	//# sourceMappingURL=../../components/dist/dropdown/index.js.map
+	//# sourceMappingURL=index.js.map
 
 /***/ },
 /* 330 */
 /***/ function(module, exports, __webpack_require__) {
 
-	///<reference path="../tsd.d.ts"/>
 	function __export(m) {
 	    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 	}
@@ -14371,7 +14368,7 @@ webpackJsonp([1],[
 	__export(__webpack_require__(56));
 	__export(__webpack_require__(245));
 	__export(__webpack_require__(29));
-	//# sourceMappingURL=../components/dist/index.js.map
+	//# sourceMappingURL=index.js.map
 
 /***/ },
 /* 331 */
@@ -14617,7 +14614,7 @@ webpackJsonp([1],[
 	})(Pagination);
 	exports.Pager = Pager;
 	exports.pagination = [Pagination, Pager];
-	//# sourceMappingURL=../../components/dist/pagination/pagination.js.map
+	//# sourceMappingURL=pagination.js.map
 
 /***/ },
 /* 332 */
@@ -14755,7 +14752,7 @@ webpackJsonp([1],[
 	})();
 	exports.Progressbar = Progressbar;
 	exports.progressbar = [Progress, Bar, Progressbar];
-	//# sourceMappingURL=../../components/dist/progressbar/progressbar.js.map
+	//# sourceMappingURL=progressbar.js.map
 
 /***/ },
 /* 333 */
@@ -14871,7 +14868,7 @@ webpackJsonp([1],[
 	    return Rating;
 	})();
 	exports.Rating = Rating;
-	//# sourceMappingURL=../../components/dist/rating/rating.js.map
+	//# sourceMappingURL=rating.js.map
 
 /***/ },
 /* 334 */
@@ -15017,7 +15014,7 @@ webpackJsonp([1],[
 	})();
 	exports.TabHeading = TabHeading;
 	exports.tabs = [Tab, TabHeading, Tabset];
-	//# sourceMappingURL=../../components/dist/tabs/tabs.js.map
+	//# sourceMappingURL=tabs.js.map
 
 /***/ },
 /* 335 */
@@ -15310,7 +15307,7 @@ webpackJsonp([1],[
 	    return Timepicker;
 	})();
 	exports.Timepicker = Timepicker;
-	//# sourceMappingURL=../../components/dist/timepicker/timepicker.js.map
+	//# sourceMappingURL=timepicker.js.map
 
 /***/ },
 /* 336 */
@@ -15429,7 +15426,7 @@ webpackJsonp([1],[
 	})();
 	exports.Tooltip = Tooltip;
 	exports.tooltip = [Tooltip, TooltipContainer];
-	//# sourceMappingURL=../../components/dist/tooltip/tooltip.js.map
+	//# sourceMappingURL=tooltip.js.map
 
 /***/ },
 /* 337 */
@@ -15759,13 +15756,13 @@ webpackJsonp([1],[
 	exports.Typeahead = Typeahead;
 	exports.typeahead = [Typeahead];
 	var _a;
-	//# sourceMappingURL=../../components/dist/typeahead/typeahead.js.map
+	//# sourceMappingURL=typeahead.js.map
 
 /***/ },
 /* 338 */
 /***/ function(module, exports) {
 
-	module.exports = "<span class=\"token keyword\" >var</span> express <span class=\"token operator\" >=</span> <span class=\"token function\" >require</span><span class=\"token punctuation\" >(</span><span class=\"token string\" >'express'</span><span class=\"token punctuation\" >)</span><span class=\"token punctuation\" >;</span>\n<span class=\"token keyword\" >var</span> Busboy <span class=\"token operator\" >=</span> <span class=\"token function\" >require</span><span class=\"token punctuation\" >(</span><span class=\"token string\" >'busboy'</span><span class=\"token punctuation\" >)</span><span class=\"token punctuation\" >;</span>\n<span class=\"token keyword\" >var</span> path <span class=\"token operator\" >=</span> <span class=\"token function\" >require</span><span class=\"token punctuation\" >(</span><span class=\"token string\" >'path'</span><span class=\"token punctuation\" >)</span><span class=\"token punctuation\" >;</span>\n<span class=\"token keyword\" >var</span> fs <span class=\"token operator\" >=</span> <span class=\"token function\" >require</span><span class=\"token punctuation\" >(</span><span class=\"token string\" >'fs'</span><span class=\"token punctuation\" >)</span><span class=\"token punctuation\" >;</span>\n\n<span class=\"token keyword\" >var</span> app <span class=\"token operator\" >=</span> <span class=\"token function\" >express</span><span class=\"token punctuation\" >(</span><span class=\"token punctuation\" >)</span><span class=\"token punctuation\" >;</span>\n\napp<span class=\"token punctuation\" >.</span><span class=\"token function\" >use</span><span class=\"token punctuation\" >(</span><span class=\"token keyword\" >function</span> <span class=\"token punctuation\" >(</span>req<span class=\"token punctuation\" >,</span> res<span class=\"token punctuation\" >,</span> next<span class=\"token punctuation\" >)</span> <span class=\"token punctuation\" >{</span>\n  res<span class=\"token punctuation\" >.</span><span class=\"token function\" >setHeader</span><span class=\"token punctuation\" >(</span><span class=\"token string\" >'Access-Control-Allow-Origin'</span><span class=\"token punctuation\" >,</span> <span class=\"token string\" >'!put your host here!'</span><span class=\"token punctuation\" >)</span><span class=\"token punctuation\" >;</span>\n  res<span class=\"token punctuation\" >.</span><span class=\"token function\" >setHeader</span><span class=\"token punctuation\" >(</span><span class=\"token string\" >'Access-Control-Allow-Methods'</span><span class=\"token punctuation\" >,</span> <span class=\"token string\" >'POST'</span><span class=\"token punctuation\" >)</span><span class=\"token punctuation\" >;</span>\n  res<span class=\"token punctuation\" >.</span><span class=\"token function\" >setHeader</span><span class=\"token punctuation\" >(</span><span class=\"token string\" >'Access-Control-Allow-Headers'</span><span class=\"token punctuation\" >,</span> <span class=\"token string\" >'X-Requested-With,content-type'</span><span class=\"token punctuation\" >)</span><span class=\"token punctuation\" >;</span>\n  res<span class=\"token punctuation\" >.</span><span class=\"token function\" >setHeader</span><span class=\"token punctuation\" >(</span><span class=\"token string\" >'Access-Control-Allow-Credentials'</span><span class=\"token punctuation\" >,</span> <span class=\"token keyword\" >true</span><span class=\"token punctuation\" >)</span><span class=\"token punctuation\" >;</span>\n  <span class=\"token function\" >next</span><span class=\"token punctuation\" >(</span><span class=\"token punctuation\" >)</span><span class=\"token punctuation\" >;</span>\n<span class=\"token punctuation\" >}</span><span class=\"token punctuation\" >)</span><span class=\"token punctuation\" >;</span>\n\napp<span class=\"token punctuation\" >.</span><span class=\"token function\" >post</span><span class=\"token punctuation\" >(</span><span class=\"token string\" >'/api'</span><span class=\"token punctuation\" >,</span> <span class=\"token keyword\" >function</span> <span class=\"token punctuation\" >(</span>req<span class=\"token punctuation\" >,</span> res<span class=\"token punctuation\" >)</span> <span class=\"token punctuation\" >{</span>\n  <span class=\"token keyword\" >var</span> fstream<span class=\"token punctuation\" >;</span>\n  <span class=\"token keyword\" >var</span> files <span class=\"token operator\" >=</span> <span class=\"token punctuation\" >[</span><span class=\"token punctuation\" >]</span><span class=\"token punctuation\" >;</span>\n  <span class=\"token keyword\" >var</span> busboy <span class=\"token operator\" >=</span> <span class=\"token keyword\" >new</span> <span class=\"token class-name\" >Busboy</span><span class=\"token punctuation\" >(</span><span class=\"token punctuation\" >{</span>headers<span class=\"token punctuation\" >:</span> req<span class=\"token punctuation\" >.</span>headers<span class=\"token punctuation\" >}</span><span class=\"token punctuation\" >)</span><span class=\"token punctuation\" >;</span>\n  busboy<span class=\"token punctuation\" >.</span><span class=\"token function\" >on</span><span class=\"token punctuation\" >(</span><span class=\"token string\" >'file'</span><span class=\"token punctuation\" >,</span> <span class=\"token keyword\" >function</span> <span class=\"token punctuation\" >(</span>fieldname<span class=\"token punctuation\" >,</span> file<span class=\"token punctuation\" >,</span> filename<span class=\"token punctuation\" >)</span> <span class=\"token punctuation\" >{</span>\n    fstream <span class=\"token operator\" >=</span> fs<span class=\"token punctuation\" >.</span><span class=\"token function\" >createWriteStream</span><span class=\"token punctuation\" >(</span>__dirname <span class=\"token operator\" >+</span> <span class=\"token string\" >'/uploads/'</span> <span class=\"token operator\" >+</span> filename<span class=\"token punctuation\" >)</span><span class=\"token punctuation\" >;</span>\n    file<span class=\"token punctuation\" >.</span><span class=\"token function\" >pipe</span><span class=\"token punctuation\" >(</span>fstream<span class=\"token punctuation\" >)</span><span class=\"token punctuation\" >;</span>\n    fstream<span class=\"token punctuation\" >.</span><span class=\"token function\" >on</span><span class=\"token punctuation\" >(</span><span class=\"token string\" >'close'</span><span class=\"token punctuation\" >,</span> <span class=\"token keyword\" >function</span> <span class=\"token punctuation\" >(</span><span class=\"token punctuation\" >)</span> <span class=\"token punctuation\" >{</span>\n      files<span class=\"token punctuation\" >.</span><span class=\"token function\" >push</span><span class=\"token punctuation\" >(</span>filename<span class=\"token punctuation\" >)</span><span class=\"token punctuation\" >;</span>\n      file<span class=\"token punctuation\" >.</span><span class=\"token function\" >resume</span><span class=\"token punctuation\" >(</span><span class=\"token punctuation\" >)</span><span class=\"token punctuation\" >;</span>\n    <span class=\"token punctuation\" >}</span><span class=\"token punctuation\" >)</span><span class=\"token punctuation\" >;</span>\n  <span class=\"token punctuation\" >}</span><span class=\"token punctuation\" >)</span><span class=\"token punctuation\" >;</span>\n\n  busboy<span class=\"token punctuation\" >.</span><span class=\"token function\" >on</span><span class=\"token punctuation\" >(</span><span class=\"token string\" >'finish'</span><span class=\"token punctuation\" >,</span> <span class=\"token keyword\" >function</span> <span class=\"token punctuation\" >(</span><span class=\"token punctuation\" >)</span> <span class=\"token punctuation\" >{</span>\n    res<span class=\"token punctuation\" >.</span><span class=\"token function\" >end</span><span class=\"token punctuation\" >(</span><span class=\"token string\" >'ok'</span><span class=\"token punctuation\" >)</span><span class=\"token punctuation\" >;</span>\n  <span class=\"token punctuation\" >}</span><span class=\"token punctuation\" >)</span><span class=\"token punctuation\" >;</span>\n  req<span class=\"token punctuation\" >.</span><span class=\"token function\" >pipe</span><span class=\"token punctuation\" >(</span>busboy<span class=\"token punctuation\" >)</span><span class=\"token punctuation\" >;</span>\n<span class=\"token punctuation\" >}</span><span class=\"token punctuation\" >)</span><span class=\"token punctuation\" >;</span>\n\napp<span class=\"token punctuation\" >.</span><span class=\"token function\" >listen</span><span class=\"token punctuation\" >(</span>process<span class=\"token punctuation\" >.</span>env<span class=\"token punctuation\" >.</span>PORT <span class=\"token operator\" >||</span> <span class=\"token number\" >3000</span><span class=\"token punctuation\" >)</span><span class=\"token punctuation\" >;</span>\n"
+	module.exports = "<span class=\"token keyword\" >var</span> express <span class=\"token operator\" >=</span> <span class=\"token function\" >require</span><span class=\"token punctuation\" >(</span><span class=\"token string\" >'express'</span><span class=\"token punctuation\" >)</span><span class=\"token punctuation\" >;</span>\n<span class=\"token keyword\" >var</span> multer <span class=\"token operator\" >=</span> <span class=\"token function\" >require</span><span class=\"token punctuation\" >(</span><span class=\"token string\" >'multer'</span><span class=\"token punctuation\" >)</span><span class=\"token punctuation\" >;</span>\n<span class=\"token keyword\" >var</span> fs <span class=\"token operator\" >=</span> <span class=\"token function\" >require</span><span class=\"token punctuation\" >(</span><span class=\"token string\" >'fs'</span><span class=\"token punctuation\" >)</span><span class=\"token punctuation\" >;</span>\n<span class=\"token keyword\" >var</span> app <span class=\"token operator\" >=</span> <span class=\"token function\" >express</span><span class=\"token punctuation\" >(</span><span class=\"token punctuation\" >)</span><span class=\"token punctuation\" >;</span>\n\n<span class=\"token keyword\" >var</span> DIR <span class=\"token operator\" >=</span> <span class=\"token string\" >'./uploads/'</span><span class=\"token punctuation\" >;</span>\n\n<span class=\"token keyword\" >var</span> upload <span class=\"token operator\" >=</span> <span class=\"token function\" >multer</span><span class=\"token punctuation\" >(</span><span class=\"token punctuation\" >{</span>dest<span class=\"token punctuation\" >:</span> DIR<span class=\"token punctuation\" >}</span><span class=\"token punctuation\" >)</span><span class=\"token punctuation\" >;</span>\n\napp<span class=\"token punctuation\" >.</span><span class=\"token function\" >use</span><span class=\"token punctuation\" >(</span><span class=\"token keyword\" >function</span> <span class=\"token punctuation\" >(</span>req<span class=\"token punctuation\" >,</span> res<span class=\"token punctuation\" >,</span> next<span class=\"token punctuation\" >)</span> <span class=\"token punctuation\" >{</span>\n  res<span class=\"token punctuation\" >.</span><span class=\"token function\" >setHeader</span><span class=\"token punctuation\" >(</span><span class=\"token string\" >'Access-Control-Allow-Origin'</span><span class=\"token punctuation\" >,</span> <span class=\"token string\" >'http://valor-software.github.io'</span><span class=\"token punctuation\" >)</span><span class=\"token punctuation\" >;</span>\n  res<span class=\"token punctuation\" >.</span><span class=\"token function\" >setHeader</span><span class=\"token punctuation\" >(</span><span class=\"token string\" >'Access-Control-Allow-Methods'</span><span class=\"token punctuation\" >,</span> <span class=\"token string\" >'POST'</span><span class=\"token punctuation\" >)</span><span class=\"token punctuation\" >;</span>\n  res<span class=\"token punctuation\" >.</span><span class=\"token function\" >setHeader</span><span class=\"token punctuation\" >(</span><span class=\"token string\" >'Access-Control-Allow-Headers'</span><span class=\"token punctuation\" >,</span> <span class=\"token string\" >'X-Requested-With,content-type'</span><span class=\"token punctuation\" >)</span><span class=\"token punctuation\" >;</span>\n  res<span class=\"token punctuation\" >.</span><span class=\"token function\" >setHeader</span><span class=\"token punctuation\" >(</span><span class=\"token string\" >'Access-Control-Allow-Credentials'</span><span class=\"token punctuation\" >,</span> <span class=\"token keyword\" >true</span><span class=\"token punctuation\" >)</span><span class=\"token punctuation\" >;</span>\n  <span class=\"token function\" >next</span><span class=\"token punctuation\" >(</span><span class=\"token punctuation\" >)</span><span class=\"token punctuation\" >;</span>\n<span class=\"token punctuation\" >}</span><span class=\"token punctuation\" >)</span><span class=\"token punctuation\" >;</span>\n\napp<span class=\"token punctuation\" >.</span><span class=\"token function\" >use</span><span class=\"token punctuation\" >(</span><span class=\"token function\" >multer</span><span class=\"token punctuation\" >(</span><span class=\"token punctuation\" >{</span>\n  dest<span class=\"token punctuation\" >:</span> DIR<span class=\"token punctuation\" >,</span>\n  rename<span class=\"token punctuation\" >:</span> <span class=\"token keyword\" >function</span> <span class=\"token punctuation\" >(</span>fieldname<span class=\"token punctuation\" >,</span> filename<span class=\"token punctuation\" >)</span> <span class=\"token punctuation\" >{</span>\n    <span class=\"token keyword\" >return</span> filename <span class=\"token operator\" >+</span> Date<span class=\"token punctuation\" >.</span><span class=\"token function\" >now</span><span class=\"token punctuation\" >(</span><span class=\"token punctuation\" >)</span><span class=\"token punctuation\" >;</span>\n  <span class=\"token punctuation\" >}</span><span class=\"token punctuation\" >,</span>\n  onFileUploadStart<span class=\"token punctuation\" >:</span> <span class=\"token keyword\" >function</span> <span class=\"token punctuation\" >(</span>file<span class=\"token punctuation\" >)</span> <span class=\"token punctuation\" >{</span>\n    console<span class=\"token punctuation\" >.</span><span class=\"token function\" >log</span><span class=\"token punctuation\" >(</span>file<span class=\"token punctuation\" >.</span>originalname <span class=\"token operator\" >+</span> <span class=\"token string\" >' is starting ...'</span><span class=\"token punctuation\" >)</span><span class=\"token punctuation\" >;</span>\n  <span class=\"token punctuation\" >}</span><span class=\"token punctuation\" >,</span>\n  onFileUploadComplete<span class=\"token punctuation\" >:</span> <span class=\"token keyword\" >function</span> <span class=\"token punctuation\" >(</span>file<span class=\"token punctuation\" >)</span> <span class=\"token punctuation\" >{</span>\n    console<span class=\"token punctuation\" >.</span><span class=\"token function\" >log</span><span class=\"token punctuation\" >(</span>file<span class=\"token punctuation\" >.</span>fieldname <span class=\"token operator\" >+</span> <span class=\"token string\" >' uploaded to  '</span> <span class=\"token operator\" >+</span> file<span class=\"token punctuation\" >.</span>path<span class=\"token punctuation\" >)</span><span class=\"token punctuation\" >;</span>\n  <span class=\"token punctuation\" >}</span>\n<span class=\"token punctuation\" >}</span><span class=\"token punctuation\" >)</span><span class=\"token punctuation\" >)</span><span class=\"token punctuation\" >;</span>\n\napp<span class=\"token punctuation\" >.</span><span class=\"token keyword\" >get</span><span class=\"token punctuation\" >(</span><span class=\"token string\" >'/api'</span><span class=\"token punctuation\" >,</span> <span class=\"token keyword\" >function</span> <span class=\"token punctuation\" >(</span>req<span class=\"token punctuation\" >,</span> res<span class=\"token punctuation\" >)</span> <span class=\"token punctuation\" >{</span>\n  res<span class=\"token punctuation\" >.</span><span class=\"token function\" >end</span><span class=\"token punctuation\" >(</span><span class=\"token string\" >'file catcher example'</span><span class=\"token punctuation\" >)</span><span class=\"token punctuation\" >;</span>\n<span class=\"token punctuation\" >}</span><span class=\"token punctuation\" >)</span><span class=\"token punctuation\" >;</span>\n\napp<span class=\"token punctuation\" >.</span><span class=\"token function\" >post</span><span class=\"token punctuation\" >(</span><span class=\"token string\" >'/api'</span><span class=\"token punctuation\" >,</span> <span class=\"token keyword\" >function</span> <span class=\"token punctuation\" >(</span>req<span class=\"token punctuation\" >,</span> res<span class=\"token punctuation\" >)</span> <span class=\"token punctuation\" >{</span>\n  <span class=\"token function\" >upload</span><span class=\"token punctuation\" >(</span>req<span class=\"token punctuation\" >,</span> res<span class=\"token punctuation\" >,</span> <span class=\"token keyword\" >function</span> <span class=\"token punctuation\" >(</span>err<span class=\"token punctuation\" >)</span> <span class=\"token punctuation\" >{</span>\n    <span class=\"token keyword\" >if</span> <span class=\"token punctuation\" >(</span>err<span class=\"token punctuation\" >)</span> <span class=\"token punctuation\" >{</span>\n      <span class=\"token keyword\" >return</span> res<span class=\"token punctuation\" >.</span><span class=\"token function\" >end</span><span class=\"token punctuation\" >(</span>err<span class=\"token punctuation\" >.</span><span class=\"token function\" >toString</span><span class=\"token punctuation\" >(</span><span class=\"token punctuation\" >)</span><span class=\"token punctuation\" >)</span><span class=\"token punctuation\" >;</span>\n    <span class=\"token punctuation\" >}</span>\n\n    res<span class=\"token punctuation\" >.</span><span class=\"token function\" >end</span><span class=\"token punctuation\" >(</span><span class=\"token string\" >'File is uploaded'</span><span class=\"token punctuation\" >)</span><span class=\"token punctuation\" >;</span>\n  <span class=\"token punctuation\" >}</span><span class=\"token punctuation\" >)</span><span class=\"token punctuation\" >;</span>\n<span class=\"token punctuation\" >}</span><span class=\"token punctuation\" >)</span><span class=\"token punctuation\" >;</span>\n\n<span class=\"token keyword\" >var</span> PORT <span class=\"token operator\" >=</span> process<span class=\"token punctuation\" >.</span>env<span class=\"token punctuation\" >.</span>PORT <span class=\"token operator\" >||</span> <span class=\"token number\" >3000</span><span class=\"token punctuation\" >;</span>\n\napp<span class=\"token punctuation\" >.</span><span class=\"token function\" >listen</span><span class=\"token punctuation\" >(</span>PORT<span class=\"token punctuation\" >,</span> <span class=\"token keyword\" >function</span> <span class=\"token punctuation\" >(</span><span class=\"token punctuation\" >)</span> <span class=\"token punctuation\" >{</span>\n  console<span class=\"token punctuation\" >.</span><span class=\"token function\" >log</span><span class=\"token punctuation\" >(</span><span class=\"token string\" >'Working on port '</span> <span class=\"token operator\" >+</span> PORT<span class=\"token punctuation\" >)</span><span class=\"token punctuation\" >;</span>\n<span class=\"token punctuation\" >}</span><span class=\"token punctuation\" >)</span><span class=\"token punctuation\" >;</span>\n"
 
 /***/ },
 /* 339 */
@@ -15777,7 +15774,7 @@ webpackJsonp([1],[
 /* 340 */
 /***/ function(module, exports) {
 
-	module.exports = "<span class=\"token comment\" spellcheck=\"true\">/// &lt;reference path=\"../../../tsd.d.ts\" /></span>\n\n<span class=\"token keyword\" >import</span> <span class=\"token punctuation\" >{</span>\n  Component<span class=\"token punctuation\" >,</span> View<span class=\"token punctuation\" >,</span> EventEmitter<span class=\"token punctuation\" >,</span>\n  CORE_DIRECTIVES<span class=\"token punctuation\" >,</span> FORM_DIRECTIVES<span class=\"token punctuation\" >,</span> NgClass<span class=\"token punctuation\" >,</span> NgStyle\n<span class=\"token punctuation\" >}</span> from <span class=\"token string\" >'angular2/angular2'</span><span class=\"token punctuation\" >;</span>\n\n<span class=\"token keyword\" >import</span> <span class=\"token punctuation\" >{</span>FileSelect<span class=\"token punctuation\" >,</span> FileDrop<span class=\"token punctuation\" >,</span> FileUploader<span class=\"token punctuation\" >}</span> from <span class=\"token string\" >'../../../components/index'</span><span class=\"token punctuation\" >;</span>\n\n<span class=\"token comment\" spellcheck=\"true\">// webpack html imports</span>\n<span class=\"token keyword\" >let</span> template <span class=\"token operator\" >=</span> <span class=\"token function\" >require</span><span class=\"token punctuation\" >(</span><span class=\"token string\" >'./simple-demo.html'</span><span class=\"token punctuation\" >)</span><span class=\"token punctuation\" >;</span>\n\n<span class=\"token comment\" spellcheck=\"true\">// const URL = '/api/';</span>\n<span class=\"token keyword\" >const</span> URL <span class=\"token operator\" >=</span> <span class=\"token string\" >'https://evening-anchorage-3159.herokuapp.com/api/'</span><span class=\"token punctuation\" >;</span>\n\n@<span class=\"token function\" >Component</span><span class=\"token punctuation\" >(</span><span class=\"token punctuation\" >{</span>\n  selector<span class=\"token punctuation\" >:</span> <span class=\"token string\" >'simple-demo'</span>\n<span class=\"token punctuation\" >}</span><span class=\"token punctuation\" >)</span>\n@<span class=\"token function\" >View</span><span class=\"token punctuation\" >(</span><span class=\"token punctuation\" >{</span>\n  template<span class=\"token punctuation\" >:</span> template<span class=\"token punctuation\" >,</span>\n  directives<span class=\"token punctuation\" >:</span> <span class=\"token punctuation\" >[</span>FileSelect<span class=\"token punctuation\" >,</span> FileDrop<span class=\"token punctuation\" >,</span> NgClass<span class=\"token punctuation\" >,</span> NgStyle<span class=\"token punctuation\" >,</span> CORE_DIRECTIVES<span class=\"token punctuation\" >,</span> FORM_DIRECTIVES<span class=\"token punctuation\" >]</span>\n<span class=\"token punctuation\" >}</span><span class=\"token punctuation\" >)</span>\n<span class=\"token keyword\" >export</span> <span class=\"token keyword\" >class</span> <span class=\"token class-name\" >SimpleDemo</span> <span class=\"token punctuation\" >{</span>\n  <span class=\"token keyword\" >private</span> uploader<span class=\"token punctuation\" >:</span>FileUploader <span class=\"token operator\" >=</span> <span class=\"token keyword\" >new</span> <span class=\"token class-name\" >FileUploader</span><span class=\"token punctuation\" >(</span><span class=\"token punctuation\" >{</span>url<span class=\"token punctuation\" >:</span> URL<span class=\"token punctuation\" >}</span><span class=\"token punctuation\" >)</span><span class=\"token punctuation\" >;</span>\n  <span class=\"token keyword\" >private</span> hasBaseDropZoneOver<span class=\"token punctuation\" >:</span><span class=\"token keyword\" >boolean</span> <span class=\"token operator\" >=</span> <span class=\"token keyword\" >false</span><span class=\"token punctuation\" >;</span>\n  <span class=\"token keyword\" >private</span> hasAnotherDropZoneOver<span class=\"token punctuation\" >:</span><span class=\"token keyword\" >boolean</span> <span class=\"token operator\" >=</span> <span class=\"token keyword\" >false</span><span class=\"token punctuation\" >;</span>\n\n  <span class=\"token keyword\" >private</span> <span class=\"token function\" >fileOverBase</span><span class=\"token punctuation\" >(</span>e<span class=\"token punctuation\" >:</span><span class=\"token keyword\" >any</span><span class=\"token punctuation\" >)</span> <span class=\"token punctuation\" >{</span>\n    <span class=\"token keyword\" >this</span><span class=\"token punctuation\" >.</span>hasBaseDropZoneOver <span class=\"token operator\" >=</span> e<span class=\"token punctuation\" >;</span>\n  <span class=\"token punctuation\" >}</span>\n\n  <span class=\"token keyword\" >private</span> <span class=\"token function\" >fileOverAnother</span><span class=\"token punctuation\" >(</span>e<span class=\"token punctuation\" >:</span><span class=\"token keyword\" >any</span><span class=\"token punctuation\" >)</span> <span class=\"token punctuation\" >{</span>\n    <span class=\"token keyword\" >this</span><span class=\"token punctuation\" >.</span>hasAnotherDropZoneOver <span class=\"token operator\" >=</span> e<span class=\"token punctuation\" >;</span>\n  <span class=\"token punctuation\" >}</span>\n<span class=\"token punctuation\" >}</span>\n"
+	module.exports = "<span class=\"token comment\" spellcheck=\"true\">/// &lt;reference path=\"../../../tsd.d.ts\" /></span>\n\n<span class=\"token keyword\" >import</span> <span class=\"token punctuation\" >{</span>\n  Component<span class=\"token punctuation\" >,</span> View<span class=\"token punctuation\" >,</span> EventEmitter<span class=\"token punctuation\" >,</span>\n  CORE_DIRECTIVES<span class=\"token punctuation\" >,</span> FORM_DIRECTIVES<span class=\"token punctuation\" >,</span> NgClass<span class=\"token punctuation\" >,</span> NgStyle\n<span class=\"token punctuation\" >}</span> from <span class=\"token string\" >'angular2/angular2'</span><span class=\"token punctuation\" >;</span>\n\n<span class=\"token keyword\" >import</span> <span class=\"token punctuation\" >{</span>FileSelect<span class=\"token punctuation\" >,</span> FileDrop<span class=\"token punctuation\" >,</span> FileUploader<span class=\"token punctuation\" >}</span> from <span class=\"token string\" >'../../../components/index'</span><span class=\"token punctuation\" >;</span>\n\n<span class=\"token comment\" spellcheck=\"true\">// webpack html imports</span>\n<span class=\"token keyword\" >let</span> template <span class=\"token operator\" >=</span> <span class=\"token function\" >require</span><span class=\"token punctuation\" >(</span><span class=\"token string\" >'./simple-demo.html'</span><span class=\"token punctuation\" >)</span><span class=\"token punctuation\" >;</span>\n\n<span class=\"token keyword\" >const</span> URL <span class=\"token operator\" >=</span> <span class=\"token string\" >'/api/'</span><span class=\"token punctuation\" >;</span>\n<span class=\"token comment\" spellcheck=\"true\">// const URL = 'https://evening-anchorage-3159.herokuapp.com/api/';</span>\n\n@<span class=\"token function\" >Component</span><span class=\"token punctuation\" >(</span><span class=\"token punctuation\" >{</span>\n  selector<span class=\"token punctuation\" >:</span> <span class=\"token string\" >'simple-demo'</span>\n<span class=\"token punctuation\" >}</span><span class=\"token punctuation\" >)</span>\n@<span class=\"token function\" >View</span><span class=\"token punctuation\" >(</span><span class=\"token punctuation\" >{</span>\n  template<span class=\"token punctuation\" >:</span> template<span class=\"token punctuation\" >,</span>\n  directives<span class=\"token punctuation\" >:</span> <span class=\"token punctuation\" >[</span>FileSelect<span class=\"token punctuation\" >,</span> FileDrop<span class=\"token punctuation\" >,</span> NgClass<span class=\"token punctuation\" >,</span> NgStyle<span class=\"token punctuation\" >,</span> CORE_DIRECTIVES<span class=\"token punctuation\" >,</span> FORM_DIRECTIVES<span class=\"token punctuation\" >]</span>\n<span class=\"token punctuation\" >}</span><span class=\"token punctuation\" >)</span>\n<span class=\"token keyword\" >export</span> <span class=\"token keyword\" >class</span> <span class=\"token class-name\" >SimpleDemo</span> <span class=\"token punctuation\" >{</span>\n  <span class=\"token keyword\" >private</span> uploader<span class=\"token punctuation\" >:</span>FileUploader <span class=\"token operator\" >=</span> <span class=\"token keyword\" >new</span> <span class=\"token class-name\" >FileUploader</span><span class=\"token punctuation\" >(</span><span class=\"token punctuation\" >{</span>url<span class=\"token punctuation\" >:</span> URL<span class=\"token punctuation\" >}</span><span class=\"token punctuation\" >)</span><span class=\"token punctuation\" >;</span>\n  <span class=\"token keyword\" >private</span> hasBaseDropZoneOver<span class=\"token punctuation\" >:</span><span class=\"token keyword\" >boolean</span> <span class=\"token operator\" >=</span> <span class=\"token keyword\" >false</span><span class=\"token punctuation\" >;</span>\n  <span class=\"token keyword\" >private</span> hasAnotherDropZoneOver<span class=\"token punctuation\" >:</span><span class=\"token keyword\" >boolean</span> <span class=\"token operator\" >=</span> <span class=\"token keyword\" >false</span><span class=\"token punctuation\" >;</span>\n\n  <span class=\"token keyword\" >private</span> <span class=\"token function\" >fileOverBase</span><span class=\"token punctuation\" >(</span>e<span class=\"token punctuation\" >:</span><span class=\"token keyword\" >any</span><span class=\"token punctuation\" >)</span> <span class=\"token punctuation\" >{</span>\n    <span class=\"token keyword\" >this</span><span class=\"token punctuation\" >.</span>hasBaseDropZoneOver <span class=\"token operator\" >=</span> e<span class=\"token punctuation\" >;</span>\n  <span class=\"token punctuation\" >}</span>\n\n  <span class=\"token keyword\" >private</span> <span class=\"token function\" >fileOverAnother</span><span class=\"token punctuation\" >(</span>e<span class=\"token punctuation\" >:</span><span class=\"token keyword\" >any</span><span class=\"token punctuation\" >)</span> <span class=\"token punctuation\" >{</span>\n    <span class=\"token keyword\" >this</span><span class=\"token punctuation\" >.</span>hasAnotherDropZoneOver <span class=\"token operator\" >=</span> e<span class=\"token punctuation\" >;</span>\n  <span class=\"token punctuation\" >}</span>\n<span class=\"token punctuation\" >}</span>\n"
 
 /***/ },
 /* 341 */
@@ -15862,7 +15859,7 @@ webpackJsonp([1],[
 	var angular2_1 = __webpack_require__(6);
 	var index_1 = __webpack_require__(99);
 	var template = __webpack_require__(341);
-	var URL = 'https://evening-anchorage-3159.herokuapp.com/api/';
+	var URL = '/api/';
 	var SimpleDemo = (function () {
 	    function SimpleDemo() {
 	        this.uploader = new index_1.FileUploader({ url: URL });
