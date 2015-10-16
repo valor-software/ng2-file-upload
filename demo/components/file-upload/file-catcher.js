@@ -1,35 +1,49 @@
 var express = require('express');
-var Busboy = require('busboy');
-var path = require('path');
+var multer = require('multer');
 var fs = require('fs');
-
 var app = express();
 
+var DIR = './uploads/';
+
+var upload = multer({dest: DIR});
+
 app.use(function (req, res, next) {
-  res.setHeader('Access-Control-Allow-Origin', '!put your host here!');
+  res.setHeader('Access-Control-Allow-Origin', 'http://valor-software.github.io');
   res.setHeader('Access-Control-Allow-Methods', 'POST');
   res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
   res.setHeader('Access-Control-Allow-Credentials', true);
   next();
 });
 
-app.post('/api', function (req, res) {
-  var fstream;
-  var files = [];
-  var busboy = new Busboy({headers: req.headers});
-  busboy.on('file', function (fieldname, file, filename) {
-    fstream = fs.createWriteStream(__dirname + '/uploads/' + filename);
-    file.pipe(fstream);
-    fstream.on('close', function () {
-      files.push(filename);
-      file.resume();
-    });
-  });
+app.use(multer({
+  dest: DIR,
+  rename: function (fieldname, filename) {
+    return filename + Date.now();
+  },
+  onFileUploadStart: function (file) {
+    console.log(file.originalname + ' is starting ...');
+  },
+  onFileUploadComplete: function (file) {
+    console.log(file.fieldname + ' uploaded to  ' + file.path);
+  }
+}));
 
-  busboy.on('finish', function () {
-    res.end('ok');
-  });
-  req.pipe(busboy);
+app.get('/api', function (req, res) {
+  res.end('file catcher example');
 });
 
-app.listen(process.env.PORT || 3000);
+app.post('/api', function (req, res) {
+  upload(req, res, function (err) {
+    if (err) {
+      return res.end(err.toString());
+    }
+
+    res.end('File is uploaded');
+  });
+});
+
+var PORT = process.env.PORT || 3000;
+
+app.listen(PORT, function () {
+  console.log('Working on port ' + PORT);
+});

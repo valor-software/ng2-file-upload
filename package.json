@@ -33,8 +33,8 @@
   },
   "homepage": "https://github.com/valor-software/ng2-file-upload#readme",
   "dependencies": {
-    "angular2": "^2.0.0-alpha.42",
-    "ng2-bootstrap": "^0.40.0",
+    "angular2": "2.0.0-alpha.42",
+    "ng2-bootstrap": "0.42.0",
     "reflect-metadata": "0.1.2",
     "ts-loader": "0.5.6",
     "zone.js": "0.5.8"

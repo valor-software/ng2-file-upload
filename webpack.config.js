@@ -110,6 +110,7 @@ var config = {
         loader: 'ts',
         query: {
           ignoreDiagnostics: [
+            6053,
             // TS2305 -> Module 'ng' has no exported member
             2305,
             // TS2307 ->  Cannot find external module
