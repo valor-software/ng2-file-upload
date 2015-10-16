@@ -15,8 +15,8 @@ webpackJsonp([1],[
 	};
 	/// <reference path="../tsd.d.ts" />
 	var angular2_1 = __webpack_require__(6);
-	var file_upload_section_1 = __webpack_require__(342);
-	var gettingStarted = __webpack_require__(314);
+	var file_upload_section_1 = __webpack_require__(343);
+	var gettingStarted = __webpack_require__(316);
 	var Demo = (function () {
 	    function Demo() {
 	    }
@@ -312,7 +312,7 @@ webpackJsonp([1],[
 	                module && module.exports) {
 	            try {
 	                oldLocale = globalLocale._abbr;
-	                __webpack_require__(315)("./" + name);
+	                __webpack_require__(317)("./" + name);
 	                // because defineLocale currently also sets the global locale, we
 	                // want to undo that for lazy loaded locales
 	                locale_locales__getSetGlobalLocale(oldLocale);
@@ -3239,7 +3239,7 @@ webpackJsonp([1],[
 	    return _moment;
 	
 	}));
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(248)(module)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(250)(module)))
 
 /***/ },
 /* 3 */,
@@ -3305,7 +3305,37 @@ webpackJsonp([1],[
 /* 33 */,
 /* 34 */,
 /* 35 */,
-/* 36 */,
+/* 36 */
+/***/ function(module, exports) {
+
+	function isElement(node) {
+	    return !!(node && (node.nodeName || node.prop && node.attr && node.find));
+	}
+	var FileLikeObject = (function () {
+	    function FileLikeObject(fileOrInput) {
+	        var isInput = isElement(fileOrInput);
+	        var fakePathOrObject = isInput ? fileOrInput.value : fileOrInput;
+	        var postfix = typeof fakePathOrObject === 'string' ? 'FakePath' : 'Object';
+	        var method = '_createFrom' + postfix;
+	        this[method](fakePathOrObject);
+	    }
+	    FileLikeObject.prototype._createFromFakePath = function (path) {
+	        this.lastModifiedDate = null;
+	        this.size = null;
+	        this.type = 'like/' + path.slice(path.lastIndexOf('.') + 1).toLowerCase();
+	        this.name = path.slice(path.lastIndexOf('/') + path.lastIndexOf('\\') + 2);
+	    };
+	    FileLikeObject.prototype._createFromObject = function (object) {
+	        this.size = object.size;
+	        this.type = object.type;
+	        this.name = object.name;
+	    };
+	    return FileLikeObject;
+	})();
+	exports.FileLikeObject = FileLikeObject;
+
+
+/***/ },
 /* 37 */,
 /* 38 */,
 /* 39 */,
@@ -3322,7 +3352,8 @@ webpackJsonp([1],[
 /* 50 */,
 /* 51 */,
 /* 52 */,
-/* 53 */
+/* 53 */,
+/* 54 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path="../../tsd.d.ts" />
@@ -3338,7 +3369,7 @@ webpackJsonp([1],[
 	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 	};
 	var angular2_1 = __webpack_require__(6);
-	var date_formatter_1 = __webpack_require__(321);
+	var date_formatter_1 = __webpack_require__(323);
 	var FORMAT_DAY = 'DD';
 	var FORMAT_MONTH = 'MMMM';
 	var FORMAT_YEAR = 'YYYY';
@@ -3582,7 +3613,7 @@ webpackJsonp([1],[
 	//# sourceMappingURL=../../components/dist/datepicker/datepicker-inner.js.map
 
 /***/ },
-/* 54 */
+/* 55 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path="../../tsd.d.ts" />
@@ -3598,7 +3629,7 @@ webpackJsonp([1],[
 	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 	};
 	var angular2_1 = __webpack_require__(6);
-	var dropdown_service_1 = __webpack_require__(245);
+	var dropdown_service_1 = __webpack_require__(248);
 	var Dropdown = (function () {
 	    function Dropdown(el) {
 	        this.el = el;
@@ -3721,7 +3752,7 @@ webpackJsonp([1],[
 	//# sourceMappingURL=../../components/dist/dropdown/dropdown.js.map
 
 /***/ },
-/* 55 */
+/* 56 */
 /***/ function(module, exports) {
 
 	/// <reference path="../tsd.d.ts" />
@@ -3856,7 +3887,6 @@ webpackJsonp([1],[
 	//# sourceMappingURL=../components/dist/position.js.map
 
 /***/ },
-/* 56 */,
 /* 57 */,
 /* 58 */,
 /* 59 */,
@@ -3894,7 +3924,8 @@ webpackJsonp([1],[
 /* 91 */,
 /* 92 */,
 /* 93 */,
-/* 94 */
+/* 94 */,
+/* 95 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -3912,7 +3943,6 @@ webpackJsonp([1],[
 	var FileDrop = (function () {
 	    function FileDrop(element) {
 	        this.element = element;
-	        this.config = {};
 	        this.fileOver = new angular2_1.EventEmitter();
 	    }
 	    FileDrop.prototype.getOptions = function () {
@@ -3977,7 +4007,7 @@ webpackJsonp([1],[
 	    FileDrop = __decorate([
 	        angular2_1.Directive({
 	            selector: '[ng2-file-drop]',
-	            properties: ['config: ng2FileDrop', 'uploader'],
+	            properties: ['uploader'],
 	            events: ['fileOver'],
 	            host: {
 	                '(drop)': 'onDrop($event)',
@@ -3993,10 +4023,130 @@ webpackJsonp([1],[
 
 
 /***/ },
-/* 95 */
+/* 96 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/// <reference path="../../tsd.d.ts" />
+	var file_like_object_1 = __webpack_require__(36);
+	var FileItem = (function () {
+	    function FileItem(uploader, some, options) {
+	        this.uploader = uploader;
+	        this.some = some;
+	        this.options = options;
+	        this.alias = 'file';
+	        this.url = '/';
+	        this.method = 'POST';
+	        this.headers = [];
+	        this.withCredentials = true;
+	        this.formData = [];
+	        this.isReady = false;
+	        this.isUploading = false;
+	        this.isUploaded = false;
+	        this.isSuccess = false;
+	        this.isCancel = false;
+	        this.isError = false;
+	        this.progress = 0;
+	        this.index = null;
+	        this.file = new file_like_object_1.FileLikeObject(some);
+	        this._file = some;
+	        this.url = uploader.url;
+	    }
+	    FileItem.prototype.upload = function () {
+	        try {
+	            this.uploader.uploadItem(this);
+	        }
+	        catch (e) {
+	            this.uploader._onCompleteItem(this, '', 0, []);
+	            this.uploader._onErrorItem(this, '', 0, []);
+	        }
+	    };
+	    FileItem.prototype.cancel = function () {
+	        this.uploader.cancelItem(this);
+	    };
+	    FileItem.prototype.remove = function () {
+	        this.uploader.removeFromQueue(this);
+	    };
+	    FileItem.prototype.onBeforeUpload = function () {
+	    };
+	    FileItem.prototype.onProgress = function (progress) {
+	    };
+	    FileItem.prototype.onSuccess = function (response, status, headers) {
+	    };
+	    FileItem.prototype.onError = function (response, status, headers) {
+	    };
+	    FileItem.prototype.onCancel = function (response, status, headers) {
+	    };
+	    FileItem.prototype.onComplete = function (response, status, headers) {
+	    };
+	    FileItem.prototype._onBeforeUpload = function () {
+	        this.isReady = true;
+	        this.isUploading = true;
+	        this.isUploaded = false;
+	        this.isSuccess = false;
+	        this.isCancel = false;
+	        this.isError = false;
+	        this.progress = 0;
+	        this.onBeforeUpload();
+	    };
+	    FileItem.prototype._onProgress = function (progress) {
+	        this.progress = progress;
+	        this.onProgress(progress);
+	    };
+	    FileItem.prototype._onSuccess = function (response, status, headers) {
+	        this.isReady = false;
+	        this.isUploading = false;
+	        this.isUploaded = true;
+	        this.isSuccess = true;
+	        this.isCancel = false;
+	        this.isError = false;
+	        this.progress = 100;
+	        this.index = null;
+	        this.onSuccess(response, status, headers);
+	    };
+	    FileItem.prototype._onError = function (response, status, headers) {
+	        this.isReady = false;
+	        this.isUploading = false;
+	        this.isUploaded = true;
+	        this.isSuccess = false;
+	        this.isCancel = false;
+	        this.isError = true;
+	        this.progress = 0;
+	        this.index = null;
+	        this.onError(response, status, headers);
+	    };
+	    FileItem.prototype._onCancel = function (response, status, headers) {
+	        this.isReady = false;
+	        this.isUploading = false;
+	        this.isUploaded = false;
+	        this.isSuccess = false;
+	        this.isCancel = true;
+	        this.isError = false;
+	        this.progress = 0;
+	        this.index = null;
+	        this.onCancel(response, status, headers);
+	    };
+	    FileItem.prototype._onComplete = function (response, status, headers) {
+	        this.onComplete(response, status, headers);
+	        if (this.uploader.removeAfterUpload) {
+	            this.remove();
+	        }
+	    };
+	    FileItem.prototype._destroy = function () {
+	    };
+	    FileItem.prototype._prepareToUploading = function () {
+	        this.index = this.index || ++this.uploader._nextIndex;
+	        this.isReady = true;
+	    };
+	    FileItem.prototype._replaceNode = function (input) {
+	    };
+	    return FileItem;
+	})();
+	exports.FileItem = FileItem;
+
+
+/***/ },
+/* 97 */
+/***/ function(module, exports, __webpack_require__) {
+
 	var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
 	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
 	    switch (arguments.length) {
@@ -4012,7 +4162,6 @@ webpackJsonp([1],[
 	var FileSelect = (function () {
 	    function FileSelect(element) {
 	        this.element = element;
-	        this.config = {};
 	    }
 	    FileSelect.prototype.getOptions = function () {
 	        return this.uploader.options;
@@ -4033,7 +4182,7 @@ webpackJsonp([1],[
 	    FileSelect = __decorate([
 	        angular2_1.Directive({
 	            selector: '[ng2-file-select]',
-	            properties: ['config: ng2FileSelect', 'uploader'],
+	            properties: ['uploader'],
 	            host: {
 	                '(change)': 'onChange()'
 	            }
@@ -4047,21 +4196,324 @@ webpackJsonp([1],[
 
 
 /***/ },
-/* 96 */
+/* 98 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var file_like_object_1 = __webpack_require__(36);
+	var file_item_1 = __webpack_require__(96);
+	function isFile(value) {
+	    return (File && value instanceof File);
+	}
+	function isFileLikeObject(value) {
+	    return value instanceof file_like_object_1.FileLikeObject;
+	}
+	var FileUploader = (function () {
+	    function FileUploader(options) {
+	        this.options = options;
+	        this.isUploading = false;
+	        this.queue = [];
+	        this.progress = 0;
+	        this.autoUpload = false;
+	        this.isHTML5 = true;
+	        this.removeAfterUpload = false;
+	        this._nextIndex = 0;
+	        this.filters = [];
+	        this.url = options.url;
+	        this.filters.unshift({ name: 'queueLimit', fn: this._queueLimitFilter });
+	        this.filters.unshift({ name: 'folder', fn: this._folderFilter });
+	    }
+	    FileUploader.prototype.addToQueue = function (files, options, filters) {
+	        var _this = this;
+	        var list = [];
+	        for (var _i = 0; _i < files.length; _i++) {
+	            var file = files[_i];
+	            list.push(file);
+	        }
+	        var arrayOfFilters = this._getFilters(filters);
+	        var count = this.queue.length;
+	        var addedFileItems = [];
+	        list.map(function (some) {
+	            var temp = new file_like_object_1.FileLikeObject(some);
+	            if (_this._isValidFile(temp, [], options)) {
+	                var fileItem = new file_item_1.FileItem(_this, some, options);
+	                addedFileItems.push(fileItem);
+	                _this.queue.push(fileItem);
+	                _this._onAfterAddingFile(fileItem);
+	            }
+	            else {
+	                var filter = arrayOfFilters[_this._failFilterIndex];
+	                _this._onWhenAddingFileFailed(temp, filter, options);
+	            }
+	        });
+	        if (this.queue.length !== count) {
+	            this._onAfterAddingAll(addedFileItems);
+	            this.progress = this._getTotalProgress();
+	        }
+	        this._render();
+	        if (this.autoUpload) {
+	            this.uploadAll();
+	        }
+	    };
+	    FileUploader.prototype.removeFromQueue = function (value) {
+	        var index = this.getIndexOfItem(value);
+	        var item = this.queue[index];
+	        if (item.isUploading) {
+	            item.cancel();
+	        }
+	        this.queue.splice(index, 1);
+	        item._destroy();
+	        this.progress = this._getTotalProgress();
+	    };
+	    FileUploader.prototype.clearQueue = function () {
+	        while (this.queue.length) {
+	            this.queue[0].remove();
+	        }
+	        this.progress = 0;
+	    };
+	    FileUploader.prototype.uploadItem = function (value) {
+	        var index = this.getIndexOfItem(value);
+	        var item = this.queue[index];
+	        var transport = this.isHTML5 ? '_xhrTransport' : '_iframeTransport';
+	        item._prepareToUploading();
+	        if (this.isUploading) {
+	            return;
+	        }
+	        this.isUploading = true;
+	        this[transport](item);
+	    };
+	    FileUploader.prototype.cancelItem = function (value) {
+	        var index = this.getIndexOfItem(value);
+	        var item = this.queue[index];
+	        var prop = this.isHTML5 ? '_xhr' : '_form';
+	        if (item && item.isUploading) {
+	            item[prop].abort();
+	        }
+	    };
+	    FileUploader.prototype.uploadAll = function () {
+	        var items = this.getNotUploadedItems().filter(function (item) { return !item.isUploading; });
+	        if (!items.length) {
+	            return;
+	        }
+	        items.map(function (item) { return item._prepareToUploading(); });
+	        items[0].upload();
+	    };
+	    FileUploader.prototype.cancelAll = function () {
+	        var items = this.getNotUploadedItems();
+	        items.map(function (item) { return item.cancel(); });
+	    };
+	    FileUploader.prototype.isFile = function (value) {
+	        return isFile(value);
+	    };
+	    FileUploader.prototype.isFileLikeObject = function (value) {
+	        return value instanceof file_like_object_1.FileLikeObject;
+	    };
+	    FileUploader.prototype.getIndexOfItem = function (value) {
+	        return typeof value === 'number' ? value : this.queue.indexOf(value);
+	    };
+	    FileUploader.prototype.getNotUploadedItems = function () {
+	        return this.queue.filter(function (item) { return !item.isUploaded; });
+	    };
+	    FileUploader.prototype.getReadyItems = function () {
+	        return this.queue
+	            .filter(function (item) { return (item.isReady && !item.isUploading); })
+	            .sort(function (item1, item2) { return item1.index - item2.index; });
+	    };
+	    FileUploader.prototype.destroy = function () {
+	    };
+	    FileUploader.prototype.onAfterAddingAll = function (fileItems) {
+	    };
+	    FileUploader.prototype.onAfterAddingFile = function (fileItem) {
+	    };
+	    FileUploader.prototype.onWhenAddingFileFailed = function (item, filter, options) {
+	    };
+	    FileUploader.prototype.onBeforeUploadItem = function (fileItem) {
+	    };
+	    FileUploader.prototype.onProgressItem = function (fileItem, progress) {
+	    };
+	    FileUploader.prototype.onProgressAll = function (progress) {
+	    };
+	    FileUploader.prototype.onSuccessItem = function (item, response, status, headers) {
+	    };
+	    FileUploader.prototype.onErrorItem = function (item, response, status, headers) {
+	    };
+	    FileUploader.prototype.onCancelItem = function (item, response, status, headers) {
+	    };
+	    FileUploader.prototype.onCompleteItem = function (item, response, status, headers) {
+	    };
+	    FileUploader.prototype.onCompleteAll = function () {
+	    };
+	    FileUploader.prototype._getTotalProgress = function (value) {
+	        if (value === void 0) { value = 0; }
+	        if (this.removeAfterUpload) {
+	            return value;
+	        }
+	        var notUploaded = this.getNotUploadedItems().length;
+	        var uploaded = notUploaded ? this.queue.length - notUploaded : this.queue.length;
+	        var ratio = 100 / this.queue.length;
+	        var current = value * ratio / 100;
+	        return Math.round(uploaded * ratio + current);
+	    };
+	    FileUploader.prototype._getFilters = function (filters) {
+	        if (!filters) {
+	            return this.filters;
+	        }
+	        if (Array.isArray(filters)) {
+	            return filters;
+	        }
+	        var names = filters.match(/[^\s,]+/g);
+	        return this.filters
+	            .filter(function (filter) { return names.indexOf(filter.name) !== -1; });
+	    };
+	    FileUploader.prototype._render = function () {
+	    };
+	    FileUploader.prototype._folderFilter = function (item) {
+	        return !!(item.size || item.type);
+	    };
+	    FileUploader.prototype._queueLimitFilter = function () {
+	        return this.queue.length < this.queueLimit;
+	    };
+	    FileUploader.prototype._isValidFile = function (file, filters, options) {
+	        var _this = this;
+	        this._failFilterIndex = -1;
+	        return !filters.length ? true : filters.every(function (filter) {
+	            _this._failFilterIndex++;
+	            return filter.fn.call(_this, file, options);
+	        });
+	    };
+	    FileUploader.prototype._isSuccessCode = function (status) {
+	        return (status >= 200 && status < 300) || status === 304;
+	    };
+	    FileUploader.prototype._transformResponse = function (response, headers) {
+	        return response;
+	    };
+	    FileUploader.prototype._parseHeaders = function (headers) {
+	        var parsed = {}, key, val, i;
+	        if (!headers) {
+	            return parsed;
+	        }
+	        headers.split('\n').map(function (line) {
+	            i = line.indexOf(':');
+	            key = line.slice(0, i).trim().toLowerCase();
+	            val = line.slice(i + 1).trim();
+	            if (key) {
+	                parsed[key] = parsed[key] ? parsed[key] + ', ' + val : val;
+	            }
+	        });
+	        return parsed;
+	    };
+	    FileUploader.prototype._headersGetter = function (parsedHeaders) {
+	        return function (name) {
+	            if (name) {
+	                return parsedHeaders[name.toLowerCase()] || null;
+	            }
+	            return parsedHeaders;
+	        };
+	    };
+	    FileUploader.prototype._xhrTransport = function (item) {
+	        var _this = this;
+	        var xhr = item._xhr = new XMLHttpRequest();
+	        var form = new FormData();
+	        this._onBeforeUploadItem(item);
+	        if (typeof item._file.size !== 'number') {
+	            throw new TypeError('The file specified is no longer valid');
+	        }
+	        form.append(item.alias, item._file, item.file.name);
+	        xhr.upload.onprogress = function (event) {
+	            var progress = Math.round(event.lengthComputable ? event.loaded * 100 / event.total : 0);
+	            _this._onProgressItem(item, progress);
+	        };
+	        xhr.onload = function () {
+	            var headers = _this._parseHeaders(xhr.getAllResponseHeaders());
+	            var response = _this._transformResponse(xhr.response, headers);
+	            var gist = _this._isSuccessCode(xhr.status) ? 'Success' : 'Error';
+	            var method = '_on' + gist + 'Item';
+	            _this[method](item, response, xhr.status, headers);
+	            _this._onCompleteItem(item, response, xhr.status, headers);
+	        };
+	        xhr.onerror = function () {
+	            var headers = _this._parseHeaders(xhr.getAllResponseHeaders());
+	            var response = _this._transformResponse(xhr.response, headers);
+	            _this._onErrorItem(item, response, xhr.status, headers);
+	            _this._onCompleteItem(item, response, xhr.status, headers);
+	        };
+	        xhr.onabort = function () {
+	            var headers = _this._parseHeaders(xhr.getAllResponseHeaders());
+	            var response = _this._transformResponse(xhr.response, headers);
+	            _this._onCancelItem(item, response, xhr.status, headers);
+	            _this._onCompleteItem(item, response, xhr.status, headers);
+	        };
+	        xhr.open(item.method, item.url, true);
+	        xhr.withCredentials = item.withCredentials;
+	        xhr.send(form);
+	        this._render();
+	    };
+	    FileUploader.prototype._iframeTransport = function (item) {
+	    };
+	    FileUploader.prototype._onWhenAddingFileFailed = function (item, filter, options) {
+	        this.onWhenAddingFileFailed(item, filter, options);
+	    };
+	    FileUploader.prototype._onAfterAddingFile = function (item) {
+	        this.onAfterAddingFile(item);
+	    };
+	    FileUploader.prototype._onAfterAddingAll = function (items) {
+	        this.onAfterAddingAll(items);
+	    };
+	    FileUploader.prototype._onBeforeUploadItem = function (item) {
+	        item._onBeforeUpload();
+	        this.onBeforeUploadItem(item);
+	    };
+	    FileUploader.prototype._onProgressItem = function (item, progress) {
+	        var total = this._getTotalProgress(progress);
+	        this.progress = total;
+	        item._onProgress(progress);
+	        this.onProgressItem(item, progress);
+	        this.onProgressAll(total);
+	        this._render();
+	    };
+	    FileUploader.prototype._onSuccessItem = function (item, response, status, headers) {
+	        item._onSuccess(response, status, headers);
+	        this.onSuccessItem(item, response, status, headers);
+	    };
+	    FileUploader.prototype._onErrorItem = function (item, response, status, headers) {
+	        item._onError(response, status, headers);
+	        this.onErrorItem(item, response, status, headers);
+	    };
+	    FileUploader.prototype._onCancelItem = function (item, response, status, headers) {
+	        item._onCancel(response, status, headers);
+	        this.onCancelItem(item, response, status, headers);
+	    };
+	    FileUploader.prototype._onCompleteItem = function (item, response, status, headers) {
+	        item._onComplete(response, status, headers);
+	        this.onCompleteItem(item, response, status, headers);
+	        var nextItem = this.getReadyItems()[0];
+	        this.isUploading = false;
+	        if (nextItem) {
+	            nextItem.upload();
+	            return;
+	        }
+	        this.onCompleteAll();
+	        this.progress = this._getTotalProgress();
+	        this._render();
+	    };
+	    return FileUploader;
+	})();
+	exports.FileUploader = FileUploader;
+
+
+/***/ },
+/* 99 */
 /***/ function(module, exports, __webpack_require__) {
 
 	///<reference path="../tsd.d.ts"/>
 	function __export(m) {
 	    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 	}
+	__export(__webpack_require__(97));
 	__export(__webpack_require__(95));
-	__export(__webpack_require__(94));
+	__export(__webpack_require__(98));
 
 
 /***/ },
-/* 97 */,
-/* 98 */,
-/* 99 */,
 /* 100 */,
 /* 101 */,
 /* 102 */,
@@ -4118,7 +4570,10 @@ webpackJsonp([1],[
 /* 153 */,
 /* 154 */,
 /* 155 */,
-/* 156 */
+/* 156 */,
+/* 157 */,
+/* 158 */,
+/* 159 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -4195,7 +4650,7 @@ webpackJsonp([1],[
 	}));
 
 /***/ },
-/* 157 */
+/* 160 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -4258,7 +4713,7 @@ webpackJsonp([1],[
 	}));
 
 /***/ },
-/* 158 */
+/* 161 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -4365,7 +4820,7 @@ webpackJsonp([1],[
 	}));
 
 /***/ },
-/* 159 */
+/* 162 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -4426,7 +4881,7 @@ webpackJsonp([1],[
 	}));
 
 /***/ },
-/* 160 */
+/* 163 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -4566,7 +5021,7 @@ webpackJsonp([1],[
 	}));
 
 /***/ },
-/* 161 */
+/* 164 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -4674,7 +5129,7 @@ webpackJsonp([1],[
 	}));
 
 /***/ },
-/* 162 */
+/* 165 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -4825,7 +5280,7 @@ webpackJsonp([1],[
 	}));
 
 /***/ },
-/* 163 */
+/* 166 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -4919,7 +5374,7 @@ webpackJsonp([1],[
 	}));
 
 /***/ },
-/* 164 */
+/* 167 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -5036,7 +5491,7 @@ webpackJsonp([1],[
 	}));
 
 /***/ },
-/* 165 */
+/* 168 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -5150,7 +5605,7 @@ webpackJsonp([1],[
 	}));
 
 /***/ },
-/* 166 */
+/* 169 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -5261,7 +5716,7 @@ webpackJsonp([1],[
 	}));
 
 /***/ },
-/* 167 */
+/* 170 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -5406,7 +5861,7 @@ webpackJsonp([1],[
 	}));
 
 /***/ },
-/* 168 */
+/* 171 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -5489,7 +5944,7 @@ webpackJsonp([1],[
 	}));
 
 /***/ },
-/* 169 */
+/* 172 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -5650,7 +6105,7 @@ webpackJsonp([1],[
 	}));
 
 /***/ },
-/* 170 */
+/* 173 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -5717,7 +6172,7 @@ webpackJsonp([1],[
 	}));
 
 /***/ },
-/* 171 */
+/* 174 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -5800,7 +6255,7 @@ webpackJsonp([1],[
 	}));
 
 /***/ },
-/* 172 */
+/* 175 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -5864,7 +6319,7 @@ webpackJsonp([1],[
 	}));
 
 /***/ },
-/* 173 */
+/* 176 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -5944,7 +6399,7 @@ webpackJsonp([1],[
 	}));
 
 /***/ },
-/* 174 */
+/* 177 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -6023,7 +6478,7 @@ webpackJsonp([1],[
 	}));
 
 /***/ },
-/* 175 */
+/* 178 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -6121,7 +6576,7 @@ webpackJsonp([1],[
 	}));
 
 /***/ },
-/* 176 */
+/* 179 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -6191,7 +6646,7 @@ webpackJsonp([1],[
 	}));
 
 /***/ },
-/* 177 */
+/* 180 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -6258,7 +6713,7 @@ webpackJsonp([1],[
 	}));
 
 /***/ },
-/* 178 */
+/* 181 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -6329,7 +6784,7 @@ webpackJsonp([1],[
 	}));
 
 /***/ },
-/* 179 */
+/* 182 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -6406,7 +6861,7 @@ webpackJsonp([1],[
 	}));
 
 /***/ },
-/* 180 */
+/* 183 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -6489,7 +6944,7 @@ webpackJsonp([1],[
 	}));
 
 /***/ },
-/* 181 */
+/* 184 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -6573,7 +7028,7 @@ webpackJsonp([1],[
 	}));
 
 /***/ },
-/* 182 */
+/* 185 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -6641,7 +7096,7 @@ webpackJsonp([1],[
 	}));
 
 /***/ },
-/* 183 */
+/* 186 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -6750,7 +7205,7 @@ webpackJsonp([1],[
 	}));
 
 /***/ },
-/* 184 */
+/* 187 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -6861,7 +7316,7 @@ webpackJsonp([1],[
 	}));
 
 /***/ },
-/* 185 */
+/* 188 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -6925,7 +7380,7 @@ webpackJsonp([1],[
 	}));
 
 /***/ },
-/* 186 */
+/* 189 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -6987,7 +7442,7 @@ webpackJsonp([1],[
 	}));
 
 /***/ },
-/* 187 */
+/* 190 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -7053,7 +7508,7 @@ webpackJsonp([1],[
 	}));
 
 /***/ },
-/* 188 */
+/* 191 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -7128,7 +7583,7 @@ webpackJsonp([1],[
 	}));
 
 /***/ },
-/* 189 */
+/* 192 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -7207,7 +7662,7 @@ webpackJsonp([1],[
 	}));
 
 /***/ },
-/* 190 */
+/* 193 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -7293,7 +7748,7 @@ webpackJsonp([1],[
 	}));
 
 /***/ },
-/* 191 */
+/* 194 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -7420,7 +7875,7 @@ webpackJsonp([1],[
 	}));
 
 /***/ },
-/* 192 */
+/* 195 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -7564,7 +8019,7 @@ webpackJsonp([1],[
 	}));
 
 /***/ },
-/* 193 */
+/* 196 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -7677,7 +8132,7 @@ webpackJsonp([1],[
 	}));
 
 /***/ },
-/* 194 */
+/* 197 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -7792,7 +8247,7 @@ webpackJsonp([1],[
 	}));
 
 /***/ },
-/* 195 */
+/* 198 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -7879,7 +8334,7 @@ webpackJsonp([1],[
 	}));
 
 /***/ },
-/* 196 */
+/* 199 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -8010,7 +8465,7 @@ webpackJsonp([1],[
 	}));
 
 /***/ },
-/* 197 */
+/* 200 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -8084,7 +8539,7 @@ webpackJsonp([1],[
 	}));
 
 /***/ },
-/* 198 */
+/* 201 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -8153,7 +8608,7 @@ webpackJsonp([1],[
 	}));
 
 /***/ },
-/* 199 */
+/* 202 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -8240,7 +8695,7 @@ webpackJsonp([1],[
 	}));
 
 /***/ },
-/* 200 */
+/* 203 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -8347,7 +8802,7 @@ webpackJsonp([1],[
 	}));
 
 /***/ },
-/* 201 */
+/* 204 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -8409,7 +8864,7 @@ webpackJsonp([1],[
 	}));
 
 /***/ },
-/* 202 */
+/* 205 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -8481,7 +8936,7 @@ webpackJsonp([1],[
 	}));
 
 /***/ },
-/* 203 */
+/* 206 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -8619,7 +9074,7 @@ webpackJsonp([1],[
 	}));
 
 /***/ },
-/* 204 */
+/* 207 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -8748,7 +9203,7 @@ webpackJsonp([1],[
 	}));
 
 /***/ },
-/* 205 */
+/* 208 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -8848,7 +9303,7 @@ webpackJsonp([1],[
 	}));
 
 /***/ },
-/* 206 */
+/* 209 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -8961,7 +9416,7 @@ webpackJsonp([1],[
 	}));
 
 /***/ },
-/* 207 */
+/* 210 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -9055,7 +9510,7 @@ webpackJsonp([1],[
 	}));
 
 /***/ },
-/* 208 */
+/* 211 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -9130,7 +9585,7 @@ webpackJsonp([1],[
 	}));
 
 /***/ },
-/* 209 */
+/* 212 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -9255,7 +9710,7 @@ webpackJsonp([1],[
 	}));
 
 /***/ },
-/* 210 */
+/* 213 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -9341,7 +9796,7 @@ webpackJsonp([1],[
 	}));
 
 /***/ },
-/* 211 */
+/* 214 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -9427,7 +9882,7 @@ webpackJsonp([1],[
 	}));
 
 /***/ },
-/* 212 */
+/* 215 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -9524,7 +9979,7 @@ webpackJsonp([1],[
 	}));
 
 /***/ },
-/* 213 */
+/* 216 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -9589,7 +10044,7 @@ webpackJsonp([1],[
 	}));
 
 /***/ },
-/* 214 */
+/* 217 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -9716,7 +10171,7 @@ webpackJsonp([1],[
 	}));
 
 /***/ },
-/* 215 */
+/* 218 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -9791,7 +10246,7 @@ webpackJsonp([1],[
 	}));
 
 /***/ },
-/* 216 */
+/* 219 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -9855,7 +10310,7 @@ webpackJsonp([1],[
 	}));
 
 /***/ },
-/* 217 */
+/* 220 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -9964,7 +10419,7 @@ webpackJsonp([1],[
 	}));
 
 /***/ },
-/* 218 */
+/* 221 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -10028,7 +10483,7 @@ webpackJsonp([1],[
 	}));
 
 /***/ },
-/* 219 */
+/* 222 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -10096,7 +10551,7 @@ webpackJsonp([1],[
 	}));
 
 /***/ },
-/* 220 */
+/* 223 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -10174,7 +10629,7 @@ webpackJsonp([1],[
 	}));
 
 /***/ },
-/* 221 */
+/* 224 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -10342,7 +10797,7 @@ webpackJsonp([1],[
 	}));
 
 /***/ },
-/* 222 */
+/* 225 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -10411,7 +10866,7 @@ webpackJsonp([1],[
 	}));
 
 /***/ },
-/* 223 */
+/* 226 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -10573,7 +11028,7 @@ webpackJsonp([1],[
 	}));
 
 /***/ },
-/* 224 */
+/* 227 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -10737,7 +11192,7 @@ webpackJsonp([1],[
 	}));
 
 /***/ },
-/* 225 */
+/* 228 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -10810,7 +11265,7 @@ webpackJsonp([1],[
 	}));
 
 /***/ },
-/* 226 */
+/* 229 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -10922,7 +11377,7 @@ webpackJsonp([1],[
 	}));
 
 /***/ },
-/* 227 */
+/* 230 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -11034,7 +11489,7 @@ webpackJsonp([1],[
 	}));
 
 /***/ },
-/* 228 */
+/* 231 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -11105,7 +11560,7 @@ webpackJsonp([1],[
 	}));
 
 /***/ },
-/* 229 */
+/* 232 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -11204,7 +11659,7 @@ webpackJsonp([1],[
 	}));
 
 /***/ },
-/* 230 */
+/* 233 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -11273,7 +11728,7 @@ webpackJsonp([1],[
 	}));
 
 /***/ },
-/* 231 */
+/* 234 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -11339,7 +11794,7 @@ webpackJsonp([1],[
 	}));
 
 /***/ },
-/* 232 */
+/* 235 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -11433,7 +11888,7 @@ webpackJsonp([1],[
 	}));
 
 /***/ },
-/* 233 */
+/* 236 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -11522,7 +11977,7 @@ webpackJsonp([1],[
 	}));
 
 /***/ },
-/* 234 */
+/* 237 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -11584,7 +12039,7 @@ webpackJsonp([1],[
 	}));
 
 /***/ },
-/* 235 */
+/* 238 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -11646,7 +12101,7 @@ webpackJsonp([1],[
 	}));
 
 /***/ },
-/* 236 */
+/* 239 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -11803,7 +12258,7 @@ webpackJsonp([1],[
 	}));
 
 /***/ },
-/* 237 */
+/* 240 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -11865,7 +12320,7 @@ webpackJsonp([1],[
 	}));
 
 /***/ },
-/* 238 */
+/* 241 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -11935,7 +12390,7 @@ webpackJsonp([1],[
 	}));
 
 /***/ },
-/* 239 */
+/* 242 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -12066,7 +12521,7 @@ webpackJsonp([1],[
 	}));
 
 /***/ },
-/* 240 */
+/* 243 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -12171,7 +12626,7 @@ webpackJsonp([1],[
 	}));
 
 /***/ },
-/* 241 */
+/* 244 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path="../../tsd.d.ts" />
@@ -12260,7 +12715,7 @@ webpackJsonp([1],[
 	//# sourceMappingURL=../../components/dist/collapse/collapse.js.map
 
 /***/ },
-/* 242 */
+/* 245 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -12310,7 +12765,7 @@ webpackJsonp([1],[
 	//# sourceMappingURL=../components/dist/common.js.map
 
 /***/ },
-/* 243 */
+/* 246 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path="../../tsd.d.ts" />
@@ -12330,10 +12785,10 @@ webpackJsonp([1],[
 	};
 	var angular2_1 = __webpack_require__(6);
 	var moment = __webpack_require__(2);
-	var datepicker_inner_1 = __webpack_require__(53);
-	var daypicker_1 = __webpack_require__(323);
-	var monthpicker_1 = __webpack_require__(325);
-	var yearpicker_1 = __webpack_require__(326);
+	var datepicker_inner_1 = __webpack_require__(54);
+	var daypicker_1 = __webpack_require__(325);
+	var monthpicker_1 = __webpack_require__(327);
+	var yearpicker_1 = __webpack_require__(328);
 	var DatePicker = (function () {
 	    function DatePicker(cd) {
 	        this.cd = cd;
@@ -12401,7 +12856,7 @@ webpackJsonp([1],[
 	//# sourceMappingURL=../../components/dist/datepicker/datepicker.js.map
 
 /***/ },
-/* 244 */
+/* 247 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path="../../tsd.d.ts" />
@@ -12420,7 +12875,7 @@ webpackJsonp([1],[
 	    return function (target, key) { decorator(target, key, paramIndex); }
 	};
 	var angular2_1 = __webpack_require__(6);
-	var dropdown_1 = __webpack_require__(54);
+	var dropdown_1 = __webpack_require__(55);
 	var DropdownMenu = (function () {
 	    function DropdownMenu(dropdown, el) {
 	        this.dropdown = dropdown;
@@ -12443,7 +12898,7 @@ webpackJsonp([1],[
 	//# sourceMappingURL=../../components/dist/dropdown/dropdown-menu.js.map
 
 /***/ },
-/* 245 */
+/* 248 */
 /***/ function(module, exports) {
 
 	/// <reference path="../../tsd.d.ts" />
@@ -12511,7 +12966,7 @@ webpackJsonp([1],[
 	//# sourceMappingURL=../../components/dist/dropdown/dropdown-service.js.map
 
 /***/ },
-/* 246 */
+/* 249 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path="../../tsd.d.ts" />
@@ -12530,7 +12985,7 @@ webpackJsonp([1],[
 	    return function (target, key) { decorator(target, key, paramIndex); }
 	};
 	var angular2_1 = __webpack_require__(6);
-	var dropdown_1 = __webpack_require__(54);
+	var dropdown_1 = __webpack_require__(55);
 	var DropdownToggle = (function () {
 	    function DropdownToggle(dropdown, el) {
 	        this.dropdown = dropdown;
@@ -12575,39 +13030,6 @@ webpackJsonp([1],[
 	//# sourceMappingURL=../../components/dist/dropdown/dropdown-toggle.js.map
 
 /***/ },
-/* 247 */
-/***/ function(module, exports) {
-
-	function isElement(node) {
-	    return !!(node && (node.nodeName || node.prop && node.attr && node.find));
-	}
-	var FileLikeObject = (function () {
-	    function FileLikeObject(fileOrInput) {
-	        var isInput = isElement(fileOrInput);
-	        var fakePathOrObject = isInput ? fileOrInput.value : fileOrInput;
-	        var postfix = typeof fakePathOrObject === 'string' ? 'FakePath' : 'Object';
-	        var method = '_createFrom' + postfix;
-	        this[method](fakePathOrObject);
-	    }
-	    FileLikeObject.prototype._createFromFakePath = function (path) {
-	        this.lastModifiedDate = null;
-	        this.size = null;
-	        this.type = 'like/' + path.slice(path.lastIndexOf('.') + 1).toLowerCase();
-	        this.name = path.slice(path.lastIndexOf('/') + path.lastIndexOf('\\') + 2);
-	    };
-	    FileLikeObject.prototype._createFromObject = function (object) {
-	        this.size = object.size;
-	        this.type = object.type;
-	        this.name = object.name;
-	    };
-	    return FileLikeObject;
-	})();
-	exports.FileLikeObject = FileLikeObject;
-
-
-/***/ },
-/* 248 */,
-/* 249 */,
 /* 250 */,
 /* 251 */,
 /* 252 */,
@@ -12671,192 +13093,194 @@ webpackJsonp([1],[
 /* 310 */,
 /* 311 */,
 /* 312 */,
-/* 313 */
+/* 313 */,
+/* 314 */,
+/* 315 */
 /***/ function(module, exports) {
 
-	module.exports = "<h3 id=\"usage\">Usage</h3>\n<pre class=\"language-typescript\"><code class=\"language-typescript\"><span class=\"token keyword\" >import</span> <span class=\"token punctuation\" >{</span>fileUpload<span class=\"token punctuation\" >}</span> from <span class=\"token string\" >'ng2-file-upload'</span><span class=\"token punctuation\" >;</span>\n</code></pre>\n";
+	module.exports = "<h3 id=\"usage\">Usage</h3>\n<pre class=\"language-typescript\"><code class=\"language-typescript\"><span class=\"token keyword\" >import</span> <span class=\"token punctuation\" >{</span>FileSelect<span class=\"token punctuation\" >,</span> FileDrop<span class=\"token punctuation\" >,</span> FileUploader<span class=\"token punctuation\" >}</span> from <span class=\"token string\" >'ng2-file-upload'</span><span class=\"token punctuation\" >;</span>\n</code></pre>\n<h3 id=\"annotations\">Annotations</h3>\n<pre class=\"language-typescript\"><code class=\"language-typescript\"><span class=\"token comment\" spellcheck=\"true\">// class FileSelect</span>\n@<span class=\"token function\" >Directive</span><span class=\"token punctuation\" >(</span><span class=\"token punctuation\" >{</span>\n  selector<span class=\"token punctuation\" >:</span> <span class=\"token string\" >'[ng2-file-select]'</span><span class=\"token punctuation\" >,</span>\n  properties<span class=\"token punctuation\" >:</span> <span class=\"token punctuation\" >[</span><span class=\"token string\" >'uploader'</span><span class=\"token punctuation\" >]</span><span class=\"token punctuation\" >,</span>\n  host<span class=\"token punctuation\" >:</span> <span class=\"token punctuation\" >{</span>\n    <span class=\"token string\" >'(change)'</span><span class=\"token punctuation\" >:</span> <span class=\"token string\" >'onChange()'</span>\n  <span class=\"token punctuation\" >}</span>\n<span class=\"token punctuation\" >}</span><span class=\"token punctuation\" >)</span>\n</code></pre>\n<pre class=\"language-typescript\"><code class=\"language-typescript\"><span class=\"token comment\" spellcheck=\"true\">// class FileDrop</span>\n@<span class=\"token function\" >Directive</span><span class=\"token punctuation\" >(</span><span class=\"token punctuation\" >{</span>\n  selector<span class=\"token punctuation\" >:</span> <span class=\"token string\" >'[ng2-file-drop]'</span><span class=\"token punctuation\" >,</span>\n  properties<span class=\"token punctuation\" >:</span> <span class=\"token punctuation\" >[</span><span class=\"token string\" >'uploader'</span><span class=\"token punctuation\" >]</span><span class=\"token punctuation\" >,</span>\n  events<span class=\"token punctuation\" >:</span> <span class=\"token punctuation\" >[</span><span class=\"token string\" >'fileOver'</span><span class=\"token punctuation\" >]</span><span class=\"token punctuation\" >,</span>\n  host<span class=\"token punctuation\" >:</span> <span class=\"token punctuation\" >{</span>\n    <span class=\"token string\" >'(drop)'</span><span class=\"token punctuation\" >:</span> <span class=\"token string\" >'onDrop($event)'</span><span class=\"token punctuation\" >,</span>\n    <span class=\"token string\" >'(dragover)'</span><span class=\"token punctuation\" >:</span> <span class=\"token string\" >'onDragOver($event)'</span><span class=\"token punctuation\" >,</span>\n    <span class=\"token string\" >'(dragleave)'</span><span class=\"token punctuation\" >:</span> <span class=\"token string\" >'onDragLeave($event)'</span>\n  <span class=\"token punctuation\" >}</span>\n<span class=\"token punctuation\" >}</span><span class=\"token punctuation\" >)</span>\n</code></pre>\n<h2 id=\"fileselect-api\">FileSelect API</h2>\n<h3 id=\"properties\">Properties</h3>\n<ul>\n<li><code>uploader</code> - (<code>FileUploader</code>) - uploader object. See using in <a href=\"https://github.com/valor-software/ng2-file-upload/blob/master/demo/components/file-upload/simple-demo.ts\">demo</a></li>\n</ul>\n<h2 id=\"filedrop-api\">FileDrop API</h2>\n<h3 id=\"properties\">Properties</h3>\n<ul>\n<li><code>uploader</code> - (<code>FileUploader</code>) - uploader object. See using in <a href=\"https://github.com/valor-software/ng2-file-upload/blob/master/demo/components/file-upload/simple-demo.ts\">demo</a></li>\n</ul>\n<h3 id=\"events\">Events</h3>\n<ul>\n<li><code>file-over</code> - it fires during &#39;over&#39; and &#39;out&#39; events for Drop Area; returns <code>boolean</code>: <code>true</code> if file is over Drop Area, <code>false</code> in case of out.\nSee using in <a href=\"https://github.com/valor-software/ng2-file-upload/blob/master/demo/components/file-upload/simple-demo.ts\">ts demo</a> and\n<a href=\"https://github.com/valor-software/ng2-file-upload/blob/master/demo/components/file-upload/simple-demo.html\">html demo</a></li>\n</ul>\n";
 
 /***/ },
-/* 314 */
+/* 316 */
 /***/ function(module, exports) {
 
 	module.exports = "<h1 id=\"getting-started\">Getting started</h1>\n<h2 id=\"first-of-all-welcome-\">First of all, Welcome!</h2>\n<h3 id=\"install\">Install</h3>\n<p>Install the components</p>\n<pre><code>npm install ng2-file-upload --save\n</code></pre>";
 
 /***/ },
-/* 315 */
+/* 317 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var map = {
-		"./af": 156,
-		"./af.js": 156,
-		"./ar": 160,
-		"./ar-ma": 157,
-		"./ar-ma.js": 157,
-		"./ar-sa": 158,
-		"./ar-sa.js": 158,
-		"./ar-tn": 159,
-		"./ar-tn.js": 159,
-		"./ar.js": 160,
-		"./az": 161,
-		"./az.js": 161,
-		"./be": 162,
-		"./be.js": 162,
-		"./bg": 163,
-		"./bg.js": 163,
-		"./bn": 164,
-		"./bn.js": 164,
-		"./bo": 165,
-		"./bo.js": 165,
-		"./br": 166,
-		"./br.js": 166,
-		"./bs": 167,
-		"./bs.js": 167,
-		"./ca": 168,
-		"./ca.js": 168,
-		"./cs": 169,
-		"./cs.js": 169,
-		"./cv": 170,
-		"./cv.js": 170,
-		"./cy": 171,
-		"./cy.js": 171,
-		"./da": 172,
-		"./da.js": 172,
-		"./de": 174,
-		"./de-at": 173,
-		"./de-at.js": 173,
-		"./de.js": 174,
-		"./el": 175,
-		"./el.js": 175,
-		"./en-au": 176,
-		"./en-au.js": 176,
-		"./en-ca": 177,
-		"./en-ca.js": 177,
-		"./en-gb": 178,
-		"./en-gb.js": 178,
-		"./eo": 179,
-		"./eo.js": 179,
-		"./es": 180,
-		"./es.js": 180,
-		"./et": 181,
-		"./et.js": 181,
-		"./eu": 182,
-		"./eu.js": 182,
-		"./fa": 183,
-		"./fa.js": 183,
-		"./fi": 184,
-		"./fi.js": 184,
-		"./fo": 185,
-		"./fo.js": 185,
-		"./fr": 187,
-		"./fr-ca": 186,
-		"./fr-ca.js": 186,
-		"./fr.js": 187,
-		"./fy": 188,
-		"./fy.js": 188,
-		"./gl": 189,
-		"./gl.js": 189,
-		"./he": 190,
-		"./he.js": 190,
-		"./hi": 191,
-		"./hi.js": 191,
-		"./hr": 192,
-		"./hr.js": 192,
-		"./hu": 193,
-		"./hu.js": 193,
-		"./hy-am": 194,
-		"./hy-am.js": 194,
-		"./id": 195,
-		"./id.js": 195,
-		"./is": 196,
-		"./is.js": 196,
-		"./it": 197,
-		"./it.js": 197,
-		"./ja": 198,
-		"./ja.js": 198,
-		"./jv": 199,
-		"./jv.js": 199,
-		"./ka": 200,
-		"./ka.js": 200,
-		"./km": 201,
-		"./km.js": 201,
-		"./ko": 202,
-		"./ko.js": 202,
-		"./lb": 203,
-		"./lb.js": 203,
-		"./lt": 204,
-		"./lt.js": 204,
-		"./lv": 205,
-		"./lv.js": 205,
-		"./me": 206,
-		"./me.js": 206,
-		"./mk": 207,
-		"./mk.js": 207,
-		"./ml": 208,
-		"./ml.js": 208,
-		"./mr": 209,
-		"./mr.js": 209,
-		"./ms": 211,
-		"./ms-my": 210,
-		"./ms-my.js": 210,
-		"./ms.js": 211,
-		"./my": 212,
-		"./my.js": 212,
-		"./nb": 213,
-		"./nb.js": 213,
-		"./ne": 214,
-		"./ne.js": 214,
-		"./nl": 215,
-		"./nl.js": 215,
-		"./nn": 216,
-		"./nn.js": 216,
-		"./pl": 217,
-		"./pl.js": 217,
-		"./pt": 219,
-		"./pt-br": 218,
-		"./pt-br.js": 218,
-		"./pt.js": 219,
-		"./ro": 220,
-		"./ro.js": 220,
-		"./ru": 221,
-		"./ru.js": 221,
-		"./si": 222,
-		"./si.js": 222,
-		"./sk": 223,
-		"./sk.js": 223,
-		"./sl": 224,
-		"./sl.js": 224,
-		"./sq": 225,
-		"./sq.js": 225,
-		"./sr": 227,
-		"./sr-cyrl": 226,
-		"./sr-cyrl.js": 226,
-		"./sr.js": 227,
-		"./sv": 228,
-		"./sv.js": 228,
-		"./ta": 229,
-		"./ta.js": 229,
-		"./th": 230,
-		"./th.js": 230,
-		"./tl-ph": 231,
-		"./tl-ph.js": 231,
-		"./tr": 232,
-		"./tr.js": 232,
-		"./tzl": 233,
-		"./tzl.js": 233,
-		"./tzm": 235,
-		"./tzm-latn": 234,
-		"./tzm-latn.js": 234,
-		"./tzm.js": 235,
-		"./uk": 236,
-		"./uk.js": 236,
-		"./uz": 237,
-		"./uz.js": 237,
-		"./vi": 238,
-		"./vi.js": 238,
-		"./zh-cn": 239,
-		"./zh-cn.js": 239,
-		"./zh-tw": 240,
-		"./zh-tw.js": 240
+		"./af": 159,
+		"./af.js": 159,
+		"./ar": 163,
+		"./ar-ma": 160,
+		"./ar-ma.js": 160,
+		"./ar-sa": 161,
+		"./ar-sa.js": 161,
+		"./ar-tn": 162,
+		"./ar-tn.js": 162,
+		"./ar.js": 163,
+		"./az": 164,
+		"./az.js": 164,
+		"./be": 165,
+		"./be.js": 165,
+		"./bg": 166,
+		"./bg.js": 166,
+		"./bn": 167,
+		"./bn.js": 167,
+		"./bo": 168,
+		"./bo.js": 168,
+		"./br": 169,
+		"./br.js": 169,
+		"./bs": 170,
+		"./bs.js": 170,
+		"./ca": 171,
+		"./ca.js": 171,
+		"./cs": 172,
+		"./cs.js": 172,
+		"./cv": 173,
+		"./cv.js": 173,
+		"./cy": 174,
+		"./cy.js": 174,
+		"./da": 175,
+		"./da.js": 175,
+		"./de": 177,
+		"./de-at": 176,
+		"./de-at.js": 176,
+		"./de.js": 177,
+		"./el": 178,
+		"./el.js": 178,
+		"./en-au": 179,
+		"./en-au.js": 179,
+		"./en-ca": 180,
+		"./en-ca.js": 180,
+		"./en-gb": 181,
+		"./en-gb.js": 181,
+		"./eo": 182,
+		"./eo.js": 182,
+		"./es": 183,
+		"./es.js": 183,
+		"./et": 184,
+		"./et.js": 184,
+		"./eu": 185,
+		"./eu.js": 185,
+		"./fa": 186,
+		"./fa.js": 186,
+		"./fi": 187,
+		"./fi.js": 187,
+		"./fo": 188,
+		"./fo.js": 188,
+		"./fr": 190,
+		"./fr-ca": 189,
+		"./fr-ca.js": 189,
+		"./fr.js": 190,
+		"./fy": 191,
+		"./fy.js": 191,
+		"./gl": 192,
+		"./gl.js": 192,
+		"./he": 193,
+		"./he.js": 193,
+		"./hi": 194,
+		"./hi.js": 194,
+		"./hr": 195,
+		"./hr.js": 195,
+		"./hu": 196,
+		"./hu.js": 196,
+		"./hy-am": 197,
+		"./hy-am.js": 197,
+		"./id": 198,
+		"./id.js": 198,
+		"./is": 199,
+		"./is.js": 199,
+		"./it": 200,
+		"./it.js": 200,
+		"./ja": 201,
+		"./ja.js": 201,
+		"./jv": 202,
+		"./jv.js": 202,
+		"./ka": 203,
+		"./ka.js": 203,
+		"./km": 204,
+		"./km.js": 204,
+		"./ko": 205,
+		"./ko.js": 205,
+		"./lb": 206,
+		"./lb.js": 206,
+		"./lt": 207,
+		"./lt.js": 207,
+		"./lv": 208,
+		"./lv.js": 208,
+		"./me": 209,
+		"./me.js": 209,
+		"./mk": 210,
+		"./mk.js": 210,
+		"./ml": 211,
+		"./ml.js": 211,
+		"./mr": 212,
+		"./mr.js": 212,
+		"./ms": 214,
+		"./ms-my": 213,
+		"./ms-my.js": 213,
+		"./ms.js": 214,
+		"./my": 215,
+		"./my.js": 215,
+		"./nb": 216,
+		"./nb.js": 216,
+		"./ne": 217,
+		"./ne.js": 217,
+		"./nl": 218,
+		"./nl.js": 218,
+		"./nn": 219,
+		"./nn.js": 219,
+		"./pl": 220,
+		"./pl.js": 220,
+		"./pt": 222,
+		"./pt-br": 221,
+		"./pt-br.js": 221,
+		"./pt.js": 222,
+		"./ro": 223,
+		"./ro.js": 223,
+		"./ru": 224,
+		"./ru.js": 224,
+		"./si": 225,
+		"./si.js": 225,
+		"./sk": 226,
+		"./sk.js": 226,
+		"./sl": 227,
+		"./sl.js": 227,
+		"./sq": 228,
+		"./sq.js": 228,
+		"./sr": 230,
+		"./sr-cyrl": 229,
+		"./sr-cyrl.js": 229,
+		"./sr.js": 230,
+		"./sv": 231,
+		"./sv.js": 231,
+		"./ta": 232,
+		"./ta.js": 232,
+		"./th": 233,
+		"./th.js": 233,
+		"./tl-ph": 234,
+		"./tl-ph.js": 234,
+		"./tr": 235,
+		"./tr.js": 235,
+		"./tzl": 236,
+		"./tzl.js": 236,
+		"./tzm": 238,
+		"./tzm-latn": 237,
+		"./tzm-latn.js": 237,
+		"./tzm.js": 238,
+		"./uk": 239,
+		"./uk.js": 239,
+		"./uz": 240,
+		"./uz.js": 240,
+		"./vi": 241,
+		"./vi.js": 241,
+		"./zh-cn": 242,
+		"./zh-cn.js": 242,
+		"./zh-tw": 243,
+		"./zh-tw.js": 243
 	};
 	function webpackContext(req) {
 		return __webpack_require__(webpackContextResolve(req));
@@ -12869,11 +13293,11 @@ webpackJsonp([1],[
 	};
 	webpackContext.resolve = webpackContextResolve;
 	module.exports = webpackContext;
-	webpackContext.id = 315;
+	webpackContext.id = 317;
 
 
 /***/ },
-/* 316 */
+/* 318 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path="../../tsd.d.ts" />
@@ -12951,7 +13375,7 @@ webpackJsonp([1],[
 	    return AccordionTransclude;
 	})();
 	exports.AccordionTransclude = AccordionTransclude;
-	var collapse_1 = __webpack_require__(241);
+	var collapse_1 = __webpack_require__(244);
 	var AccordionGroup = (function () {
 	    function AccordionGroup(accordion) {
 	        this.accordion = accordion;
@@ -13018,7 +13442,7 @@ webpackJsonp([1],[
 	//# sourceMappingURL=../../components/dist/accordion/accordion.js.map
 
 /***/ },
-/* 317 */
+/* 319 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path="../../tsd.d.ts" />
@@ -13087,7 +13511,7 @@ webpackJsonp([1],[
 	//# sourceMappingURL=../../components/dist/alert/alert.js.map
 
 /***/ },
-/* 318 */
+/* 320 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -13167,7 +13591,7 @@ webpackJsonp([1],[
 	//# sourceMappingURL=../../components/dist/buttons/button-checkbox.js.map
 
 /***/ },
-/* 319 */
+/* 321 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -13253,7 +13677,7 @@ webpackJsonp([1],[
 	//# sourceMappingURL=../../components/dist/buttons/button-radio.js.map
 
 /***/ },
-/* 320 */
+/* 322 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path="../../tsd.d.ts" />
@@ -13455,7 +13879,7 @@ webpackJsonp([1],[
 	//# sourceMappingURL=../../components/dist/carousel/carousel.js.map
 
 /***/ },
-/* 321 */
+/* 323 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var moment = __webpack_require__(2);
@@ -13471,7 +13895,7 @@ webpackJsonp([1],[
 	//# sourceMappingURL=../../components/dist/datepicker/date-formatter.js.map
 
 /***/ },
-/* 322 */
+/* 324 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path="../../tsd.d.ts" />
@@ -13491,8 +13915,8 @@ webpackJsonp([1],[
 	};
 	var angular2_1 = __webpack_require__(6);
 	var angular2_2 = __webpack_require__(6);
-	var position_1 = __webpack_require__(55);
-	var datepicker_1 = __webpack_require__(243);
+	var position_1 = __webpack_require__(56);
+	var datepicker_1 = __webpack_require__(246);
 	var PopupOptions = (function () {
 	    function PopupOptions(options) {
 	        Object.assign(this, options);
@@ -13639,7 +14063,7 @@ webpackJsonp([1],[
 	//# sourceMappingURL=../../components/dist/datepicker/datepicker-popup.js.map
 
 /***/ },
-/* 323 */
+/* 325 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path="../../tsd.d.ts" />
@@ -13656,7 +14080,7 @@ webpackJsonp([1],[
 	};
 	var angular2_1 = __webpack_require__(6);
 	var ng2_bootstrap_config_1 = __webpack_require__(29);
-	var datepicker_inner_1 = __webpack_require__(53);
+	var datepicker_inner_1 = __webpack_require__(54);
 	var TEMPLATE_OPTIONS = (_a = {},
 	    _a[ng2_bootstrap_config_1.Ng2BootstrapTheme.BS4] = {
 	        DAY_BUTTON: "\n        <button type=\"button\" style=\"min-width:100%;\" class=\"btn btn-sm\"\n                [ng-class]=\"{'btn-secondary': !dtz.selected && !datePicker.isActive(dtz), 'btn-info': dtz.selected || !dtz.selected && datePicker.isActive(dtz), disabled: dtz.disabled}\"\n                [disabled]=\"dtz.disabled\"\n                (click)=\"datePicker.select(dtz.date)\" tabindex=\"-1\">\n          <span [ng-class]=\"{'text-muted': dtz.secondary || dtz.current}\">{{dtz.label}}</span>\n        </button>\n    "
@@ -13756,17 +14180,17 @@ webpackJsonp([1],[
 	//# sourceMappingURL=../../components/dist/datepicker/daypicker.js.map
 
 /***/ },
-/* 324 */
+/* 326 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path="../../tsd.d.ts" />
-	var datepicker_popup_1 = __webpack_require__(322);
-	var datepicker_1 = __webpack_require__(243);
+	var datepicker_popup_1 = __webpack_require__(324);
+	var datepicker_1 = __webpack_require__(246);
 	exports.datepicker = [datepicker_1.DatePicker, datepicker_popup_1.DatePickerPopup];
 	//# sourceMappingURL=../../components/dist/datepicker/index.js.map
 
 /***/ },
-/* 325 */
+/* 327 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path="../../tsd.d.ts" />
@@ -13782,7 +14206,7 @@ webpackJsonp([1],[
 	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 	};
 	var angular2_1 = __webpack_require__(6);
-	var datepicker_inner_1 = __webpack_require__(53);
+	var datepicker_inner_1 = __webpack_require__(54);
 	var ng2_bootstrap_config_1 = __webpack_require__(29);
 	var TEMPLATE_OPTIONS = {
 	    bs4: {
@@ -13837,7 +14261,7 @@ webpackJsonp([1],[
 	//# sourceMappingURL=../../components/dist/datepicker/monthpicker.js.map
 
 /***/ },
-/* 326 */
+/* 328 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path="../../tsd.d.ts" />
@@ -13854,7 +14278,7 @@ webpackJsonp([1],[
 	};
 	var angular2_1 = __webpack_require__(6);
 	var ng2_bootstrap_config_1 = __webpack_require__(29);
-	var datepicker_inner_1 = __webpack_require__(53);
+	var datepicker_inner_1 = __webpack_require__(54);
 	var TEMPLATE_OPTIONS = {
 	    bs4: {
 	        YEAR_BUTTON: "\n        <button type=\"button\" style=\"min-width:100%;\" class=\"btn btn-default\"\n                [ng-class]=\"{'btn-info': dtz.selected, 'btn-link': !dtz.selected && !datePicker.isActive(dtz), 'btn-info': !dtz.selected && datePicker.isActive(dtz), disabled: dtz.disabled}\"\n                [disabled]=\"dtz.disabled\"\n                (click)=\"datePicker.select(dtz.date)\" tabindex=\"-1\">\n          <span [ng-class]=\"{'text-success': dtz.current}\">{{dtz.label}}</span>\n        </button>\n    "
@@ -13908,49 +14332,49 @@ webpackJsonp([1],[
 	//# sourceMappingURL=../../components/dist/datepicker/yearpicker.js.map
 
 /***/ },
-/* 327 */
+/* 329 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var dropdown_1 = __webpack_require__(54);
-	var dropdown_menu_1 = __webpack_require__(244);
-	var dropdown_toggle_1 = __webpack_require__(246);
+	var dropdown_1 = __webpack_require__(55);
+	var dropdown_menu_1 = __webpack_require__(247);
+	var dropdown_toggle_1 = __webpack_require__(249);
 	exports.dropdown = [dropdown_1.Dropdown, dropdown_menu_1.DropdownMenu, dropdown_toggle_1.DropdownToggle];
 	//# sourceMappingURL=../../components/dist/dropdown/index.js.map
 
 /***/ },
-/* 328 */
+/* 330 */
 /***/ function(module, exports, __webpack_require__) {
 
 	///<reference path="../tsd.d.ts"/>
 	function __export(m) {
 	    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 	}
-	__export(__webpack_require__(316));
-	__export(__webpack_require__(317));
-	__export(__webpack_require__(319));
 	__export(__webpack_require__(318));
-	__export(__webpack_require__(324));
-	__export(__webpack_require__(327));
-	__export(__webpack_require__(54));
-	__export(__webpack_require__(244));
-	__export(__webpack_require__(245));
-	__export(__webpack_require__(246));
+	__export(__webpack_require__(319));
+	__export(__webpack_require__(321));
 	__export(__webpack_require__(320));
-	__export(__webpack_require__(241));
+	__export(__webpack_require__(326));
 	__export(__webpack_require__(329));
-	__export(__webpack_require__(330));
+	__export(__webpack_require__(55));
+	__export(__webpack_require__(247));
+	__export(__webpack_require__(248));
+	__export(__webpack_require__(249));
+	__export(__webpack_require__(322));
+	__export(__webpack_require__(244));
 	__export(__webpack_require__(331));
 	__export(__webpack_require__(332));
 	__export(__webpack_require__(333));
 	__export(__webpack_require__(334));
 	__export(__webpack_require__(335));
-	__export(__webpack_require__(55));
-	__export(__webpack_require__(242));
+	__export(__webpack_require__(336));
+	__export(__webpack_require__(337));
+	__export(__webpack_require__(56));
+	__export(__webpack_require__(245));
 	__export(__webpack_require__(29));
 	//# sourceMappingURL=../components/dist/index.js.map
 
 /***/ },
-/* 329 */
+/* 331 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path="../../tsd.d.ts" />
@@ -14196,7 +14620,7 @@ webpackJsonp([1],[
 	//# sourceMappingURL=../../components/dist/pagination/pagination.js.map
 
 /***/ },
-/* 330 */
+/* 332 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path="../../tsd.d.ts" />
@@ -14334,7 +14758,7 @@ webpackJsonp([1],[
 	//# sourceMappingURL=../../components/dist/progressbar/progressbar.js.map
 
 /***/ },
-/* 331 */
+/* 333 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path="../../tsd.d.ts" />
@@ -14450,7 +14874,7 @@ webpackJsonp([1],[
 	//# sourceMappingURL=../../components/dist/rating/rating.js.map
 
 /***/ },
-/* 332 */
+/* 334 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path="../../tsd.d.ts" />
@@ -14466,7 +14890,7 @@ webpackJsonp([1],[
 	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 	};
 	var angular2_1 = __webpack_require__(6);
-	var common_1 = __webpack_require__(242);
+	var common_1 = __webpack_require__(245);
 	var Tabset = (function () {
 	    function Tabset() {
 	        this.tabs = [];
@@ -14596,7 +15020,7 @@ webpackJsonp([1],[
 	//# sourceMappingURL=../../components/dist/tabs/tabs.js.map
 
 /***/ },
-/* 333 */
+/* 335 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path="../../tsd.d.ts" />
@@ -14889,7 +15313,7 @@ webpackJsonp([1],[
 	//# sourceMappingURL=../../components/dist/timepicker/timepicker.js.map
 
 /***/ },
-/* 334 */
+/* 336 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path="../../tsd.d.ts" />
@@ -14906,7 +15330,7 @@ webpackJsonp([1],[
 	};
 	var angular2_1 = __webpack_require__(6);
 	var angular2_2 = __webpack_require__(6);
-	var position_1 = __webpack_require__(55);
+	var position_1 = __webpack_require__(56);
 	var TooltipOptions = (function () {
 	    function TooltipOptions(options) {
 	        Object.assign(this, options);
@@ -15008,7 +15432,7 @@ webpackJsonp([1],[
 	//# sourceMappingURL=../../components/dist/tooltip/tooltip.js.map
 
 /***/ },
-/* 335 */
+/* 337 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path="../../tsd.d.ts" />
@@ -15029,7 +15453,7 @@ webpackJsonp([1],[
 	}
 	var angular2_2 = __webpack_require__(6);
 	var ng2_bootstrap_config_1 = __webpack_require__(29);
-	var position_1 = __webpack_require__(55);
+	var position_1 = __webpack_require__(56);
 	var TEMPLATE = (_a = {},
 	    _a[ng2_bootstrap_config_1.Ng2BootstrapTheme.BS4] = "\n  <div class=\"dropdown-menu\"\n      [ng-style]=\"{top: top, left: left, display: display}\"\n      style=\"display: block\">\n      <a href=\"#\"\n         *ng-for=\"#match of matches\"\n         (click)=\"selectMatch(match, $event)\"\n         [ng-class]=\"{active: isActive(match) }\"\n         (mouseenter)=\"selectActive(match)\"\n         class=\"dropdown-item\"\n         [inner-html]=\"hightlight(match, query)\"></a>\n  </div>\n  ",
 	    _a[ng2_bootstrap_config_1.Ng2BootstrapTheme.BS3] = "\n  <ul class=\"dropdown-menu\"\n      [ng-style]=\"{top: top, left: left, display: display}\"\n      style=\"display: block\">\n    <li *ng-for=\"#match of matches\"\n        [ng-class]=\"{active: isActive(match) }\"\n        (mouseenter)=\"selectActive(match)\">\n        <a href=\"#\" (click)=\"selectMatch(match, $event)\" tabindex=\"-1\" [inner-html]=\"hightlight(match, query)\"></a>\n    </li>\n  </ul>\n  ",
@@ -15338,452 +15762,32 @@ webpackJsonp([1],[
 	//# sourceMappingURL=../../components/dist/typeahead/typeahead.js.map
 
 /***/ },
-/* 336 */
-/***/ function(module, exports) {
-
-	module.exports = "<span class=\"token style language-css\" ><span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>style</span><span class=\"token punctuation\" >></span></span>\n    <span class=\"token selector\" >.my-drop-zone</span> <span class=\"token punctuation\" >{</span> <span class=\"token property\" >border</span><span class=\"token punctuation\" >:</span> dotted 3px lightgray<span class=\"token punctuation\" >;</span> <span class=\"token punctuation\" >}</span>\n    <span class=\"token selector\" >.nv-file-over</span> <span class=\"token punctuation\" >{</span> <span class=\"token property\" >border</span><span class=\"token punctuation\" >:</span> dotted 3px red<span class=\"token punctuation\" >;</span> <span class=\"token punctuation\" >}</span> <span class=\"token comment\" spellcheck=\"true\">/* Default class applied to drop zones on over */</span>\n    <span class=\"token selector\" >.another-file-over-class</span> <span class=\"token punctuation\" >{</span> <span class=\"token property\" >border</span><span class=\"token punctuation\" >:</span> dotted 3px green<span class=\"token punctuation\" >;</span> <span class=\"token punctuation\" >}</span>\n\n    <span class=\"token selector\" >html, body</span> <span class=\"token punctuation\" >{</span> <span class=\"token property\" >height</span><span class=\"token punctuation\" >:</span> 100%<span class=\"token punctuation\" >;</span> <span class=\"token punctuation\" >}</span>\n<span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>style</span><span class=\"token punctuation\" >></span></span></span>\n\n<span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>div</span> <span class=\"token attr-name\" >class</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>container<span class=\"token punctuation\" >\"</span></span><span class=\"token punctuation\" >></span></span>\n\n    <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>div</span> <span class=\"token attr-name\" >class</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>navbar navbar-default<span class=\"token punctuation\" >\"</span></span><span class=\"token punctuation\" >></span></span>\n        <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>div</span> <span class=\"token attr-name\" >class</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>navbar-header<span class=\"token punctuation\" >\"</span></span><span class=\"token punctuation\" >></span></span>\n            <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>a</span> <span class=\"token attr-name\" >class</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>navbar-brand<span class=\"token punctuation\" >\"</span></span> <span class=\"token attr-name\" >href</span><span class=\"token punctuation\" >></span></span>Angular2 File Upload<span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>a</span><span class=\"token punctuation\" >></span></span>\n        <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>div</span><span class=\"token punctuation\" >></span></span>\n    <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>div</span><span class=\"token punctuation\" >></span></span>\n\n    <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>div</span> <span class=\"token attr-name\" >class</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>row<span class=\"token punctuation\" >\"</span></span><span class=\"token punctuation\" >></span></span>\n\n        <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>div</span> <span class=\"token attr-name\" >class</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>col-md-3<span class=\"token punctuation\" >\"</span></span><span class=\"token punctuation\" >></span></span>\n\n            <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>h3</span><span class=\"token punctuation\" >></span></span>Select files<span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>h3</span><span class=\"token punctuation\" >></span></span>\n\n            <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>div</span> <span class=\"token attr-name\" >[ng2-file-drop]</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span><span class=\"token punctuation\" >\"</span></span>\n                 <span class=\"token attr-name\" >[ng-class]</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>{<span class=\"token punctuation\" >'</span>nv-file-over<span class=\"token punctuation\" >'</span>: hasBaseDropZoneOver}<span class=\"token punctuation\" >\"</span></span>\n                 <span class=\"token attr-name\" >(file-over)</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>fileOverBase($event)<span class=\"token punctuation\" >\"</span></span>\n                 <span class=\"token attr-name\" >[uploader]</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>uploader<span class=\"token punctuation\" >\"</span></span>\n                 <span class=\"token attr-name\" >class</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>well my-drop-zone<span class=\"token punctuation\" >\"</span></span><span class=\"token punctuation\" >></span></span>\n                Base drop zone\n            <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>div</span><span class=\"token punctuation\" >></span></span>\n\n            <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>div</span> <span class=\"token attr-name\" >[ng2-file-drop]</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span><span class=\"token punctuation\" >\"</span></span>\n                 <span class=\"token attr-name\" >[ng-class]</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>{<span class=\"token punctuation\" >'</span>another-file-over-class<span class=\"token punctuation\" >'</span>: hasAnotherDropZoneOver}<span class=\"token punctuation\" >\"</span></span>\n                 <span class=\"token attr-name\" >(file-over)</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>fileOverAnother($event)<span class=\"token punctuation\" >\"</span></span>\n                 <span class=\"token attr-name\" >[uploader]</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>uploader<span class=\"token punctuation\" >\"</span></span>\n                 <span class=\"token attr-name\" >class</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>well my-drop-zone<span class=\"token punctuation\" >\"</span></span><span class=\"token punctuation\" >></span></span>\n                Another drop zone\n            <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>div</span><span class=\"token punctuation\" >></span></span>\n\n            Multiple\n            <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>input</span> <span class=\"token attr-name\" >type</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>file<span class=\"token punctuation\" >\"</span></span> <span class=\"token attr-name\" >[ng2-file-select]</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span><span class=\"token punctuation\" >\"</span></span> <span class=\"token attr-name\" >[uploader]</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>uploader<span class=\"token punctuation\" >\"</span></span> <span class=\"token attr-name\" >multiple</span>  <span class=\"token punctuation\" >/></span></span><span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>br</span><span class=\"token punctuation\" >/></span></span>\n\n            Single\n            <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>input</span> <span class=\"token attr-name\" >type</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>file<span class=\"token punctuation\" >\"</span></span> <span class=\"token attr-name\" >[ng2-file-select]</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span><span class=\"token punctuation\" >\"</span></span> <span class=\"token attr-name\" >[uploader]</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>uploader<span class=\"token punctuation\" >\"</span></span> <span class=\"token punctuation\" >/></span></span>\n        <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>div</span><span class=\"token punctuation\" >></span></span>\n\n        <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>div</span> <span class=\"token attr-name\" >class</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>col-md-9<span class=\"token punctuation\" >\"</span></span><span class=\"token style-attr language-css\" ><span class=\"token attr-name\" > <span class=\"token attr-name\" >style</span></span><span class=\"token punctuation\" >=\"</span><span class=\"token attr-value\" ><span class=\"token property\" >margin-bottom</span><span class=\"token punctuation\" >:</span> 40px</span><span class=\"token punctuation\" >\"</span></span><span class=\"token punctuation\" >></span></span>\n\n            <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>h3</span><span class=\"token punctuation\" >></span></span>Upload queue<span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>h3</span><span class=\"token punctuation\" >></span></span>\n            <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>p</span><span class=\"token punctuation\" >></span></span>Queue length: {{ uploader.queue.length }}<span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>p</span><span class=\"token punctuation\" >></span></span>\n\n            <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>table</span> <span class=\"token attr-name\" >class</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>table<span class=\"token punctuation\" >\"</span></span><span class=\"token punctuation\" >></span></span>\n                <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>thead</span><span class=\"token punctuation\" >></span></span>\n                <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>tr</span><span class=\"token punctuation\" >></span></span>\n                    <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>th</span> <span class=\"token attr-name\" >width</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>50%<span class=\"token punctuation\" >\"</span></span><span class=\"token punctuation\" >></span></span>Name<span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>th</span><span class=\"token punctuation\" >></span></span>\n                    <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>th</span><span class=\"token punctuation\" >></span></span>Size<span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>th</span><span class=\"token punctuation\" >></span></span>\n                    <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>th</span><span class=\"token punctuation\" >></span></span>Progress<span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>th</span><span class=\"token punctuation\" >></span></span>\n                    <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>th</span><span class=\"token punctuation\" >></span></span>Status<span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>th</span><span class=\"token punctuation\" >></span></span>\n                    <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>th</span><span class=\"token punctuation\" >></span></span>Actions<span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>th</span><span class=\"token punctuation\" >></span></span>\n                <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>tr</span><span class=\"token punctuation\" >></span></span>\n                <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>thead</span><span class=\"token punctuation\" >></span></span>\n                <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>tbody</span><span class=\"token punctuation\" >></span></span>\n                <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>tr</span> <span class=\"token attr-name\" >*ng-for</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>#item of uploader.queue<span class=\"token punctuation\" >\"</span></span><span class=\"token punctuation\" >></span></span>\n                    <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>td</span><span class=\"token punctuation\" >></span></span><span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>strong</span><span class=\"token punctuation\" >></span></span>{{ item.file.name }}<span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>strong</span><span class=\"token punctuation\" >></span></span><span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>td</span><span class=\"token punctuation\" >></span></span>\n                    <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>td</span> <span class=\"token attr-name\" >*ng-if</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>uploader.isHTML5<span class=\"token punctuation\" >\"</span></span> <span class=\"token attr-name\" >nowrap</span><span class=\"token punctuation\" >></span></span>{{ item.file.size/1024/1024 | number:'.2' }} MB<span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>td</span><span class=\"token punctuation\" >></span></span>\n                    <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>td</span> <span class=\"token attr-name\" >*ng-if</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>uploader.isHTML5<span class=\"token punctuation\" >\"</span></span><span class=\"token punctuation\" >></span></span>\n                        <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>div</span> <span class=\"token attr-name\" >class</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>progress<span class=\"token punctuation\" >\"</span></span><span class=\"token style-attr language-css\" ><span class=\"token attr-name\" > <span class=\"token attr-name\" >style</span></span><span class=\"token punctuation\" >=\"</span><span class=\"token attr-value\" ><span class=\"token property\" >margin-bottom</span><span class=\"token punctuation\" >:</span> 0<span class=\"token punctuation\" >;</span></span><span class=\"token punctuation\" >\"</span></span><span class=\"token punctuation\" >></span></span>\n                            <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>div</span> <span class=\"token attr-name\" >class</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>progress-bar<span class=\"token punctuation\" >\"</span></span> <span class=\"token attr-name\" >role</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>progressbar<span class=\"token punctuation\" >\"</span></span> <span class=\"token attr-name\" >[ng-style]</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>{ <span class=\"token punctuation\" >'</span>width<span class=\"token punctuation\" >'</span>: item.progress + <span class=\"token punctuation\" >'</span>%<span class=\"token punctuation\" >'</span> }<span class=\"token punctuation\" >\"</span></span><span class=\"token punctuation\" >></span></span><span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>div</span><span class=\"token punctuation\" >></span></span>\n                        <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>div</span><span class=\"token punctuation\" >></span></span>\n                    <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>td</span><span class=\"token punctuation\" >></span></span>\n                    <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>td</span> <span class=\"token attr-name\" >class</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>text-center<span class=\"token punctuation\" >\"</span></span><span class=\"token punctuation\" >></span></span>\n                        <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>span</span> <span class=\"token attr-name\" >*ng-if</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>item.isSuccess<span class=\"token punctuation\" >\"</span></span><span class=\"token punctuation\" >></span></span><span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>i</span> <span class=\"token attr-name\" >class</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>glyphicon glyphicon-ok<span class=\"token punctuation\" >\"</span></span><span class=\"token punctuation\" >></span></span><span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>i</span><span class=\"token punctuation\" >></span></span><span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>span</span><span class=\"token punctuation\" >></span></span>\n                        <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>span</span> <span class=\"token attr-name\" >*ng-if</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>item.isCancel<span class=\"token punctuation\" >\"</span></span><span class=\"token punctuation\" >></span></span><span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>i</span> <span class=\"token attr-name\" >class</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>glyphicon glyphicon-ban-circle<span class=\"token punctuation\" >\"</span></span><span class=\"token punctuation\" >></span></span><span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>i</span><span class=\"token punctuation\" >></span></span><span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>span</span><span class=\"token punctuation\" >></span></span>\n                        <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>span</span> <span class=\"token attr-name\" >*ng-if</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>item.isError<span class=\"token punctuation\" >\"</span></span><span class=\"token punctuation\" >></span></span><span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>i</span> <span class=\"token attr-name\" >class</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>glyphicon glyphicon-remove<span class=\"token punctuation\" >\"</span></span><span class=\"token punctuation\" >></span></span><span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>i</span><span class=\"token punctuation\" >></span></span><span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>span</span><span class=\"token punctuation\" >></span></span>\n                    <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>td</span><span class=\"token punctuation\" >></span></span>\n                    <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>td</span> <span class=\"token attr-name\" >nowrap</span><span class=\"token punctuation\" >></span></span>\n                        <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>button</span> <span class=\"token attr-name\" >type</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>button<span class=\"token punctuation\" >\"</span></span> <span class=\"token attr-name\" >class</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>btn btn-success btn-xs<span class=\"token punctuation\" >\"</span></span>\n                                <span class=\"token attr-name\" >(click)</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>item.upload()<span class=\"token punctuation\" >\"</span></span> <span class=\"token attr-name\" >[disabled]</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>item.isReady || item.isUploading || item.isSuccess<span class=\"token punctuation\" >\"</span></span><span class=\"token punctuation\" >></span></span>\n                            <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>span</span> <span class=\"token attr-name\" >class</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>glyphicon glyphicon-upload<span class=\"token punctuation\" >\"</span></span><span class=\"token punctuation\" >></span></span><span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>span</span><span class=\"token punctuation\" >></span></span> Upload\n                        <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>button</span><span class=\"token punctuation\" >></span></span>\n                        <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>button</span> <span class=\"token attr-name\" >type</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>button<span class=\"token punctuation\" >\"</span></span> <span class=\"token attr-name\" >class</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>btn btn-warning btn-xs<span class=\"token punctuation\" >\"</span></span>\n                                <span class=\"token attr-name\" >(click)</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>item.cancel()<span class=\"token punctuation\" >\"</span></span> <span class=\"token attr-name\" >[disabled]</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>!item.isUploading<span class=\"token punctuation\" >\"</span></span><span class=\"token punctuation\" >></span></span>\n                            <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>span</span> <span class=\"token attr-name\" >class</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>glyphicon glyphicon-ban-circle<span class=\"token punctuation\" >\"</span></span><span class=\"token punctuation\" >></span></span><span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>span</span><span class=\"token punctuation\" >></span></span> Cancel\n                        <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>button</span><span class=\"token punctuation\" >></span></span>\n                        <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>button</span> <span class=\"token attr-name\" >type</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>button<span class=\"token punctuation\" >\"</span></span> <span class=\"token attr-name\" >class</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>btn btn-danger btn-xs<span class=\"token punctuation\" >\"</span></span>\n                                <span class=\"token attr-name\" >(click)</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>item.remove()<span class=\"token punctuation\" >\"</span></span><span class=\"token punctuation\" >></span></span>\n                            <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>span</span> <span class=\"token attr-name\" >class</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>glyphicon glyphicon-trash<span class=\"token punctuation\" >\"</span></span><span class=\"token punctuation\" >></span></span><span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>span</span><span class=\"token punctuation\" >></span></span> Remove\n                        <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>button</span><span class=\"token punctuation\" >></span></span>\n                    <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>td</span><span class=\"token punctuation\" >></span></span>\n                <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>tr</span><span class=\"token punctuation\" >></span></span>\n                <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>tbody</span><span class=\"token punctuation\" >></span></span>\n            <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>table</span><span class=\"token punctuation\" >></span></span>\n\n            <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>div</span><span class=\"token punctuation\" >></span></span>\n                <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>div</span><span class=\"token punctuation\" >></span></span>\n                    Queue progress:\n                    <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>div</span> <span class=\"token attr-name\" >class</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>progress<span class=\"token punctuation\" >\"</span></span><span class=\"token style-attr language-css\" ><span class=\"token attr-name\" > <span class=\"token attr-name\" >style</span></span><span class=\"token punctuation\" >=\"</span><span class=\"token punctuation\" >\"</span></span><span class=\"token punctuation\" >></span></span>\n                        <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>div</span> <span class=\"token attr-name\" >class</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>progress-bar<span class=\"token punctuation\" >\"</span></span> <span class=\"token attr-name\" >role</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>progressbar<span class=\"token punctuation\" >\"</span></span> <span class=\"token attr-name\" >[ng-style]</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>{ <span class=\"token punctuation\" >'</span>width<span class=\"token punctuation\" >'</span>: uploader.progress + <span class=\"token punctuation\" >'</span>%<span class=\"token punctuation\" >'</span> }<span class=\"token punctuation\" >\"</span></span><span class=\"token punctuation\" >></span></span><span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>div</span><span class=\"token punctuation\" >></span></span>\n                    <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>div</span><span class=\"token punctuation\" >></span></span>\n                <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>div</span><span class=\"token punctuation\" >></span></span>\n                <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>button</span> <span class=\"token attr-name\" >type</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>button<span class=\"token punctuation\" >\"</span></span> <span class=\"token attr-name\" >class</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>btn btn-success btn-s<span class=\"token punctuation\" >\"</span></span>\n                        <span class=\"token attr-name\" >(click)</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>uploader.uploadAll()<span class=\"token punctuation\" >\"</span></span> <span class=\"token attr-name\" >[disabled]</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>!uploader.getNotUploadedItems().length<span class=\"token punctuation\" >\"</span></span><span class=\"token punctuation\" >></span></span>\n                    <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>span</span> <span class=\"token attr-name\" >class</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>glyphicon glyphicon-upload<span class=\"token punctuation\" >\"</span></span><span class=\"token punctuation\" >></span></span><span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>span</span><span class=\"token punctuation\" >></span></span> Upload all\n                <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>button</span><span class=\"token punctuation\" >></span></span>\n                <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>button</span> <span class=\"token attr-name\" >type</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>button<span class=\"token punctuation\" >\"</span></span> <span class=\"token attr-name\" >class</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>btn btn-warning btn-s<span class=\"token punctuation\" >\"</span></span>\n                        <span class=\"token attr-name\" >(click)</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>uploader.cancelAll()<span class=\"token punctuation\" >\"</span></span> <span class=\"token attr-name\" >[disabled]</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>!uploader.isUploading<span class=\"token punctuation\" >\"</span></span><span class=\"token punctuation\" >></span></span>\n                    <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>span</span> <span class=\"token attr-name\" >class</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>glyphicon glyphicon-ban-circle<span class=\"token punctuation\" >\"</span></span><span class=\"token punctuation\" >></span></span><span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>span</span><span class=\"token punctuation\" >></span></span> Cancel all\n                <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>button</span><span class=\"token punctuation\" >></span></span>\n                <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>button</span> <span class=\"token attr-name\" >type</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>button<span class=\"token punctuation\" >\"</span></span> <span class=\"token attr-name\" >class</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>btn btn-danger btn-s<span class=\"token punctuation\" >\"</span></span>\n                        <span class=\"token attr-name\" >(click)</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>uploader.clearQueue()<span class=\"token punctuation\" >\"</span></span> <span class=\"token attr-name\" >[disabled]</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>!uploader.queue.length<span class=\"token punctuation\" >\"</span></span><span class=\"token punctuation\" >></span></span>\n                    <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>span</span> <span class=\"token attr-name\" >class</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>glyphicon glyphicon-trash<span class=\"token punctuation\" >\"</span></span><span class=\"token punctuation\" >></span></span><span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>span</span><span class=\"token punctuation\" >></span></span> Remove all\n                <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>button</span><span class=\"token punctuation\" >></span></span>\n            <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>div</span><span class=\"token punctuation\" >></span></span>\n\n        <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>div</span><span class=\"token punctuation\" >></span></span>\n\n    <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>div</span><span class=\"token punctuation\" >></span></span>\n\n<span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>div</span><span class=\"token punctuation\" >></span></span>"
-
-/***/ },
-/* 337 */
-/***/ function(module, exports) {
-
-	module.exports = "<span class=\"token comment\" spellcheck=\"true\">/// &lt;reference path=\"../../../tsd.d.ts\" /></span>\n\n<span class=\"token keyword\" >import</span> <span class=\"token punctuation\" >{</span>\n  Component<span class=\"token punctuation\" >,</span> View<span class=\"token punctuation\" >,</span> EventEmitter<span class=\"token punctuation\" >,</span>\n  CORE_DIRECTIVES<span class=\"token punctuation\" >,</span> FORM_DIRECTIVES<span class=\"token punctuation\" >,</span> NgClass<span class=\"token punctuation\" >,</span> NgStyle\n<span class=\"token punctuation\" >}</span> from <span class=\"token string\" >'angular2/angular2'</span><span class=\"token punctuation\" >;</span>\n\n<span class=\"token keyword\" >import</span> <span class=\"token punctuation\" >{</span>FileSelect<span class=\"token punctuation\" >,</span> FileDrop<span class=\"token punctuation\" >}</span> from <span class=\"token string\" >'../../../components/index'</span><span class=\"token punctuation\" >;</span>\n<span class=\"token keyword\" >import</span> <span class=\"token punctuation\" >{</span>FileUploader<span class=\"token punctuation\" >}</span> from <span class=\"token string\" >'../../../components/file-upload/file-uploader'</span><span class=\"token punctuation\" >;</span>\n\n<span class=\"token comment\" spellcheck=\"true\">// webpack html imports</span>\n<span class=\"token keyword\" >let</span> template <span class=\"token operator\" >=</span> <span class=\"token function\" >require</span><span class=\"token punctuation\" >(</span><span class=\"token string\" >'./simple-demo.html'</span><span class=\"token punctuation\" >)</span><span class=\"token punctuation\" >;</span>\n\n@<span class=\"token function\" >Component</span><span class=\"token punctuation\" >(</span><span class=\"token punctuation\" >{</span>\n  selector<span class=\"token punctuation\" >:</span> <span class=\"token string\" >'simple-demo'</span>\n<span class=\"token punctuation\" >}</span><span class=\"token punctuation\" >)</span>\n@<span class=\"token function\" >View</span><span class=\"token punctuation\" >(</span><span class=\"token punctuation\" >{</span>\n  template<span class=\"token punctuation\" >:</span> template<span class=\"token punctuation\" >,</span>\n  directives<span class=\"token punctuation\" >:</span> <span class=\"token punctuation\" >[</span>FileSelect<span class=\"token punctuation\" >,</span> FileDrop<span class=\"token punctuation\" >,</span> NgClass<span class=\"token punctuation\" >,</span> NgStyle<span class=\"token punctuation\" >,</span> CORE_DIRECTIVES<span class=\"token punctuation\" >,</span> FORM_DIRECTIVES<span class=\"token punctuation\" >]</span>\n<span class=\"token punctuation\" >}</span><span class=\"token punctuation\" >)</span>\n<span class=\"token keyword\" >export</span> <span class=\"token keyword\" >class</span> <span class=\"token class-name\" >SimpleDemo</span> <span class=\"token punctuation\" >{</span>\n  <span class=\"token comment\" spellcheck=\"true\">// private uploader:FileUploader = new FileUploader({url: '/api/'});</span>\n  <span class=\"token keyword\" >private</span> uploader<span class=\"token punctuation\" >:</span>FileUploader <span class=\"token operator\" >=</span> <span class=\"token keyword\" >new</span> <span class=\"token class-name\" >FileUploader</span><span class=\"token punctuation\" >(</span><span class=\"token punctuation\" >{</span>url<span class=\"token punctuation\" >:</span> <span class=\"token string\" >'https://evening-anchorage-3159.herokuapp.com/api/'</span><span class=\"token punctuation\" >}</span><span class=\"token punctuation\" >)</span><span class=\"token punctuation\" >;</span>\n  <span class=\"token keyword\" >private</span> hasBaseDropZoneOver<span class=\"token punctuation\" >:</span><span class=\"token keyword\" >boolean</span> <span class=\"token operator\" >=</span> <span class=\"token keyword\" >false</span><span class=\"token punctuation\" >;</span>\n  <span class=\"token keyword\" >private</span> hasAnotherDropZoneOver<span class=\"token punctuation\" >:</span><span class=\"token keyword\" >boolean</span> <span class=\"token operator\" >=</span> <span class=\"token keyword\" >false</span><span class=\"token punctuation\" >;</span>\n\n  <span class=\"token keyword\" >private</span> <span class=\"token function\" >fileOverBase</span><span class=\"token punctuation\" >(</span>e<span class=\"token punctuation\" >:</span><span class=\"token keyword\" >any</span><span class=\"token punctuation\" >)</span> <span class=\"token punctuation\" >{</span>\n    <span class=\"token keyword\" >this</span><span class=\"token punctuation\" >.</span>hasBaseDropZoneOver <span class=\"token operator\" >=</span> e<span class=\"token punctuation\" >;</span>\n  <span class=\"token punctuation\" >}</span>\n\n  <span class=\"token keyword\" >private</span> <span class=\"token function\" >fileOverAnother</span><span class=\"token punctuation\" >(</span>e<span class=\"token punctuation\" >:</span><span class=\"token keyword\" >any</span><span class=\"token punctuation\" >)</span> <span class=\"token punctuation\" >{</span>\n    <span class=\"token keyword\" >this</span><span class=\"token punctuation\" >.</span>hasAnotherDropZoneOver <span class=\"token operator\" >=</span> e<span class=\"token punctuation\" >;</span>\n  <span class=\"token punctuation\" >}</span>\n<span class=\"token punctuation\" >}</span>\n"
-
-/***/ },
 /* 338 */
 /***/ function(module, exports) {
 
-	module.exports = "<style>\n    .my-drop-zone { border: dotted 3px lightgray; }\n    .nv-file-over { border: dotted 3px red; } /* Default class applied to drop zones on over */\n    .another-file-over-class { border: dotted 3px green; }\n\n    html, body { height: 100%; }\n</style>\n\n<div class=\"container\">\n\n    <div class=\"navbar navbar-default\">\n        <div class=\"navbar-header\">\n            <a class=\"navbar-brand\" href>Angular2 File Upload</a>\n        </div>\n    </div>\n\n    <div class=\"row\">\n\n        <div class=\"col-md-3\">\n\n            <h3>Select files</h3>\n\n            <div [ng2-file-drop]=\"\"\n                 [ng-class]=\"{'nv-file-over': hasBaseDropZoneOver}\"\n                 (file-over)=\"fileOverBase($event)\"\n                 [uploader]=\"uploader\"\n                 class=\"well my-drop-zone\">\n                Base drop zone\n            </div>\n\n            <div [ng2-file-drop]=\"\"\n                 [ng-class]=\"{'another-file-over-class': hasAnotherDropZoneOver}\"\n                 (file-over)=\"fileOverAnother($event)\"\n                 [uploader]=\"uploader\"\n                 class=\"well my-drop-zone\">\n                Another drop zone\n            </div>\n\n            Multiple\n            <input type=\"file\" [ng2-file-select]=\"\" [uploader]=\"uploader\" multiple  /><br/>\n\n            Single\n            <input type=\"file\" [ng2-file-select]=\"\" [uploader]=\"uploader\" />\n        </div>\n\n        <div class=\"col-md-9\" style=\"margin-bottom: 40px\">\n\n            <h3>Upload queue</h3>\n            <p>Queue length: {{ uploader.queue.length }}</p>\n\n            <table class=\"table\">\n                <thead>\n                <tr>\n                    <th width=\"50%\">Name</th>\n                    <th>Size</th>\n                    <th>Progress</th>\n                    <th>Status</th>\n                    <th>Actions</th>\n                </tr>\n                </thead>\n                <tbody>\n                <tr *ng-for=\"#item of uploader.queue\">\n                    <td><strong>{{ item.file.name }}</strong></td>\n                    <td *ng-if=\"uploader.isHTML5\" nowrap>{{ item.file.size/1024/1024 | number:'.2' }} MB</td>\n                    <td *ng-if=\"uploader.isHTML5\">\n                        <div class=\"progress\" style=\"margin-bottom: 0;\">\n                            <div class=\"progress-bar\" role=\"progressbar\" [ng-style]=\"{ 'width': item.progress + '%' }\"></div>\n                        </div>\n                    </td>\n                    <td class=\"text-center\">\n                        <span *ng-if=\"item.isSuccess\"><i class=\"glyphicon glyphicon-ok\"></i></span>\n                        <span *ng-if=\"item.isCancel\"><i class=\"glyphicon glyphicon-ban-circle\"></i></span>\n                        <span *ng-if=\"item.isError\"><i class=\"glyphicon glyphicon-remove\"></i></span>\n                    </td>\n                    <td nowrap>\n                        <button type=\"button\" class=\"btn btn-success btn-xs\"\n                                (click)=\"item.upload()\" [disabled]=\"item.isReady || item.isUploading || item.isSuccess\">\n                            <span class=\"glyphicon glyphicon-upload\"></span> Upload\n                        </button>\n                        <button type=\"button\" class=\"btn btn-warning btn-xs\"\n                                (click)=\"item.cancel()\" [disabled]=\"!item.isUploading\">\n                            <span class=\"glyphicon glyphicon-ban-circle\"></span> Cancel\n                        </button>\n                        <button type=\"button\" class=\"btn btn-danger btn-xs\"\n                                (click)=\"item.remove()\">\n                            <span class=\"glyphicon glyphicon-trash\"></span> Remove\n                        </button>\n                    </td>\n                </tr>\n                </tbody>\n            </table>\n\n            <div>\n                <div>\n                    Queue progress:\n                    <div class=\"progress\" style=\"\">\n                        <div class=\"progress-bar\" role=\"progressbar\" [ng-style]=\"{ 'width': uploader.progress + '%' }\"></div>\n                    </div>\n                </div>\n                <button type=\"button\" class=\"btn btn-success btn-s\"\n                        (click)=\"uploader.uploadAll()\" [disabled]=\"!uploader.getNotUploadedItems().length\">\n                    <span class=\"glyphicon glyphicon-upload\"></span> Upload all\n                </button>\n                <button type=\"button\" class=\"btn btn-warning btn-s\"\n                        (click)=\"uploader.cancelAll()\" [disabled]=\"!uploader.isUploading\">\n                    <span class=\"glyphicon glyphicon-ban-circle\"></span> Cancel all\n                </button>\n                <button type=\"button\" class=\"btn btn-danger btn-s\"\n                        (click)=\"uploader.clearQueue()\" [disabled]=\"!uploader.queue.length\">\n                    <span class=\"glyphicon glyphicon-trash\"></span> Remove all\n                </button>\n            </div>\n\n        </div>\n\n    </div>\n\n</div>"
+	module.exports = "<span class=\"token keyword\" >var</span> express <span class=\"token operator\" >=</span> <span class=\"token function\" >require</span><span class=\"token punctuation\" >(</span><span class=\"token string\" >'express'</span><span class=\"token punctuation\" >)</span><span class=\"token punctuation\" >;</span>\n<span class=\"token keyword\" >var</span> Busboy <span class=\"token operator\" >=</span> <span class=\"token function\" >require</span><span class=\"token punctuation\" >(</span><span class=\"token string\" >'busboy'</span><span class=\"token punctuation\" >)</span><span class=\"token punctuation\" >;</span>\n<span class=\"token keyword\" >var</span> path <span class=\"token operator\" >=</span> <span class=\"token function\" >require</span><span class=\"token punctuation\" >(</span><span class=\"token string\" >'path'</span><span class=\"token punctuation\" >)</span><span class=\"token punctuation\" >;</span>\n<span class=\"token keyword\" >var</span> fs <span class=\"token operator\" >=</span> <span class=\"token function\" >require</span><span class=\"token punctuation\" >(</span><span class=\"token string\" >'fs'</span><span class=\"token punctuation\" >)</span><span class=\"token punctuation\" >;</span>\n\n<span class=\"token keyword\" >var</span> app <span class=\"token operator\" >=</span> <span class=\"token function\" >express</span><span class=\"token punctuation\" >(</span><span class=\"token punctuation\" >)</span><span class=\"token punctuation\" >;</span>\n\napp<span class=\"token punctuation\" >.</span><span class=\"token function\" >use</span><span class=\"token punctuation\" >(</span><span class=\"token keyword\" >function</span> <span class=\"token punctuation\" >(</span>req<span class=\"token punctuation\" >,</span> res<span class=\"token punctuation\" >,</span> next<span class=\"token punctuation\" >)</span> <span class=\"token punctuation\" >{</span>\n  res<span class=\"token punctuation\" >.</span><span class=\"token function\" >setHeader</span><span class=\"token punctuation\" >(</span><span class=\"token string\" >'Access-Control-Allow-Origin'</span><span class=\"token punctuation\" >,</span> <span class=\"token string\" >'!put your host here!'</span><span class=\"token punctuation\" >)</span><span class=\"token punctuation\" >;</span>\n  res<span class=\"token punctuation\" >.</span><span class=\"token function\" >setHeader</span><span class=\"token punctuation\" >(</span><span class=\"token string\" >'Access-Control-Allow-Methods'</span><span class=\"token punctuation\" >,</span> <span class=\"token string\" >'POST'</span><span class=\"token punctuation\" >)</span><span class=\"token punctuation\" >;</span>\n  res<span class=\"token punctuation\" >.</span><span class=\"token function\" >setHeader</span><span class=\"token punctuation\" >(</span><span class=\"token string\" >'Access-Control-Allow-Headers'</span><span class=\"token punctuation\" >,</span> <span class=\"token string\" >'X-Requested-With,content-type'</span><span class=\"token punctuation\" >)</span><span class=\"token punctuation\" >;</span>\n  res<span class=\"token punctuation\" >.</span><span class=\"token function\" >setHeader</span><span class=\"token punctuation\" >(</span><span class=\"token string\" >'Access-Control-Allow-Credentials'</span><span class=\"token punctuation\" >,</span> <span class=\"token keyword\" >true</span><span class=\"token punctuation\" >)</span><span class=\"token punctuation\" >;</span>\n  <span class=\"token function\" >next</span><span class=\"token punctuation\" >(</span><span class=\"token punctuation\" >)</span><span class=\"token punctuation\" >;</span>\n<span class=\"token punctuation\" >}</span><span class=\"token punctuation\" >)</span><span class=\"token punctuation\" >;</span>\n\napp<span class=\"token punctuation\" >.</span><span class=\"token function\" >post</span><span class=\"token punctuation\" >(</span><span class=\"token string\" >'/api'</span><span class=\"token punctuation\" >,</span> <span class=\"token keyword\" >function</span> <span class=\"token punctuation\" >(</span>req<span class=\"token punctuation\" >,</span> res<span class=\"token punctuation\" >)</span> <span class=\"token punctuation\" >{</span>\n  <span class=\"token keyword\" >var</span> fstream<span class=\"token punctuation\" >;</span>\n  <span class=\"token keyword\" >var</span> files <span class=\"token operator\" >=</span> <span class=\"token punctuation\" >[</span><span class=\"token punctuation\" >]</span><span class=\"token punctuation\" >;</span>\n  <span class=\"token keyword\" >var</span> busboy <span class=\"token operator\" >=</span> <span class=\"token keyword\" >new</span> <span class=\"token class-name\" >Busboy</span><span class=\"token punctuation\" >(</span><span class=\"token punctuation\" >{</span>headers<span class=\"token punctuation\" >:</span> req<span class=\"token punctuation\" >.</span>headers<span class=\"token punctuation\" >}</span><span class=\"token punctuation\" >)</span><span class=\"token punctuation\" >;</span>\n  busboy<span class=\"token punctuation\" >.</span><span class=\"token function\" >on</span><span class=\"token punctuation\" >(</span><span class=\"token string\" >'file'</span><span class=\"token punctuation\" >,</span> <span class=\"token keyword\" >function</span> <span class=\"token punctuation\" >(</span>fieldname<span class=\"token punctuation\" >,</span> file<span class=\"token punctuation\" >,</span> filename<span class=\"token punctuation\" >)</span> <span class=\"token punctuation\" >{</span>\n    fstream <span class=\"token operator\" >=</span> fs<span class=\"token punctuation\" >.</span><span class=\"token function\" >createWriteStream</span><span class=\"token punctuation\" >(</span>__dirname <span class=\"token operator\" >+</span> <span class=\"token string\" >'/uploads/'</span> <span class=\"token operator\" >+</span> filename<span class=\"token punctuation\" >)</span><span class=\"token punctuation\" >;</span>\n    file<span class=\"token punctuation\" >.</span><span class=\"token function\" >pipe</span><span class=\"token punctuation\" >(</span>fstream<span class=\"token punctuation\" >)</span><span class=\"token punctuation\" >;</span>\n    fstream<span class=\"token punctuation\" >.</span><span class=\"token function\" >on</span><span class=\"token punctuation\" >(</span><span class=\"token string\" >'close'</span><span class=\"token punctuation\" >,</span> <span class=\"token keyword\" >function</span> <span class=\"token punctuation\" >(</span><span class=\"token punctuation\" >)</span> <span class=\"token punctuation\" >{</span>\n      files<span class=\"token punctuation\" >.</span><span class=\"token function\" >push</span><span class=\"token punctuation\" >(</span>filename<span class=\"token punctuation\" >)</span><span class=\"token punctuation\" >;</span>\n      file<span class=\"token punctuation\" >.</span><span class=\"token function\" >resume</span><span class=\"token punctuation\" >(</span><span class=\"token punctuation\" >)</span><span class=\"token punctuation\" >;</span>\n    <span class=\"token punctuation\" >}</span><span class=\"token punctuation\" >)</span><span class=\"token punctuation\" >;</span>\n  <span class=\"token punctuation\" >}</span><span class=\"token punctuation\" >)</span><span class=\"token punctuation\" >;</span>\n\n  busboy<span class=\"token punctuation\" >.</span><span class=\"token function\" >on</span><span class=\"token punctuation\" >(</span><span class=\"token string\" >'finish'</span><span class=\"token punctuation\" >,</span> <span class=\"token keyword\" >function</span> <span class=\"token punctuation\" >(</span><span class=\"token punctuation\" >)</span> <span class=\"token punctuation\" >{</span>\n    res<span class=\"token punctuation\" >.</span><span class=\"token function\" >end</span><span class=\"token punctuation\" >(</span><span class=\"token string\" >'ok'</span><span class=\"token punctuation\" >)</span><span class=\"token punctuation\" >;</span>\n  <span class=\"token punctuation\" >}</span><span class=\"token punctuation\" >)</span><span class=\"token punctuation\" >;</span>\n  req<span class=\"token punctuation\" >.</span><span class=\"token function\" >pipe</span><span class=\"token punctuation\" >(</span>busboy<span class=\"token punctuation\" >)</span><span class=\"token punctuation\" >;</span>\n<span class=\"token punctuation\" >}</span><span class=\"token punctuation\" >)</span><span class=\"token punctuation\" >;</span>\n\napp<span class=\"token punctuation\" >.</span><span class=\"token function\" >listen</span><span class=\"token punctuation\" >(</span>process<span class=\"token punctuation\" >.</span>env<span class=\"token punctuation\" >.</span>PORT <span class=\"token operator\" >||</span> <span class=\"token number\" >3000</span><span class=\"token punctuation\" >)</span><span class=\"token punctuation\" >;</span>\n"
 
 /***/ },
-/* 339 */,
+/* 339 */
+/***/ function(module, exports) {
+
+	module.exports = "<span class=\"token style language-css\" ><span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>style</span><span class=\"token punctuation\" >></span></span>\n    <span class=\"token selector\" >.my-drop-zone</span> <span class=\"token punctuation\" >{</span> <span class=\"token property\" >border</span><span class=\"token punctuation\" >:</span> dotted 3px lightgray<span class=\"token punctuation\" >;</span> <span class=\"token punctuation\" >}</span>\n    <span class=\"token selector\" >.nv-file-over</span> <span class=\"token punctuation\" >{</span> <span class=\"token property\" >border</span><span class=\"token punctuation\" >:</span> dotted 3px red<span class=\"token punctuation\" >;</span> <span class=\"token punctuation\" >}</span> <span class=\"token comment\" spellcheck=\"true\">/* Default class applied to drop zones on over */</span>\n    <span class=\"token selector\" >.another-file-over-class</span> <span class=\"token punctuation\" >{</span> <span class=\"token property\" >border</span><span class=\"token punctuation\" >:</span> dotted 3px green<span class=\"token punctuation\" >;</span> <span class=\"token punctuation\" >}</span>\n\n    <span class=\"token selector\" >html, body</span> <span class=\"token punctuation\" >{</span> <span class=\"token property\" >height</span><span class=\"token punctuation\" >:</span> 100%<span class=\"token punctuation\" >;</span> <span class=\"token punctuation\" >}</span>\n<span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>style</span><span class=\"token punctuation\" >></span></span></span>\n\n<span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>div</span> <span class=\"token attr-name\" >class</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>container<span class=\"token punctuation\" >\"</span></span><span class=\"token punctuation\" >></span></span>\n\n    <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>div</span> <span class=\"token attr-name\" >class</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>navbar navbar-default<span class=\"token punctuation\" >\"</span></span><span class=\"token punctuation\" >></span></span>\n        <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>div</span> <span class=\"token attr-name\" >class</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>navbar-header<span class=\"token punctuation\" >\"</span></span><span class=\"token punctuation\" >></span></span>\n            <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>a</span> <span class=\"token attr-name\" >class</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>navbar-brand<span class=\"token punctuation\" >\"</span></span> <span class=\"token attr-name\" >href</span><span class=\"token punctuation\" >></span></span>Angular2 File Upload<span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>a</span><span class=\"token punctuation\" >></span></span>\n        <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>div</span><span class=\"token punctuation\" >></span></span>\n    <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>div</span><span class=\"token punctuation\" >></span></span>\n\n    <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>div</span> <span class=\"token attr-name\" >class</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>row<span class=\"token punctuation\" >\"</span></span><span class=\"token punctuation\" >></span></span>\n\n        <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>div</span> <span class=\"token attr-name\" >class</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>col-md-3<span class=\"token punctuation\" >\"</span></span><span class=\"token punctuation\" >></span></span>\n\n            <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>h3</span><span class=\"token punctuation\" >></span></span>Select files<span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>h3</span><span class=\"token punctuation\" >></span></span>\n\n            <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>div</span> <span class=\"token attr-name\" >ng2-file-drop</span>\n                 <span class=\"token attr-name\" >[ng-class]</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>{<span class=\"token punctuation\" >'</span>nv-file-over<span class=\"token punctuation\" >'</span>: hasBaseDropZoneOver}<span class=\"token punctuation\" >\"</span></span>\n                 <span class=\"token attr-name\" >(file-over)</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>fileOverBase($event)<span class=\"token punctuation\" >\"</span></span>\n                 <span class=\"token attr-name\" >[uploader]</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>uploader<span class=\"token punctuation\" >\"</span></span>\n                 <span class=\"token attr-name\" >class</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>well my-drop-zone<span class=\"token punctuation\" >\"</span></span><span class=\"token punctuation\" >></span></span>\n                Base drop zone\n            <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>div</span><span class=\"token punctuation\" >></span></span>\n\n            <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>div</span> <span class=\"token attr-name\" >ng2-file-drop</span>\n                 <span class=\"token attr-name\" >[ng-class]</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>{<span class=\"token punctuation\" >'</span>another-file-over-class<span class=\"token punctuation\" >'</span>: hasAnotherDropZoneOver}<span class=\"token punctuation\" >\"</span></span>\n                 <span class=\"token attr-name\" >(file-over)</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>fileOverAnother($event)<span class=\"token punctuation\" >\"</span></span>\n                 <span class=\"token attr-name\" >[uploader]</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>uploader<span class=\"token punctuation\" >\"</span></span>\n                 <span class=\"token attr-name\" >class</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>well my-drop-zone<span class=\"token punctuation\" >\"</span></span><span class=\"token punctuation\" >></span></span>\n                Another drop zone\n            <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>div</span><span class=\"token punctuation\" >></span></span>\n\n            Multiple\n            <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>input</span> <span class=\"token attr-name\" >type</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>file<span class=\"token punctuation\" >\"</span></span> <span class=\"token attr-name\" >ng2-file-select</span> <span class=\"token attr-name\" >[uploader]</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>uploader<span class=\"token punctuation\" >\"</span></span> <span class=\"token attr-name\" >multiple</span>  <span class=\"token punctuation\" >/></span></span><span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>br</span><span class=\"token punctuation\" >/></span></span>\n\n            Single\n            <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>input</span> <span class=\"token attr-name\" >type</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>file<span class=\"token punctuation\" >\"</span></span> <span class=\"token attr-name\" >ng2-file-select</span> <span class=\"token attr-name\" >[uploader]</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>uploader<span class=\"token punctuation\" >\"</span></span> <span class=\"token punctuation\" >/></span></span>\n        <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>div</span><span class=\"token punctuation\" >></span></span>\n\n        <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>div</span> <span class=\"token attr-name\" >class</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>col-md-9<span class=\"token punctuation\" >\"</span></span><span class=\"token style-attr language-css\" ><span class=\"token attr-name\" > <span class=\"token attr-name\" >style</span></span><span class=\"token punctuation\" >=\"</span><span class=\"token attr-value\" ><span class=\"token property\" >margin-bottom</span><span class=\"token punctuation\" >:</span> 40px</span><span class=\"token punctuation\" >\"</span></span><span class=\"token punctuation\" >></span></span>\n\n            <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>h3</span><span class=\"token punctuation\" >></span></span>Upload queue<span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>h3</span><span class=\"token punctuation\" >></span></span>\n            <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>p</span><span class=\"token punctuation\" >></span></span>Queue length: {{ uploader.queue.length }}<span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>p</span><span class=\"token punctuation\" >></span></span>\n\n            <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>table</span> <span class=\"token attr-name\" >class</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>table<span class=\"token punctuation\" >\"</span></span><span class=\"token punctuation\" >></span></span>\n                <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>thead</span><span class=\"token punctuation\" >></span></span>\n                <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>tr</span><span class=\"token punctuation\" >></span></span>\n                    <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>th</span> <span class=\"token attr-name\" >width</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>50%<span class=\"token punctuation\" >\"</span></span><span class=\"token punctuation\" >></span></span>Name<span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>th</span><span class=\"token punctuation\" >></span></span>\n                    <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>th</span><span class=\"token punctuation\" >></span></span>Size<span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>th</span><span class=\"token punctuation\" >></span></span>\n                    <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>th</span><span class=\"token punctuation\" >></span></span>Progress<span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>th</span><span class=\"token punctuation\" >></span></span>\n                    <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>th</span><span class=\"token punctuation\" >></span></span>Status<span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>th</span><span class=\"token punctuation\" >></span></span>\n                    <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>th</span><span class=\"token punctuation\" >></span></span>Actions<span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>th</span><span class=\"token punctuation\" >></span></span>\n                <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>tr</span><span class=\"token punctuation\" >></span></span>\n                <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>thead</span><span class=\"token punctuation\" >></span></span>\n                <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>tbody</span><span class=\"token punctuation\" >></span></span>\n                <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>tr</span> <span class=\"token attr-name\" >*ng-for</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>#item of uploader.queue<span class=\"token punctuation\" >\"</span></span><span class=\"token punctuation\" >></span></span>\n                    <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>td</span><span class=\"token punctuation\" >></span></span><span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>strong</span><span class=\"token punctuation\" >></span></span>{{ item.file.name }}<span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>strong</span><span class=\"token punctuation\" >></span></span><span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>td</span><span class=\"token punctuation\" >></span></span>\n                    <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>td</span> <span class=\"token attr-name\" >*ng-if</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>uploader.isHTML5<span class=\"token punctuation\" >\"</span></span> <span class=\"token attr-name\" >nowrap</span><span class=\"token punctuation\" >></span></span>{{ item.file.size/1024/1024 | number:'.2' }} MB<span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>td</span><span class=\"token punctuation\" >></span></span>\n                    <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>td</span> <span class=\"token attr-name\" >*ng-if</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>uploader.isHTML5<span class=\"token punctuation\" >\"</span></span><span class=\"token punctuation\" >></span></span>\n                        <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>div</span> <span class=\"token attr-name\" >class</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>progress<span class=\"token punctuation\" >\"</span></span><span class=\"token style-attr language-css\" ><span class=\"token attr-name\" > <span class=\"token attr-name\" >style</span></span><span class=\"token punctuation\" >=\"</span><span class=\"token attr-value\" ><span class=\"token property\" >margin-bottom</span><span class=\"token punctuation\" >:</span> 0<span class=\"token punctuation\" >;</span></span><span class=\"token punctuation\" >\"</span></span><span class=\"token punctuation\" >></span></span>\n                            <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>div</span> <span class=\"token attr-name\" >class</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>progress-bar<span class=\"token punctuation\" >\"</span></span> <span class=\"token attr-name\" >role</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>progressbar<span class=\"token punctuation\" >\"</span></span> <span class=\"token attr-name\" >[ng-style]</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>{ <span class=\"token punctuation\" >'</span>width<span class=\"token punctuation\" >'</span>: item.progress + <span class=\"token punctuation\" >'</span>%<span class=\"token punctuation\" >'</span> }<span class=\"token punctuation\" >\"</span></span><span class=\"token punctuation\" >></span></span><span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>div</span><span class=\"token punctuation\" >></span></span>\n                        <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>div</span><span class=\"token punctuation\" >></span></span>\n                    <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>td</span><span class=\"token punctuation\" >></span></span>\n                    <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>td</span> <span class=\"token attr-name\" >class</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>text-center<span class=\"token punctuation\" >\"</span></span><span class=\"token punctuation\" >></span></span>\n                        <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>span</span> <span class=\"token attr-name\" >*ng-if</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>item.isSuccess<span class=\"token punctuation\" >\"</span></span><span class=\"token punctuation\" >></span></span><span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>i</span> <span class=\"token attr-name\" >class</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>glyphicon glyphicon-ok<span class=\"token punctuation\" >\"</span></span><span class=\"token punctuation\" >></span></span><span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>i</span><span class=\"token punctuation\" >></span></span><span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>span</span><span class=\"token punctuation\" >></span></span>\n                        <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>span</span> <span class=\"token attr-name\" >*ng-if</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>item.isCancel<span class=\"token punctuation\" >\"</span></span><span class=\"token punctuation\" >></span></span><span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>i</span> <span class=\"token attr-name\" >class</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>glyphicon glyphicon-ban-circle<span class=\"token punctuation\" >\"</span></span><span class=\"token punctuation\" >></span></span><span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>i</span><span class=\"token punctuation\" >></span></span><span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>span</span><span class=\"token punctuation\" >></span></span>\n                        <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>span</span> <span class=\"token attr-name\" >*ng-if</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>item.isError<span class=\"token punctuation\" >\"</span></span><span class=\"token punctuation\" >></span></span><span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>i</span> <span class=\"token attr-name\" >class</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>glyphicon glyphicon-remove<span class=\"token punctuation\" >\"</span></span><span class=\"token punctuation\" >></span></span><span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>i</span><span class=\"token punctuation\" >></span></span><span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>span</span><span class=\"token punctuation\" >></span></span>\n                    <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>td</span><span class=\"token punctuation\" >></span></span>\n                    <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>td</span> <span class=\"token attr-name\" >nowrap</span><span class=\"token punctuation\" >></span></span>\n                        <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>button</span> <span class=\"token attr-name\" >type</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>button<span class=\"token punctuation\" >\"</span></span> <span class=\"token attr-name\" >class</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>btn btn-success btn-xs<span class=\"token punctuation\" >\"</span></span>\n                                <span class=\"token attr-name\" >(click)</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>item.upload()<span class=\"token punctuation\" >\"</span></span> <span class=\"token attr-name\" >[disabled]</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>item.isReady || item.isUploading || item.isSuccess<span class=\"token punctuation\" >\"</span></span><span class=\"token punctuation\" >></span></span>\n                            <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>span</span> <span class=\"token attr-name\" >class</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>glyphicon glyphicon-upload<span class=\"token punctuation\" >\"</span></span><span class=\"token punctuation\" >></span></span><span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>span</span><span class=\"token punctuation\" >></span></span> Upload\n                        <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>button</span><span class=\"token punctuation\" >></span></span>\n                        <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>button</span> <span class=\"token attr-name\" >type</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>button<span class=\"token punctuation\" >\"</span></span> <span class=\"token attr-name\" >class</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>btn btn-warning btn-xs<span class=\"token punctuation\" >\"</span></span>\n                                <span class=\"token attr-name\" >(click)</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>item.cancel()<span class=\"token punctuation\" >\"</span></span> <span class=\"token attr-name\" >[disabled]</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>!item.isUploading<span class=\"token punctuation\" >\"</span></span><span class=\"token punctuation\" >></span></span>\n                            <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>span</span> <span class=\"token attr-name\" >class</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>glyphicon glyphicon-ban-circle<span class=\"token punctuation\" >\"</span></span><span class=\"token punctuation\" >></span></span><span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>span</span><span class=\"token punctuation\" >></span></span> Cancel\n                        <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>button</span><span class=\"token punctuation\" >></span></span>\n                        <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>button</span> <span class=\"token attr-name\" >type</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>button<span class=\"token punctuation\" >\"</span></span> <span class=\"token attr-name\" >class</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>btn btn-danger btn-xs<span class=\"token punctuation\" >\"</span></span>\n                                <span class=\"token attr-name\" >(click)</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>item.remove()<span class=\"token punctuation\" >\"</span></span><span class=\"token punctuation\" >></span></span>\n                            <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>span</span> <span class=\"token attr-name\" >class</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>glyphicon glyphicon-trash<span class=\"token punctuation\" >\"</span></span><span class=\"token punctuation\" >></span></span><span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>span</span><span class=\"token punctuation\" >></span></span> Remove\n                        <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>button</span><span class=\"token punctuation\" >></span></span>\n                    <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>td</span><span class=\"token punctuation\" >></span></span>\n                <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>tr</span><span class=\"token punctuation\" >></span></span>\n                <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>tbody</span><span class=\"token punctuation\" >></span></span>\n            <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>table</span><span class=\"token punctuation\" >></span></span>\n\n            <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>div</span><span class=\"token punctuation\" >></span></span>\n                <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>div</span><span class=\"token punctuation\" >></span></span>\n                    Queue progress:\n                    <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>div</span> <span class=\"token attr-name\" >class</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>progress<span class=\"token punctuation\" >\"</span></span><span class=\"token style-attr language-css\" ><span class=\"token attr-name\" > <span class=\"token attr-name\" >style</span></span><span class=\"token punctuation\" >=\"</span><span class=\"token punctuation\" >\"</span></span><span class=\"token punctuation\" >></span></span>\n                        <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>div</span> <span class=\"token attr-name\" >class</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>progress-bar<span class=\"token punctuation\" >\"</span></span> <span class=\"token attr-name\" >role</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>progressbar<span class=\"token punctuation\" >\"</span></span> <span class=\"token attr-name\" >[ng-style]</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>{ <span class=\"token punctuation\" >'</span>width<span class=\"token punctuation\" >'</span>: uploader.progress + <span class=\"token punctuation\" >'</span>%<span class=\"token punctuation\" >'</span> }<span class=\"token punctuation\" >\"</span></span><span class=\"token punctuation\" >></span></span><span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>div</span><span class=\"token punctuation\" >></span></span>\n                    <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>div</span><span class=\"token punctuation\" >></span></span>\n                <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>div</span><span class=\"token punctuation\" >></span></span>\n                <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>button</span> <span class=\"token attr-name\" >type</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>button<span class=\"token punctuation\" >\"</span></span> <span class=\"token attr-name\" >class</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>btn btn-success btn-s<span class=\"token punctuation\" >\"</span></span>\n                        <span class=\"token attr-name\" >(click)</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>uploader.uploadAll()<span class=\"token punctuation\" >\"</span></span> <span class=\"token attr-name\" >[disabled]</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>!uploader.getNotUploadedItems().length<span class=\"token punctuation\" >\"</span></span><span class=\"token punctuation\" >></span></span>\n                    <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>span</span> <span class=\"token attr-name\" >class</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>glyphicon glyphicon-upload<span class=\"token punctuation\" >\"</span></span><span class=\"token punctuation\" >></span></span><span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>span</span><span class=\"token punctuation\" >></span></span> Upload all\n                <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>button</span><span class=\"token punctuation\" >></span></span>\n                <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>button</span> <span class=\"token attr-name\" >type</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>button<span class=\"token punctuation\" >\"</span></span> <span class=\"token attr-name\" >class</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>btn btn-warning btn-s<span class=\"token punctuation\" >\"</span></span>\n                        <span class=\"token attr-name\" >(click)</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>uploader.cancelAll()<span class=\"token punctuation\" >\"</span></span> <span class=\"token attr-name\" >[disabled]</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>!uploader.isUploading<span class=\"token punctuation\" >\"</span></span><span class=\"token punctuation\" >></span></span>\n                    <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>span</span> <span class=\"token attr-name\" >class</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>glyphicon glyphicon-ban-circle<span class=\"token punctuation\" >\"</span></span><span class=\"token punctuation\" >></span></span><span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>span</span><span class=\"token punctuation\" >></span></span> Cancel all\n                <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>button</span><span class=\"token punctuation\" >></span></span>\n                <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>button</span> <span class=\"token attr-name\" >type</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>button<span class=\"token punctuation\" >\"</span></span> <span class=\"token attr-name\" >class</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>btn btn-danger btn-s<span class=\"token punctuation\" >\"</span></span>\n                        <span class=\"token attr-name\" >(click)</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>uploader.clearQueue()<span class=\"token punctuation\" >\"</span></span> <span class=\"token attr-name\" >[disabled]</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>!uploader.queue.length<span class=\"token punctuation\" >\"</span></span><span class=\"token punctuation\" >></span></span>\n                    <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;</span>span</span> <span class=\"token attr-name\" >class</span><span class=\"token attr-value\" ><span class=\"token punctuation\" >=</span><span class=\"token punctuation\" >\"</span>glyphicon glyphicon-trash<span class=\"token punctuation\" >\"</span></span><span class=\"token punctuation\" >></span></span><span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>span</span><span class=\"token punctuation\" >></span></span> Remove all\n                <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>button</span><span class=\"token punctuation\" >></span></span>\n            <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>div</span><span class=\"token punctuation\" >></span></span>\n\n        <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>div</span><span class=\"token punctuation\" >></span></span>\n\n    <span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>div</span><span class=\"token punctuation\" >></span></span>\n\n<span class=\"token tag\" ><span class=\"token tag\" ><span class=\"token punctuation\" >&lt;/</span>div</span><span class=\"token punctuation\" >></span></span>"
+
+/***/ },
 /* 340 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ function(module, exports) {
 
-	var file_like_object_1 = __webpack_require__(247);
-	var FileItem = (function () {
-	    function FileItem(uploader, some, options) {
-	        this.uploader = uploader;
-	        this.some = some;
-	        this.options = options;
-	        this.alias = 'file';
-	        this.url = '/';
-	        this.method = 'POST';
-	        this.headers = [];
-	        this.withCredentials = true;
-	        this.formData = [];
-	        this.isReady = false;
-	        this.isUploading = false;
-	        this.isUploaded = false;
-	        this.isSuccess = false;
-	        this.isCancel = false;
-	        this.isError = false;
-	        this.progress = 0;
-	        this.index = null;
-	        this.file = new file_like_object_1.FileLikeObject(some);
-	        this._file = some;
-	        this.url = uploader.url;
-	    }
-	    FileItem.prototype.upload = function () {
-	        try {
-	            this.uploader.uploadItem(this);
-	        }
-	        catch (e) {
-	            this.uploader._onCompleteItem(this, '', 0, []);
-	            this.uploader._onErrorItem(this, '', 0, []);
-	        }
-	    };
-	    FileItem.prototype.cancel = function () {
-	        this.uploader.cancelItem(this);
-	    };
-	    FileItem.prototype.remove = function () {
-	        this.uploader.removeFromQueue(this);
-	    };
-	    FileItem.prototype.onBeforeUpload = function () {
-	    };
-	    FileItem.prototype.onProgress = function (progress) {
-	    };
-	    FileItem.prototype.onSuccess = function (response, status, headers) {
-	    };
-	    FileItem.prototype.onError = function (response, status, headers) {
-	    };
-	    FileItem.prototype.onCancel = function (response, status, headers) {
-	    };
-	    FileItem.prototype.onComplete = function (response, status, headers) {
-	    };
-	    FileItem.prototype._onBeforeUpload = function () {
-	        this.isReady = true;
-	        this.isUploading = true;
-	        this.isUploaded = false;
-	        this.isSuccess = false;
-	        this.isCancel = false;
-	        this.isError = false;
-	        this.progress = 0;
-	        this.onBeforeUpload();
-	    };
-	    FileItem.prototype._onProgress = function (progress) {
-	        this.progress = progress;
-	        this.onProgress(progress);
-	    };
-	    FileItem.prototype._onSuccess = function (response, status, headers) {
-	        this.isReady = false;
-	        this.isUploading = false;
-	        this.isUploaded = true;
-	        this.isSuccess = true;
-	        this.isCancel = false;
-	        this.isError = false;
-	        this.progress = 100;
-	        this.index = null;
-	        this.onSuccess(response, status, headers);
-	    };
-	    FileItem.prototype._onError = function (response, status, headers) {
-	        this.isReady = false;
-	        this.isUploading = false;
-	        this.isUploaded = true;
-	        this.isSuccess = false;
-	        this.isCancel = false;
-	        this.isError = true;
-	        this.progress = 0;
-	        this.index = null;
-	        this.onError(response, status, headers);
-	    };
-	    FileItem.prototype._onCancel = function (response, status, headers) {
-	        this.isReady = false;
-	        this.isUploading = false;
-	        this.isUploaded = false;
-	        this.isSuccess = false;
-	        this.isCancel = true;
-	        this.isError = false;
-	        this.progress = 0;
-	        this.index = null;
-	        this.onCancel(response, status, headers);
-	    };
-	    FileItem.prototype._onComplete = function (response, status, headers) {
-	        this.onComplete(response, status, headers);
-	        if (this.uploader.removeAfterUpload) {
-	            this.remove();
-	        }
-	    };
-	    FileItem.prototype._destroy = function () {
-	    };
-	    FileItem.prototype._prepareToUploading = function () {
-	        this.index = this.index || ++this.uploader._nextIndex;
-	        this.isReady = true;
-	    };
-	    FileItem.prototype._replaceNode = function (input) {
-	    };
-	    return FileItem;
-	})();
-	exports.FileItem = FileItem;
-
+	module.exports = "<span class=\"token comment\" spellcheck=\"true\">/// &lt;reference path=\"../../../tsd.d.ts\" /></span>\n\n<span class=\"token keyword\" >import</span> <span class=\"token punctuation\" >{</span>\n  Component<span class=\"token punctuation\" >,</span> View<span class=\"token punctuation\" >,</span> EventEmitter<span class=\"token punctuation\" >,</span>\n  CORE_DIRECTIVES<span class=\"token punctuation\" >,</span> FORM_DIRECTIVES<span class=\"token punctuation\" >,</span> NgClass<span class=\"token punctuation\" >,</span> NgStyle\n<span class=\"token punctuation\" >}</span> from <span class=\"token string\" >'angular2/angular2'</span><span class=\"token punctuation\" >;</span>\n\n<span class=\"token keyword\" >import</span> <span class=\"token punctuation\" >{</span>FileSelect<span class=\"token punctuation\" >,</span> FileDrop<span class=\"token punctuation\" >,</span> FileUploader<span class=\"token punctuation\" >}</span> from <span class=\"token string\" >'../../../components/index'</span><span class=\"token punctuation\" >;</span>\n\n<span class=\"token comment\" spellcheck=\"true\">// webpack html imports</span>\n<span class=\"token keyword\" >let</span> template <span class=\"token operator\" >=</span> <span class=\"token function\" >require</span><span class=\"token punctuation\" >(</span><span class=\"token string\" >'./simple-demo.html'</span><span class=\"token punctuation\" >)</span><span class=\"token punctuation\" >;</span>\n\n<span class=\"token comment\" spellcheck=\"true\">// const URL = '/api/';</span>\n<span class=\"token keyword\" >const</span> URL <span class=\"token operator\" >=</span> <span class=\"token string\" >'https://evening-anchorage-3159.herokuapp.com/api/'</span><span class=\"token punctuation\" >;</span>\n\n@<span class=\"token function\" >Component</span><span class=\"token punctuation\" >(</span><span class=\"token punctuation\" >{</span>\n  selector<span class=\"token punctuation\" >:</span> <span class=\"token string\" >'simple-demo'</span>\n<span class=\"token punctuation\" >}</span><span class=\"token punctuation\" >)</span>\n@<span class=\"token function\" >View</span><span class=\"token punctuation\" >(</span><span class=\"token punctuation\" >{</span>\n  template<span class=\"token punctuation\" >:</span> template<span class=\"token punctuation\" >,</span>\n  directives<span class=\"token punctuation\" >:</span> <span class=\"token punctuation\" >[</span>FileSelect<span class=\"token punctuation\" >,</span> FileDrop<span class=\"token punctuation\" >,</span> NgClass<span class=\"token punctuation\" >,</span> NgStyle<span class=\"token punctuation\" >,</span> CORE_DIRECTIVES<span class=\"token punctuation\" >,</span> FORM_DIRECTIVES<span class=\"token punctuation\" >]</span>\n<span class=\"token punctuation\" >}</span><span class=\"token punctuation\" >)</span>\n<span class=\"token keyword\" >export</span> <span class=\"token keyword\" >class</span> <span class=\"token class-name\" >SimpleDemo</span> <span class=\"token punctuation\" >{</span>\n  <span class=\"token keyword\" >private</span> uploader<span class=\"token punctuation\" >:</span>FileUploader <span class=\"token operator\" >=</span> <span class=\"token keyword\" >new</span> <span class=\"token class-name\" >FileUploader</span><span class=\"token punctuation\" >(</span><span class=\"token punctuation\" >{</span>url<span class=\"token punctuation\" >:</span> URL<span class=\"token punctuation\" >}</span><span class=\"token punctuation\" >)</span><span class=\"token punctuation\" >;</span>\n  <span class=\"token keyword\" >private</span> hasBaseDropZoneOver<span class=\"token punctuation\" >:</span><span class=\"token keyword\" >boolean</span> <span class=\"token operator\" >=</span> <span class=\"token keyword\" >false</span><span class=\"token punctuation\" >;</span>\n  <span class=\"token keyword\" >private</span> hasAnotherDropZoneOver<span class=\"token punctuation\" >:</span><span class=\"token keyword\" >boolean</span> <span class=\"token operator\" >=</span> <span class=\"token keyword\" >false</span><span class=\"token punctuation\" >;</span>\n\n  <span class=\"token keyword\" >private</span> <span class=\"token function\" >fileOverBase</span><span class=\"token punctuation\" >(</span>e<span class=\"token punctuation\" >:</span><span class=\"token keyword\" >any</span><span class=\"token punctuation\" >)</span> <span class=\"token punctuation\" >{</span>\n    <span class=\"token keyword\" >this</span><span class=\"token punctuation\" >.</span>hasBaseDropZoneOver <span class=\"token operator\" >=</span> e<span class=\"token punctuation\" >;</span>\n  <span class=\"token punctuation\" >}</span>\n\n  <span class=\"token keyword\" >private</span> <span class=\"token function\" >fileOverAnother</span><span class=\"token punctuation\" >(</span>e<span class=\"token punctuation\" >:</span><span class=\"token keyword\" >any</span><span class=\"token punctuation\" >)</span> <span class=\"token punctuation\" >{</span>\n    <span class=\"token keyword\" >this</span><span class=\"token punctuation\" >.</span>hasAnotherDropZoneOver <span class=\"token operator\" >=</span> e<span class=\"token punctuation\" >;</span>\n  <span class=\"token punctuation\" >}</span>\n<span class=\"token punctuation\" >}</span>\n"
 
 /***/ },
 /* 341 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ function(module, exports) {
 
-	var file_like_object_1 = __webpack_require__(247);
-	var file_item_1 = __webpack_require__(340);
-	function isFile(value) {
-	    return (File && value instanceof File);
-	}
-	function isFileLikeObject(value) {
-	    return value instanceof file_like_object_1.FileLikeObject;
-	}
-	var FileUploader = (function () {
-	    function FileUploader(options) {
-	        this.options = options;
-	        this.isUploading = false;
-	        this.queue = [];
-	        this.progress = 0;
-	        this.autoUpload = false;
-	        this.isHTML5 = true;
-	        this.removeAfterUpload = false;
-	        this._nextIndex = 0;
-	        this.filters = [];
-	        this.url = options.url;
-	        this.filters.unshift({ name: 'queueLimit', fn: this._queueLimitFilter });
-	        this.filters.unshift({ name: 'folder', fn: this._folderFilter });
-	    }
-	    FileUploader.prototype.addToQueue = function (files, options, filters) {
-	        var _this = this;
-	        var list = [];
-	        for (var _i = 0; _i < files.length; _i++) {
-	            var file = files[_i];
-	            list.push(file);
-	        }
-	        var arrayOfFilters = this._getFilters(filters);
-	        var count = this.queue.length;
-	        var addedFileItems = [];
-	        list.map(function (some) {
-	            var temp = new file_like_object_1.FileLikeObject(some);
-	            if (_this._isValidFile(temp, [], options)) {
-	                var fileItem = new file_item_1.FileItem(_this, some, options);
-	                addedFileItems.push(fileItem);
-	                _this.queue.push(fileItem);
-	                _this._onAfterAddingFile(fileItem);
-	            }
-	            else {
-	                var filter = arrayOfFilters[_this._failFilterIndex];
-	                _this._onWhenAddingFileFailed(temp, filter, options);
-	            }
-	        });
-	        if (this.queue.length !== count) {
-	            this._onAfterAddingAll(addedFileItems);
-	            this.progress = this._getTotalProgress();
-	        }
-	        this._render();
-	        if (this.autoUpload) {
-	            this.uploadAll();
-	        }
-	    };
-	    FileUploader.prototype.removeFromQueue = function (value) {
-	        var index = this.getIndexOfItem(value);
-	        var item = this.queue[index];
-	        if (item.isUploading) {
-	            item.cancel();
-	        }
-	        this.queue.splice(index, 1);
-	        item._destroy();
-	        this.progress = this._getTotalProgress();
-	    };
-	    FileUploader.prototype.clearQueue = function () {
-	        while (this.queue.length) {
-	            this.queue[0].remove();
-	        }
-	        this.progress = 0;
-	    };
-	    FileUploader.prototype.uploadItem = function (value) {
-	        var index = this.getIndexOfItem(value);
-	        var item = this.queue[index];
-	        var transport = this.isHTML5 ? '_xhrTransport' : '_iframeTransport';
-	        item._prepareToUploading();
-	        if (this.isUploading) {
-	            return;
-	        }
-	        this.isUploading = true;
-	        this[transport](item);
-	    };
-	    FileUploader.prototype.cancelItem = function (value) {
-	        var index = this.getIndexOfItem(value);
-	        var item = this.queue[index];
-	        var prop = this.isHTML5 ? '_xhr' : '_form';
-	        if (item && item.isUploading) {
-	            item[prop].abort();
-	        }
-	    };
-	    FileUploader.prototype.uploadAll = function () {
-	        var items = this.getNotUploadedItems().filter(function (item) { return !item.isUploading; });
-	        if (!items.length) {
-	            return;
-	        }
-	        items.map(function (item) { return item._prepareToUploading(); });
-	        items[0].upload();
-	    };
-	    FileUploader.prototype.cancelAll = function () {
-	        var items = this.getNotUploadedItems();
-	        items.map(function (item) { return item.cancel(); });
-	    };
-	    FileUploader.prototype.isFile = function (value) {
-	        return isFile(value);
-	    };
-	    FileUploader.prototype.isFileLikeObject = function (value) {
-	        return value instanceof file_like_object_1.FileLikeObject;
-	    };
-	    FileUploader.prototype.getIndexOfItem = function (value) {
-	        return typeof value === 'number' ? value : this.queue.indexOf(value);
-	    };
-	    FileUploader.prototype.getNotUploadedItems = function () {
-	        return this.queue.filter(function (item) { return !item.isUploaded; });
-	    };
-	    FileUploader.prototype.getReadyItems = function () {
-	        return this.queue
-	            .filter(function (item) { return (item.isReady && !item.isUploading); })
-	            .sort(function (item1, item2) { return item1.index - item2.index; });
-	    };
-	    FileUploader.prototype.destroy = function () {
-	    };
-	    FileUploader.prototype.onAfterAddingAll = function (fileItems) {
-	    };
-	    FileUploader.prototype.onAfterAddingFile = function (fileItem) {
-	    };
-	    FileUploader.prototype.onWhenAddingFileFailed = function (item, filter, options) {
-	    };
-	    FileUploader.prototype.onBeforeUploadItem = function (fileItem) {
-	    };
-	    FileUploader.prototype.onProgressItem = function (fileItem, progress) {
-	    };
-	    FileUploader.prototype.onProgressAll = function (progress) {
-	    };
-	    FileUploader.prototype.onSuccessItem = function (item, response, status, headers) {
-	    };
-	    FileUploader.prototype.onErrorItem = function (item, response, status, headers) {
-	    };
-	    FileUploader.prototype.onCancelItem = function (item, response, status, headers) {
-	    };
-	    FileUploader.prototype.onCompleteItem = function (item, response, status, headers) {
-	    };
-	    FileUploader.prototype.onCompleteAll = function () {
-	    };
-	    FileUploader.prototype._getTotalProgress = function (value) {
-	        if (value === void 0) { value = 0; }
-	        if (this.removeAfterUpload) {
-	            return value;
-	        }
-	        var notUploaded = this.getNotUploadedItems().length;
-	        var uploaded = notUploaded ? this.queue.length - notUploaded : this.queue.length;
-	        var ratio = 100 / this.queue.length;
-	        var current = value * ratio / 100;
-	        return Math.round(uploaded * ratio + current);
-	    };
-	    FileUploader.prototype._getFilters = function (filters) {
-	        if (!filters) {
-	            return this.filters;
-	        }
-	        if (Array.isArray(filters)) {
-	            return filters;
-	        }
-	        var names = filters.match(/[^\s,]+/g);
-	        return this.filters
-	            .filter(function (filter) { return names.indexOf(filter.name) !== -1; });
-	    };
-	    FileUploader.prototype._render = function () {
-	    };
-	    FileUploader.prototype._folderFilter = function (item) {
-	        return !!(item.size || item.type);
-	    };
-	    FileUploader.prototype._queueLimitFilter = function () {
-	        return this.queue.length < this.queueLimit;
-	    };
-	    FileUploader.prototype._isValidFile = function (file, filters, options) {
-	        var _this = this;
-	        this._failFilterIndex = -1;
-	        return !filters.length ? true : filters.every(function (filter) {
-	            _this._failFilterIndex++;
-	            return filter.fn.call(_this, file, options);
-	        });
-	    };
-	    FileUploader.prototype._isSuccessCode = function (status) {
-	        return (status >= 200 && status < 300) || status === 304;
-	    };
-	    FileUploader.prototype._transformResponse = function (response, headers) {
-	        return response;
-	    };
-	    FileUploader.prototype._parseHeaders = function (headers) {
-	        var parsed = {}, key, val, i;
-	        if (!headers) {
-	            return parsed;
-	        }
-	        headers.split('\n').map(function (line) {
-	            i = line.indexOf(':');
-	            key = line.slice(0, i).trim().toLowerCase();
-	            val = line.slice(i + 1).trim();
-	            if (key) {
-	                parsed[key] = parsed[key] ? parsed[key] + ', ' + val : val;
-	            }
-	        });
-	        return parsed;
-	    };
-	    FileUploader.prototype._headersGetter = function (parsedHeaders) {
-	        return function (name) {
-	            if (name) {
-	                return parsedHeaders[name.toLowerCase()] || null;
-	            }
-	            return parsedHeaders;
-	        };
-	    };
-	    FileUploader.prototype._xhrTransport = function (item) {
-	        var _this = this;
-	        var xhr = item._xhr = new XMLHttpRequest();
-	        var form = new FormData();
-	        this._onBeforeUploadItem(item);
-	        if (typeof item._file.size !== 'number') {
-	            throw new TypeError('The file specified is no longer valid');
-	        }
-	        form.append(item.alias, item._file, item.file.name);
-	        xhr.upload.onprogress = function (event) {
-	            var progress = Math.round(event.lengthComputable ? event.loaded * 100 / event.total : 0);
-	            _this._onProgressItem(item, progress);
-	        };
-	        xhr.onload = function () {
-	            var headers = _this._parseHeaders(xhr.getAllResponseHeaders());
-	            var response = _this._transformResponse(xhr.response, headers);
-	            var gist = _this._isSuccessCode(xhr.status) ? 'Success' : 'Error';
-	            var method = '_on' + gist + 'Item';
-	            _this[method](item, response, xhr.status, headers);
-	            _this._onCompleteItem(item, response, xhr.status, headers);
-	        };
-	        xhr.onerror = function () {
-	            var headers = _this._parseHeaders(xhr.getAllResponseHeaders());
-	            var response = _this._transformResponse(xhr.response, headers);
-	            _this._onErrorItem(item, response, xhr.status, headers);
-	            _this._onCompleteItem(item, response, xhr.status, headers);
-	        };
-	        xhr.onabort = function () {
-	            var headers = _this._parseHeaders(xhr.getAllResponseHeaders());
-	            var response = _this._transformResponse(xhr.response, headers);
-	            _this._onCancelItem(item, response, xhr.status, headers);
-	            _this._onCompleteItem(item, response, xhr.status, headers);
-	        };
-	        xhr.open(item.method, item.url, true);
-	        xhr.withCredentials = item.withCredentials;
-	        xhr.send(form);
-	        this._render();
-	    };
-	    FileUploader.prototype._iframeTransport = function (item) {
-	    };
-	    FileUploader.prototype._onWhenAddingFileFailed = function (item, filter, options) {
-	        this.onWhenAddingFileFailed(item, filter, options);
-	    };
-	    FileUploader.prototype._onAfterAddingFile = function (item) {
-	        this.onAfterAddingFile(item);
-	    };
-	    FileUploader.prototype._onAfterAddingAll = function (items) {
-	        this.onAfterAddingAll(items);
-	    };
-	    FileUploader.prototype._onBeforeUploadItem = function (item) {
-	        item._onBeforeUpload();
-	        this.onBeforeUploadItem(item);
-	    };
-	    FileUploader.prototype._onProgressItem = function (item, progress) {
-	        var total = this._getTotalProgress(progress);
-	        this.progress = total;
-	        item._onProgress(progress);
-	        this.onProgressItem(item, progress);
-	        this.onProgressAll(total);
-	        this._render();
-	    };
-	    FileUploader.prototype._onSuccessItem = function (item, response, status, headers) {
-	        item._onSuccess(response, status, headers);
-	        this.onSuccessItem(item, response, status, headers);
-	    };
-	    FileUploader.prototype._onErrorItem = function (item, response, status, headers) {
-	        item._onError(response, status, headers);
-	        this.onErrorItem(item, response, status, headers);
-	    };
-	    FileUploader.prototype._onCancelItem = function (item, response, status, headers) {
-	        item._onCancel(response, status, headers);
-	        this.onCancelItem(item, response, status, headers);
-	    };
-	    FileUploader.prototype._onCompleteItem = function (item, response, status, headers) {
-	        item._onComplete(response, status, headers);
-	        this.onCompleteItem(item, response, status, headers);
-	        var nextItem = this.getReadyItems()[0];
-	        this.isUploading = false;
-	        if (nextItem) {
-	            nextItem.upload();
-	            return;
-	        }
-	        this.onCompleteAll();
-	        this.progress = this._getTotalProgress();
-	        this._render();
-	    };
-	    return FileUploader;
-	})();
-	exports.FileUploader = FileUploader;
-
+	module.exports = "<style>\n    .my-drop-zone { border: dotted 3px lightgray; }\n    .nv-file-over { border: dotted 3px red; } /* Default class applied to drop zones on over */\n    .another-file-over-class { border: dotted 3px green; }\n\n    html, body { height: 100%; }\n</style>\n\n<div class=\"container\">\n\n    <div class=\"navbar navbar-default\">\n        <div class=\"navbar-header\">\n            <a class=\"navbar-brand\" href>Angular2 File Upload</a>\n        </div>\n    </div>\n\n    <div class=\"row\">\n\n        <div class=\"col-md-3\">\n\n            <h3>Select files</h3>\n\n            <div ng2-file-drop\n                 [ng-class]=\"{'nv-file-over': hasBaseDropZoneOver}\"\n                 (file-over)=\"fileOverBase($event)\"\n                 [uploader]=\"uploader\"\n                 class=\"well my-drop-zone\">\n                Base drop zone\n            </div>\n\n            <div ng2-file-drop\n                 [ng-class]=\"{'another-file-over-class': hasAnotherDropZoneOver}\"\n                 (file-over)=\"fileOverAnother($event)\"\n                 [uploader]=\"uploader\"\n                 class=\"well my-drop-zone\">\n                Another drop zone\n            </div>\n\n            Multiple\n            <input type=\"file\" ng2-file-select [uploader]=\"uploader\" multiple  /><br/>\n\n            Single\n            <input type=\"file\" ng2-file-select [uploader]=\"uploader\" />\n        </div>\n\n        <div class=\"col-md-9\" style=\"margin-bottom: 40px\">\n\n            <h3>Upload queue</h3>\n            <p>Queue length: {{ uploader.queue.length }}</p>\n\n            <table class=\"table\">\n                <thead>\n                <tr>\n                    <th width=\"50%\">Name</th>\n                    <th>Size</th>\n                    <th>Progress</th>\n                    <th>Status</th>\n                    <th>Actions</th>\n                </tr>\n                </thead>\n                <tbody>\n                <tr *ng-for=\"#item of uploader.queue\">\n                    <td><strong>{{ item.file.name }}</strong></td>\n                    <td *ng-if=\"uploader.isHTML5\" nowrap>{{ item.file.size/1024/1024 | number:'.2' }} MB</td>\n                    <td *ng-if=\"uploader.isHTML5\">\n                        <div class=\"progress\" style=\"margin-bottom: 0;\">\n                            <div class=\"progress-bar\" role=\"progressbar\" [ng-style]=\"{ 'width': item.progress + '%' }\"></div>\n                        </div>\n                    </td>\n                    <td class=\"text-center\">\n                        <span *ng-if=\"item.isSuccess\"><i class=\"glyphicon glyphicon-ok\"></i></span>\n                        <span *ng-if=\"item.isCancel\"><i class=\"glyphicon glyphicon-ban-circle\"></i></span>\n                        <span *ng-if=\"item.isError\"><i class=\"glyphicon glyphicon-remove\"></i></span>\n                    </td>\n                    <td nowrap>\n                        <button type=\"button\" class=\"btn btn-success btn-xs\"\n                                (click)=\"item.upload()\" [disabled]=\"item.isReady || item.isUploading || item.isSuccess\">\n                            <span class=\"glyphicon glyphicon-upload\"></span> Upload\n                        </button>\n                        <button type=\"button\" class=\"btn btn-warning btn-xs\"\n                                (click)=\"item.cancel()\" [disabled]=\"!item.isUploading\">\n                            <span class=\"glyphicon glyphicon-ban-circle\"></span> Cancel\n                        </button>\n                        <button type=\"button\" class=\"btn btn-danger btn-xs\"\n                                (click)=\"item.remove()\">\n                            <span class=\"glyphicon glyphicon-trash\"></span> Remove\n                        </button>\n                    </td>\n                </tr>\n                </tbody>\n            </table>\n\n            <div>\n                <div>\n                    Queue progress:\n                    <div class=\"progress\" style=\"\">\n                        <div class=\"progress-bar\" role=\"progressbar\" [ng-style]=\"{ 'width': uploader.progress + '%' }\"></div>\n                    </div>\n                </div>\n                <button type=\"button\" class=\"btn btn-success btn-s\"\n                        (click)=\"uploader.uploadAll()\" [disabled]=\"!uploader.getNotUploadedItems().length\">\n                    <span class=\"glyphicon glyphicon-upload\"></span> Upload all\n                </button>\n                <button type=\"button\" class=\"btn btn-warning btn-s\"\n                        (click)=\"uploader.cancelAll()\" [disabled]=\"!uploader.isUploading\">\n                    <span class=\"glyphicon glyphicon-ban-circle\"></span> Cancel all\n                </button>\n                <button type=\"button\" class=\"btn btn-danger btn-s\"\n                        (click)=\"uploader.clearQueue()\" [disabled]=\"!uploader.queue.length\">\n                    <span class=\"glyphicon glyphicon-trash\"></span> Remove all\n                </button>\n            </div>\n\n        </div>\n\n    </div>\n\n</div>"
 
 /***/ },
-/* 342 */
+/* 342 */,
+/* 343 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path="../../tsd.d.ts" />
@@ -15799,20 +15803,21 @@ webpackJsonp([1],[
 	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 	};
 	var angular2_1 = __webpack_require__(6);
-	var ng2_bootstrap_1 = __webpack_require__(328);
-	var simple_demo_1 = __webpack_require__(343);
+	var ng2_bootstrap_1 = __webpack_require__(330);
+	var simple_demo_1 = __webpack_require__(344);
 	var name = 'File Upload';
-	var doc = __webpack_require__(313);
+	var doc = __webpack_require__(315);
 	var tabDesc = [
 	    {
 	        heading: 'Simple',
-	        ts: __webpack_require__(337),
-	        html: __webpack_require__(336)
+	        ts: __webpack_require__(340),
+	        html: __webpack_require__(339),
+	        js: __webpack_require__(338)
 	    }
 	];
 	var tabsContent = "";
 	tabDesc.forEach(function (desc) {
-	    tabsContent += "\n          <tab heading=\"" + desc.heading + "\" (select)=\"select($event)\">\n          <div class=\"card card-block panel panel-default panel-body\">\n\n            <" + desc.heading.toLowerCase() + "-demo *ng-if=\"currentHeading === '" + desc.heading + "'\"></" + desc.heading.toLowerCase() + "-demo>\n\n            <br>\n\n            <div class=\"row\" style=\"margin: 0px;\">\n              <tabset>\n                <tab heading=\"Markup\">\n                  <div class=\"card card-block panel panel-default panel-body\">\n                    <pre class=\"language-html\"><code class=\"language-html\" ng-non-bindable>" + desc.html + "</code></pre>\n                  </div>\n                </tab>\n                <tab heading=\"TypeScript\">\n                  <div class=\"card card-block panel panel-default panel-body\">\n                    <pre class=\"language-typescript\"><code class=\"language-typescript\" ng-non-bindable>" + desc.ts + "</code></pre>\n                  </div>\n                </tab>\n              </tabset>\n            </div>\n          </div>\n        </tab>\n  ";
+	    tabsContent += "\n          <tab heading=\"" + desc.heading + "\" (select)=\"select($event)\">\n          <div class=\"card card-block panel panel-default panel-body\">\n\n            <" + desc.heading.toLowerCase() + "-demo *ng-if=\"currentHeading === '" + desc.heading + "'\"></" + desc.heading.toLowerCase() + "-demo>\n\n            <br>\n\n            <div class=\"row\" style=\"margin: 0px;\">\n              <tabset>\n                <tab heading=\"Markup\">\n                  <div class=\"card card-block panel panel-default panel-body\">\n                    <pre class=\"language-html\"><code class=\"language-html\" ng-non-bindable>" + desc.html + "</code></pre>\n                  </div>\n                </tab>\n                <tab heading=\"TypeScript\">\n                  <div class=\"card card-block panel panel-default panel-body\">\n                    <pre class=\"language-typescript\"><code class=\"language-typescript\" ng-non-bindable>" + desc.ts + "</code></pre>\n                  </div>\n                </tab>\n                <tab heading=\"Backend Demo\">\n                  <div class=\"card card-block panel panel-default panel-body\">\n                    <pre class=\"language-javascript\"><code class=\"language-javascript\" ng-non-bindable>" + desc.js + "</code></pre>\n                  </div>\n                </tab>\n              </tabset>\n            </div>\n          </div>\n        </tab>\n  ";
 	});
 	var FileUploadSection = (function () {
 	    function FileUploadSection() {
@@ -15839,7 +15844,7 @@ webpackJsonp([1],[
 
 
 /***/ },
-/* 343 */
+/* 344 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path="../../../tsd.d.ts" />
@@ -15855,12 +15860,12 @@ webpackJsonp([1],[
 	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 	};
 	var angular2_1 = __webpack_require__(6);
-	var index_1 = __webpack_require__(96);
-	var file_uploader_1 = __webpack_require__(341);
-	var template = __webpack_require__(338);
+	var index_1 = __webpack_require__(99);
+	var template = __webpack_require__(341);
+	var URL = 'https://evening-anchorage-3159.herokuapp.com/api/';
 	var SimpleDemo = (function () {
 	    function SimpleDemo() {
-	        this.uploader = new file_uploader_1.FileUploader({ url: 'https://evening-anchorage-3159.herokuapp.com/api/' });
+	        this.uploader = new index_1.FileUploader({ url: URL });
 	        this.hasBaseDropZoneOver = false;
 	        this.hasAnotherDropZoneOver = false;
 	    }
