@@ -12,7 +12,8 @@ let tabDesc:Array<any> = [
   {
     heading: 'Simple',
     ts: require('!!prismjs?lang=typescript!./file-upload/simple-demo.ts'),
-    html: require('!!prismjs?lang=markup!./file-upload/simple-demo.html')
+    html: require('!!prismjs?lang=markup!./file-upload/simple-demo.html'),
+    js: require('!!prismjs?lang=javascript!./file-upload/file-catcher.js')
   }
 ];
 
@@ -36,6 +37,11 @@ tabDesc.forEach(desc => {
                 <tab heading="TypeScript">
                   <div class="card card-block panel panel-default panel-body">
                     <pre class="language-typescript"><code class="language-typescript" ng-non-bindable>${desc.ts}</code></pre>
+                  </div>
+                </tab>
+                <tab heading="Backend Demo">
+                  <div class="card card-block panel panel-default panel-body">
+                    <pre class="language-javascript"><code class="language-javascript" ng-non-bindable>${desc.js}</code></pre>
                   </div>
                 </tab>
               </tabset>
