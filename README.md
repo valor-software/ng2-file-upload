@@ -1,5 +1,5 @@
 # ng2-file-upload
-Easy to use Angular2 directives for files upload [demo](http://valor-software.github.io/ng2-file-upload/)
+Easy to use Angular2 directives for files upload ([demo](http://valor-software.github.io/ng2-file-upload/))
 
 ## Quick start
 
