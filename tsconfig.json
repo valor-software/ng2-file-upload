@@ -1,23 +1,21 @@
 {
-    "version": "1.6.2",
-    "compilerOptions": {
-        "target": "es5",
-        "module": "commonjs",
-        "outDir": "dist",
-        "sourceMap": true,
-        "declaration": true,
-        "removeComments": true,
-        "emitDecoratorMetadata": true,
-        "experimentalDecorators": true,
-        "listFiles": false,
-        "noLib": false,
-        "noEmitOnError": false,
-        "noImplicitAny": false
-    },
-    "exclude": [
-        "node_modules"
-    ],
-    "files": [
-        "./components/index.ts"
-    ]
+  "version": "1.6.2",
+  "compilerOptions": {
+    "target": "es5",
+    "module": "commonjs",
+    "sourceMap": true,
+    "declaration": true,
+    "removeComments": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "listFiles": false,
+    "noLib": false,
+    "noImplicitAny": true
+  },
+  "exclude": [
+    "node_modules"
+  ],
+  "files": [
+    "ng2-file-upload.ts"
+  ]
 }

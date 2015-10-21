@@ -45,19 +45,19 @@ export class FileItem {
   public onBeforeUpload() {
   }
 
-  public onProgress(progress) {
+  public onProgress(progress:number) {
   }
 
-  public onSuccess(response, status, headers) {
+  public onSuccess(response:any, status:any, headers:any) {
   }
 
-  public onError(response, status, headers) {
+  public onError(response:any, status:any, headers:any) {
   }
 
-  public onCancel(response, status, headers) {
+  public onCancel(response:any, status:any, headers:any) {
   }
 
-  public onComplete(response, status, headers) {
+  public onComplete(response:any, status:any, headers:any) {
   }
 
   private _onBeforeUpload() {
@@ -71,12 +71,12 @@ export class FileItem {
     this.onBeforeUpload();
   }
 
-  private _onProgress(progress) {
+  private _onProgress(progress:number) {
     this.progress = progress;
     this.onProgress(progress);
   }
 
-  private _onSuccess(response, status, headers) {
+  private _onSuccess(response:any, status:any, headers:any) {
     this.isReady = false;
     this.isUploading = false;
     this.isUploaded = true;
@@ -88,7 +88,7 @@ export class FileItem {
     this.onSuccess(response, status, headers);
   }
 
-  private _onError(response, status, headers) {
+  private _onError(response:any, status:any, headers:any) {
     this.isReady = false;
     this.isUploading = false;
     this.isUploaded = true;
@@ -100,7 +100,7 @@ export class FileItem {
     this.onError(response, status, headers);
   }
 
-  private _onCancel(response, status, headers) {
+  private _onCancel(response:any, status:any, headers:any) {
     this.isReady = false;
     this.isUploading = false;
     this.isUploaded = false;
@@ -112,7 +112,7 @@ export class FileItem {
     this.onCancel(response, status, headers);
   }
 
-  private _onComplete(response, status, headers) {
+  private _onComplete(response:any, status:any, headers:any) {
     this.onComplete(response, status, headers);
 
     if (this.uploader.removeAfterUpload) {
@@ -120,14 +120,8 @@ export class FileItem {
     }
   }
 
-  private _destroy() {
-  }
-
   private _prepareToUploading() {
     this.index = this.index || ++this.uploader._nextIndex;
     this.isReady = true;
-  }
-
-  _replaceNode(input) {
   }
 }

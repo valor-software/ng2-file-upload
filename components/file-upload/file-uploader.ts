@@ -5,11 +5,11 @@ import {
 import {FileLikeObject} from './file-like-object';
 import {FileItem} from './file-item';
 
-function isFile(value) {
+function isFile(value:any) {
   return (File && value instanceof File);
 }
 
-function isFileLikeObject(value) {
+function isFileLikeObject(value:any) {
   return value instanceof FileLikeObject;
 }
 
@@ -33,15 +33,15 @@ export class FileUploader {
     this.filters.unshift({name: 'folder', fn: this._folderFilter});
   }
 
-  public addToQueue(files, options, filters) {
-    let list = [];
+  public addToQueue(files:any[], options:any, filters:any) {
+    let list:any[] = [];
     for (let file of files) {
       list.push(file);
     }
 
     let arrayOfFilters = this._getFilters(filters);
     let count = this.queue.length;
-    let addedFileItems = [];
+    let addedFileItems:any[] = [];
 
     list.map(some => {
       let temp = new FileLikeObject(some);
@@ -69,7 +69,7 @@ export class FileUploader {
     }
   }
 
-  public removeFromQueue(value) {
+  public removeFromQueue(value:any) {
     let index = this.getIndexOfItem(value);
     let item = this.queue[index];
     if (item.isUploading) {
@@ -100,10 +100,10 @@ export class FileUploader {
     }
 
     this.isUploading = true;
-    this[transport](item);
+    (<any>this)[transport](item);
   }
 
-  public cancelItem(value) {
+  public cancelItem(value:any) {
     let index = this.getIndexOfItem(value);
     let item = this.queue[index];
     let prop = this.isHTML5 ? '_xhr' : '_form';
@@ -129,15 +129,15 @@ export class FileUploader {
   }
 
 
-  public isFile(value) {
+  public isFile(value:any) {
     return isFile(value);
   }
 
-  public isFileLikeObject(value) {
+  public isFileLikeObject(value:any) {
     return value instanceof FileLikeObject;
   }
 
-  public getIndexOfItem(value) {
+  public getIndexOfItem(value:any) {
     return typeof value === 'number' ? value : this.queue.indexOf(value);
   }
 
@@ -159,34 +159,34 @@ export class FileUploader {
      });*/
   }
 
-  public onAfterAddingAll(fileItems) {
+  public onAfterAddingAll(fileItems:any) {
   }
 
-  public onAfterAddingFile(fileItem) {
+  public onAfterAddingFile(fileItem:any) {
   }
 
-  public onWhenAddingFileFailed(item, filter, options) {
+  public onWhenAddingFileFailed(item:any, filter:any, options:any) {
   }
 
-  public onBeforeUploadItem(fileItem) {
+  public onBeforeUploadItem(fileItem:any) {
   }
 
-  public onProgressItem(fileItem, progress) {
+  public onProgressItem(fileItem:any, progress:any) {
   }
 
-  public onProgressAll(progress) {
+  public onProgressAll(progress:any) {
   }
 
-  public onSuccessItem(item, response, status, headers) {
+  public onSuccessItem(item:any, response:any, status:any, headers:any) {
   }
 
-  public onErrorItem(item, response, status, headers) {
+  public onErrorItem(item:any, response:any, status:any, headers:any) {
   }
 
-  public onCancelItem(item, response, status, headers) {
+  public onCancelItem(item:any, response:any, status:any, headers:any) {
   }
 
-  public onCompleteItem(item, response, status, headers) {
+  public onCompleteItem(item:any, response:any, status:any, headers:any) {
   }
 
   public onCompleteAll() {
@@ -205,7 +205,7 @@ export class FileUploader {
     return Math.round(uploaded * ratio + current);
   }
 
-  private _getFilters(filters) {
+  private _getFilters(filters:any) {
     if (!filters) {
       return this.filters;
     }
@@ -223,7 +223,7 @@ export class FileUploader {
     // todo: ?
   }
 
-  private _folderFilter(item) {
+  private _folderFilter(item:any) {
     return !!(item.size || item.type);
   }
 
@@ -231,19 +231,19 @@ export class FileUploader {
     return this.queue.length < this.queueLimit;
   }
 
-  private _isValidFile(file, filters, options) {
+  private _isValidFile(file:any, filters:any, options:any) {
     this._failFilterIndex = -1;
-    return !filters.length ? true : filters.every((filter) => {
+    return !filters.length ? true : filters.every((filter:any) => {
       this._failFilterIndex++;
       return filter.fn.call(this, file, options);
     });
   }
 
-  private _isSuccessCode(status) {
+  private _isSuccessCode(status:any) {
     return (status >= 200 && status < 300) || status === 304;
   }
 
-  private _transformResponse(response, headers):any {
+  private _transformResponse(response:any, headers:any):any {
     // todo: ?
     /*var headersGetter = this._headersGetter(headers);
      forEach($http.defaults.transformResponse, (transformFn) => {
@@ -252,14 +252,14 @@ export class FileUploader {
     return response;
   }
 
-  private _parseHeaders(headers) {
-    let parsed = {}, key, val, i;
+  private _parseHeaders(headers:any) {
+    let parsed:any = {}, key:any, val:any, i:any;
 
     if (!headers) {
       return parsed;
     }
 
-    headers.split('\n').map(line => {
+    headers.split('\n').map((line:any) => {
       i = line.indexOf(':');
       key = line.slice(0, i).trim().toLowerCase();
       val = line.slice(i + 1).trim();
@@ -272,8 +272,8 @@ export class FileUploader {
     return parsed;
   }
 
-  private _headersGetter(parsedHeaders) {
-    return (name) => {
+  private _headersGetter(parsedHeaders:any) {
+    return (name:any) => {
       if (name) {
         return parsedHeaders[name.toLowerCase()] || null;
       }
@@ -310,7 +310,7 @@ export class FileUploader {
       let response = this._transformResponse(xhr.response, headers);
       let gist = this._isSuccessCode(xhr.status) ? 'Success' : 'Error';
       let method = '_on' + gist + 'Item';
-      this[method](item, response, xhr.status, headers);
+      (<any>this)[method](item, response, xhr.status, headers);
       this._onCompleteItem(item, response, xhr.status, headers);
     };
 
@@ -340,28 +340,28 @@ export class FileUploader {
     this._render();
   }
 
-  private _iframeTransport(item) {
+  private _iframeTransport(item:any) {
     // todo: implement it later
   }
 
-  private _onWhenAddingFileFailed(item, filter, options) {
+  private _onWhenAddingFileFailed(item:any, filter:any, options:any) {
     this.onWhenAddingFileFailed(item, filter, options);
   }
 
-  private _onAfterAddingFile(item) {
+  private _onAfterAddingFile(item:any) {
     this.onAfterAddingFile(item);
   }
 
-  private _onAfterAddingAll(items) {
+  private _onAfterAddingAll(items:any) {
     this.onAfterAddingAll(items);
   }
 
-  private _onBeforeUploadItem(item) {
+  private _onBeforeUploadItem(item:any) {
     item._onBeforeUpload();
     this.onBeforeUploadItem(item);
   }
 
-  private _onProgressItem(item, progress) {
+  private _onProgressItem(item:any, progress:any) {
     let total = this._getTotalProgress(progress);
     this.progress = total;
     item._onProgress(progress);
@@ -370,22 +370,22 @@ export class FileUploader {
     this._render();
   }
 
-  private _onSuccessItem(item, response, status, headers) {
+  private _onSuccessItem(item:any, response:any, status:any, headers:any) {
     item._onSuccess(response, status, headers);
     this.onSuccessItem(item, response, status, headers);
   }
 
-  public _onErrorItem(item, response, status, headers) {
+  public _onErrorItem(item:any, response:any, status:any, headers:any) {
     item._onError(response, status, headers);
     this.onErrorItem(item, response, status, headers);
   }
 
-  private _onCancelItem(item, response, status, headers) {
+  private _onCancelItem(item:any, response:any, status:any, headers:any) {
     item._onCancel(response, status, headers);
     this.onCancelItem(item, response, status, headers);
   }
 
-  public _onCompleteItem(item, response, status, headers) {
+  public _onCompleteItem(item:any, response:any, status:any, headers:any) {
     item._onComplete(response, status, headers);
     this.onCompleteItem(item, response, status, headers);
 

@@ -30,7 +30,7 @@ export class FileDrop {
   getFilters() {
   }
 
-  onDrop(event) {
+  onDrop(event:any) {
     let transfer = this._getTransfer(event);
     if (!transfer) {
       return;
@@ -43,7 +43,7 @@ export class FileDrop {
     this.fileOver.next(false);
   }
 
-  onDragOver(event) {
+  onDragOver(event:any) {
     let transfer = this._getTransfer(event);
     if (!this._haveFiles(transfer.types)) {
       return;
@@ -54,8 +54,8 @@ export class FileDrop {
     this.fileOver.next(true);
   }
 
-  onDragLeave(event) {
-    if (event.currentTarget === this.element[0]) {
+  onDragLeave(event:any):any {
+    if (event.currentTarget === (<any>this).element[0]) {
       return;
     }
 
@@ -63,16 +63,16 @@ export class FileDrop {
     this.fileOver.next(false);
   }
 
-  _getTransfer(event) {
+  private _getTransfer(event:any):any {
     return event.dataTransfer ? event.dataTransfer : event.originalEvent.dataTransfer; // jQuery fix;
   }
 
-  _preventAndStop(event) {
+  private _preventAndStop(event:any):any {
     event.preventDefault();
     event.stopPropagation();
   }
 
-  _haveFiles(types) {
+  private _haveFiles(types:any):any {
     if (!types) {
       return false;
     }
@@ -86,11 +86,11 @@ export class FileDrop {
     }
   }
 
-  _addOverClass(item) {
+  _addOverClass(item:any):any {
     item.addOverClass();
   }
 
-  _removeOverClass(item) {
+  _removeOverClass(item:any):any {
     item.removeOverClass();
   }
 }
