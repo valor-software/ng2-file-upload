@@ -77,7 +77,6 @@ export class FileUploader {
     }
 
     this.queue.splice(index, 1);
-    item._destroy();
     this.progress = this._getTotalProgress();
   }
 

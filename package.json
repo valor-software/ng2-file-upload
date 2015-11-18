@@ -28,11 +28,11 @@
     "url": "https://github.com/valor-software/ng2-file-upload/issues"
   },
   "homepage": "https://github.com/valor-software/ng2-file-upload#readme",
-  "dependencies": {
-    "angular2": "2.0.0-alpha.44",
-    "ng2-bootstrap": "0.44.3",
+  "peerDependencies": {
+    "angular2": "2.0.0-alpha.46",
+    "ng2-bootstrap": "0.46.0",
     "reflect-metadata": "0.1.2",
-    "ts-loader": "0.5.6",
+    "@reactivex/rxjs": "5.0.0-alpha.7",
     "zone.js": "0.5.8"
   },
   "devDependencies": {
@@ -58,6 +58,7 @@
     "raw-loader": "0.5.1",
     "require-dir": "0.3.0",
     "typescript": "1.6.2",
+    "ts-loader": "0.5.6",
     "webpack": "1.12.2",
     "webpack-dev-server": "1.12.1"
   },

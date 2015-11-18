@@ -7,4 +7,7 @@ logs
 tsd.d.ts
 typings
 
+/node_modules
+
 webpack.config.js
+
