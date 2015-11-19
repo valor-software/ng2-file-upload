@@ -18,7 +18,7 @@ import {FileUploader} from './file-uploader';
 })
 export class FileDrop {
   public uploader:FileUploader;
-  private fileOver:EventEmitter = new EventEmitter();
+  private fileOver:EventEmitter<any> = new EventEmitter();
 
   constructor(private element:ElementRef) {
   }
