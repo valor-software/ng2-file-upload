@@ -3,12 +3,12 @@ webpackJsonp([2],{
 /***/ 0:
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(99);
+	module.exports = __webpack_require__(378);
 
 
 /***/ },
 
-/***/ 36:
+/***/ 50:
 /***/ function(module, exports) {
 
 	function isElement(node) {
@@ -40,21 +40,19 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 95:
+/***/ 125:
 /***/ function(module, exports, __webpack_require__) {
 
 	var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
-	    switch (arguments.length) {
-	        case 2: return decorators.reduceRight(function(o, d) { return (d && d(o)) || o; }, target);
-	        case 3: return decorators.reduceRight(function(o, d) { return (d && d(target, key)), void 0; }, void 0);
-	        case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
-	    }
+	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+	    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+	    return c > 3 && r && Object.defineProperty(target, key, r), r;
 	};
 	var __metadata = (this && this.__metadata) || function (k, v) {
 	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 	};
-	var angular2_1 = __webpack_require__(6);
+	var angular2_1 = __webpack_require__(8);
 	var FileDrop = (function () {
 	    function FileDrop(element) {
 	        this.element = element;
@@ -139,10 +137,10 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 96:
+/***/ 126:
 /***/ function(module, exports, __webpack_require__) {
 
-	var file_like_object_1 = __webpack_require__(36);
+	var file_like_object_1 = __webpack_require__(50);
 	var FileItem = (function () {
 	    function FileItem(uploader, some, options) {
 	        this.uploader = uploader;
@@ -246,13 +244,9 @@ webpackJsonp([2],{
 	            this.remove();
 	        }
 	    };
-	    FileItem.prototype._destroy = function () {
-	    };
 	    FileItem.prototype._prepareToUploading = function () {
 	        this.index = this.index || ++this.uploader._nextIndex;
 	        this.isReady = true;
-	    };
-	    FileItem.prototype._replaceNode = function (input) {
 	    };
 	    return FileItem;
 	})();
@@ -261,21 +255,19 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 97:
+/***/ 127:
 /***/ function(module, exports, __webpack_require__) {
 
 	var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
-	    switch (arguments.length) {
-	        case 2: return decorators.reduceRight(function(o, d) { return (d && d(o)) || o; }, target);
-	        case 3: return decorators.reduceRight(function(o, d) { return (d && d(target, key)), void 0; }, void 0);
-	        case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
-	    }
+	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+	    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+	    return c > 3 && r && Object.defineProperty(target, key, r), r;
 	};
 	var __metadata = (this && this.__metadata) || function (k, v) {
 	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 	};
-	var angular2_1 = __webpack_require__(6);
+	var angular2_1 = __webpack_require__(8);
 	var FileSelect = (function () {
 	    function FileSelect(element) {
 	        this.element = element;
@@ -314,11 +306,11 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 98:
+/***/ 128:
 /***/ function(module, exports, __webpack_require__) {
 
-	var file_like_object_1 = __webpack_require__(36);
-	var file_item_1 = __webpack_require__(96);
+	var file_like_object_1 = __webpack_require__(50);
+	var file_item_1 = __webpack_require__(126);
 	function isFile(value) {
 	    return (File && value instanceof File);
 	}
@@ -337,6 +329,7 @@ webpackJsonp([2],{
 	        this._nextIndex = 0;
 	        this.filters = [];
 	        this.url = options.url;
+	        this.authToken = options.authToken;
 	        this.filters.unshift({ name: 'queueLimit', fn: this._queueLimitFilter });
 	        this.filters.unshift({ name: 'folder', fn: this._folderFilter });
 	    }
@@ -379,7 +372,6 @@ webpackJsonp([2],{
 	            item.cancel();
 	        }
 	        this.queue.splice(index, 1);
-	        item._destroy();
 	        this.progress = this._getTotalProgress();
 	    };
 	    FileUploader.prototype.clearQueue = function () {
@@ -562,6 +554,9 @@ webpackJsonp([2],{
 	        };
 	        xhr.open(item.method, item.url, true);
 	        xhr.withCredentials = item.withCredentials;
+	        if (this.authToken) {
+	            xhr.setRequestHeader('Authorization', this.authToken);
+	        }
 	        xhr.send(form);
 	        this._render();
 	    };
@@ -620,16 +615,15 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 99:
+/***/ 378:
 /***/ function(module, exports, __webpack_require__) {
 
-	///<reference path="../tsd.d.ts"/>
 	function __export(m) {
 	    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 	}
-	__export(__webpack_require__(97));
-	__export(__webpack_require__(95));
-	__export(__webpack_require__(98));
+	__export(__webpack_require__(127));
+	__export(__webpack_require__(125));
+	__export(__webpack_require__(128));
 
 
 /***/ }
