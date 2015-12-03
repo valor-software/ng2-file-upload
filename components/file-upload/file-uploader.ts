@@ -15,6 +15,7 @@ function isFileLikeObject(value:any) {
 
 export class FileUploader {
   public url:string;
+  public authToken:string;
   public isUploading:boolean = false;
   public queue:Array<any> = [];
   public progress:number = 0;
@@ -29,6 +30,7 @@ export class FileUploader {
   constructor(public options:any) {
     // Object.assign(this, options);
     this.url = options.url;
+    this.authToken = options.authToken;
     this.filters.unshift({name: 'queueLimit', fn: this._queueLimitFilter});
     this.filters.unshift({name: 'folder', fn: this._folderFilter});
   }
@@ -334,6 +336,10 @@ export class FileUploader {
     /*item.headers.map((value, name) => {
      xhr.setRequestHeader(name, value);
      });*/
+
+    if (this.authToken) {
+      xhr.setRequestHeader('Authorization', this.authToken);
+    }
 
     xhr.send(form);
     this._render();

@@ -34,7 +34,12 @@ import {FileSelect, FileDrop, FileUploader} from 'ng2-file-upload';
 ### Properties
 
   - `uploader` - (`FileUploader`) - uploader object. See using in [demo](https://github.com/valor-software/ng2-file-upload/blob/master/demo/components/file-upload/simple-demo.ts)
-  
+
+  Parameters that supported by this object:
+
+  1. `url` - URL of File Uploader's route
+  2. `authToken` - auth token that will be applied as 'Authorization' header during file send.
+
 ## FileDrop API
 
 ### Properties
