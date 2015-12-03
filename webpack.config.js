@@ -53,7 +53,7 @@ var config = {
       'angular2/angular2',
       'angular2/core'
     ],
-    'angular2-file-upload': ['components'],
+    'angular2-file-upload': ['ng2-file-upload'],
     'angular2-file-upload-demo': 'demo'
   },
 
@@ -126,8 +126,7 @@ var config = {
           /\.spec\.ts$/,
           /\.e2e\.ts$/,
           /web_modules/,
-          /test/,
-          /node_modules/
+          /test/
         ]
       }
     ],

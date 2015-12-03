@@ -5,7 +5,9 @@ import {
   CORE_DIRECTIVES, FORM_DIRECTIVES, NgClass, NgStyle
 } from 'angular2/angular2';
 
-import {FileSelect, FileDrop, FileUploader} from '../../../components/index';
+import {FileSelect} from '../../../components/file-upload/file-select';
+import {FileDrop} from '../../../components/file-upload/file-drop';
+import {FileUploader} from '../../../components/file-upload/file-uploader';
 
 // webpack html imports
 let template = require('./simple-demo.html');
