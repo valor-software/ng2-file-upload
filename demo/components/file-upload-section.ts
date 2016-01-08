@@ -1,8 +1,9 @@
 /// <reference path="../../tsd.d.ts" />
 
-import {Component, View, CORE_DIRECTIVES} from 'angular2/angular2';
+import {Component, View} from 'angular2/core';
+import {CORE_DIRECTIVES} from 'angular2/common';
 
-import {tabs} from 'ng2-bootstrap/ng2-bootstrap';
+import {TAB_DIRECTIVES} from 'ng2-bootstrap/ng2-bootstrap';
 import {SimpleDemo} from './file-upload/simple-demo';
 
 let name = 'File Upload';
@@ -23,7 +24,7 @@ tabDesc.forEach(desc => {
           <tab heading="${desc.heading}" (select)="select($event)">
           <div class="card card-block panel panel-default panel-body">
 
-            <${desc.heading.toLowerCase()}-demo *ng-if="currentHeading === '${desc.heading}'"></${desc.heading.toLowerCase()}-demo>
+            <${desc.heading.toLowerCase()}-demo *ngIf="currentHeading === '${desc.heading}'"></${desc.heading.toLowerCase()}-demo>
 
             <br>
 
@@ -52,9 +53,7 @@ tabDesc.forEach(desc => {
 });
 
 @Component({
-  selector: 'file-upload-section'
-})
-@View({
+  selector: 'file-upload-section',
   template: `
   <section id="${name.toLowerCase()}">
     <div class="row">
@@ -71,7 +70,7 @@ tabDesc.forEach(desc => {
     </div>
   </section>
   `,
-  directives: [SimpleDemo, tabs, CORE_DIRECTIVES]
+  directives: [SimpleDemo, TAB_DIRECTIVES, CORE_DIRECTIVES]
 })
 export class FileUploadSection {
   private currentHeading:string = 'Simple';

@@ -21,7 +21,7 @@
             <h3>Select files</h3>
 
             <div ng2-file-drop
-                 [ng-class]="{'nv-file-over': hasBaseDropZoneOver}"
+                 [ngClass]="{'nv-file-over': hasBaseDropZoneOver}"
                  (file-over)="fileOverBase($event)"
                  [uploader]="uploader"
                  class="well my-drop-zone">
@@ -29,7 +29,7 @@
             </div>
 
             <div ng2-file-drop
-                 [ng-class]="{'another-file-over-class': hasAnotherDropZoneOver}"
+                 [ngClass]="{'another-file-over-class': hasAnotherDropZoneOver}"
                  (file-over)="fileOverAnother($event)"
                  [uploader]="uploader"
                  class="well my-drop-zone">
@@ -46,7 +46,7 @@
         <div class="col-md-9" style="margin-bottom: 40px">
 
             <h3>Upload queue</h3>
-            <p>Queue length: {{ uploader.queue.length }}</p>
+            <p>Queue length: {{ uploader?.queue?.length }}</p>
 
             <table class="table">
                 <thead>
@@ -59,18 +59,18 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr *ng-for="#item of uploader.queue">
-                    <td><strong>{{ item.file.name }}</strong></td>
-                    <td *ng-if="uploader.isHTML5" nowrap>{{ item.file.size/1024/1024 | number:'.2' }} MB</td>
-                    <td *ng-if="uploader.isHTML5">
+                <tr *ngFor="#item of uploader.queue">
+                    <td><strong>{{ item?.file?.name }}</strong></td>
+                    <td *ngIf="uploader.isHTML5" nowrap>{{ item?.file?.size/1024/1024 | number:'.2' }} MB</td>
+                    <td *ngIf="uploader.isHTML5">
                         <div class="progress" style="margin-bottom: 0;">
-                            <div class="progress-bar" role="progressbar" [ng-style]="{ 'width': item.progress + '%' }"></div>
+                            <div class="progress-bar" role="progressbar" [ngStyle]="{ 'width': item.progress + '%' }"></div>
                         </div>
                     </td>
                     <td class="text-center">
-                        <span *ng-if="item.isSuccess"><i class="glyphicon glyphicon-ok"></i></span>
-                        <span *ng-if="item.isCancel"><i class="glyphicon glyphicon-ban-circle"></i></span>
-                        <span *ng-if="item.isError"><i class="glyphicon glyphicon-remove"></i></span>
+                        <span *ngIf="item.isSuccess"><i class="glyphicon glyphicon-ok"></i></span>
+                        <span *ngIf="item.isCancel"><i class="glyphicon glyphicon-ban-circle"></i></span>
+                        <span *ngIf="item.isError"><i class="glyphicon glyphicon-remove"></i></span>
                     </td>
                     <td nowrap>
                         <button type="button" class="btn btn-success btn-xs"
@@ -94,7 +94,7 @@
                 <div>
                     Queue progress:
                     <div class="progress" style="">
-                        <div class="progress-bar" role="progressbar" [ng-style]="{ 'width': uploader.progress + '%' }"></div>
+                        <div class="progress-bar" role="progressbar" [ngStyle]="{ 'width': uploader.progress + '%' }"></div>
                     </div>
                 </div>
                 <button type="button" class="btn btn-success btn-s"

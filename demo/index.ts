@@ -1,5 +1,7 @@
 /// <reference path="../tsd.d.ts" />
-import {Component, View, bootstrap, NgClass} from 'angular2/angular2';
+import {bootstrap} from 'angular2/platform/browser';
+import {Component, View} from 'angular2/core';
+import {NgClass} from 'angular2/common';
 
 import {FileUploadSection} from './components/file-upload-section';
 

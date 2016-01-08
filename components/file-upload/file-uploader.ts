@@ -1,7 +1,3 @@
-import {
-  EventEmitter, ElementRef, Renderer
-} from 'angular2/angular2';
-
 import {FileLikeObject} from './file-like-object';
 import {FileItem} from './file-item';
 
