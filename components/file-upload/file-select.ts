@@ -1,8 +1,4 @@
-import {
-  Component, View, OnInit, OnDestroy, OnChanges,
-  Directive, EventEmitter, ElementRef, Renderer,
-  CORE_DIRECTIVES, FORM_DIRECTIVES, NgClass
-} from 'angular2/angular2';
+import { Directive, ElementRef } from 'angular2/core';
 
 import {FileUploader} from './file-uploader';
 
