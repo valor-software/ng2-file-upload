@@ -1,2 +1,635 @@
-webpackJsonp([2],{0:function(e,t,o){e.exports=o(99)},39:function(e,t,o){var n=this&&this.__decorate||function(e,t,o,n){var i,r=arguments.length,s=3>r?t:null===n?n=Object.getOwnPropertyDescriptor(t,o):n;if("object"==typeof Reflect&&"function"==typeof Reflect.decorate)s=Reflect.decorate(e,t,o,n);else for(var p=e.length-1;p>=0;p--)(i=e[p])&&(s=(3>r?i(s):r>3?i(t,o,s):i(t,o))||s);return r>3&&s&&Object.defineProperty(t,o,s),s},i=this&&this.__metadata||function(e,t){return"object"==typeof Reflect&&"function"==typeof Reflect.metadata?Reflect.metadata(e,t):void 0},r=o(3),s=function(){function e(e){this.element=e,this.fileOver=new r.EventEmitter}return e.prototype.getOptions=function(){return this.uploader.options},e.prototype.getFilters=function(){},e.prototype.onDrop=function(e){var t=this._getTransfer(e);if(t){var o=this.getOptions(),n=this.getFilters();this._preventAndStop(e),this.uploader.addToQueue(t.files,o,n),this.fileOver.next(!1)}},e.prototype.onDragOver=function(e){var t=this._getTransfer(e);this._haveFiles(t.types)&&(t.dropEffect="copy",this._preventAndStop(e),this.fileOver.next(!0))},e.prototype.onDragLeave=function(e){e.currentTarget!==this.element[0]&&(this._preventAndStop(e),this.fileOver.next(!1))},e.prototype._getTransfer=function(e){return e.dataTransfer?e.dataTransfer:e.originalEvent.dataTransfer},e.prototype._preventAndStop=function(e){e.preventDefault(),e.stopPropagation()},e.prototype._haveFiles=function(e){return e?e.indexOf?-1!==e.indexOf("Files"):e.contains?e.contains("Files"):!1:!1},e.prototype._addOverClass=function(e){e.addOverClass()},e.prototype._removeOverClass=function(e){e.removeOverClass()},e=n([r.Directive({selector:"[ng2-file-drop]",properties:["uploader"],events:["fileOver"],host:{"(drop)":"onDrop($event)","(dragover)":"onDragOver($event)","(dragleave)":"onDragLeave($event)"}}),i("design:paramtypes",[r.ElementRef])],e)}();t.FileDrop=s},40:function(e,t){function o(e){return!(!e||!(e.nodeName||e.prop&&e.attr&&e.find))}var n=function(){function e(e){var t=o(e),n=t?e.value:e,i="string"==typeof n?"FakePath":"Object",r="_createFrom"+i;this[r](n)}return e.prototype._createFromFakePath=function(e){this.lastModifiedDate=null,this.size=null,this.type="like/"+e.slice(e.lastIndexOf(".")+1).toLowerCase(),this.name=e.slice(e.lastIndexOf("/")+e.lastIndexOf("\\")+2)},e.prototype._createFromObject=function(e){this.size=e.size,this.type=e.type,this.name=e.name},e}();t.FileLikeObject=n},41:function(e,t,o){var n=this&&this.__decorate||function(e,t,o,n){var i,r=arguments.length,s=3>r?t:null===n?n=Object.getOwnPropertyDescriptor(t,o):n;if("object"==typeof Reflect&&"function"==typeof Reflect.decorate)s=Reflect.decorate(e,t,o,n);else for(var p=e.length-1;p>=0;p--)(i=e[p])&&(s=(3>r?i(s):r>3?i(t,o,s):i(t,o))||s);return r>3&&s&&Object.defineProperty(t,o,s),s},i=this&&this.__metadata||function(e,t){return"object"==typeof Reflect&&"function"==typeof Reflect.metadata?Reflect.metadata(e,t):void 0},r=o(3),s=function(){function e(e){this.element=e}return e.prototype.getOptions=function(){return this.uploader.options},e.prototype.getFilters=function(){},e.prototype.isEmptyAfterSelection=function(){return!!this.element.nativeElement.attributes.multiple},e.prototype.onChange=function(){var e=this.element.nativeElement.files,t=this.getOptions(),o=this.getFilters();this.uploader.addToQueue(e,t,o),this.isEmptyAfterSelection()},e=n([r.Directive({selector:"[ng2-file-select]",properties:["uploader"],host:{"(change)":"onChange()"}}),i("design:paramtypes",[r.ElementRef])],e)}();t.FileSelect=s,t.fileUpload=[s]},97:function(e,t,o){var n=o(40),i=function(){function e(e,t,o){this.uploader=e,this.some=t,this.options=o,this.alias="file",this.url="/",this.method="POST",this.headers=[],this.withCredentials=!0,this.formData=[],this.isReady=!1,this.isUploading=!1,this.isUploaded=!1,this.isSuccess=!1,this.isCancel=!1,this.isError=!1,this.progress=0,this.index=null,this.file=new n.FileLikeObject(t),this._file=t,this.url=e.url}return e.prototype.upload=function(){try{this.uploader.uploadItem(this)}catch(e){this.uploader._onCompleteItem(this,"",0,[]),this.uploader._onErrorItem(this,"",0,[])}},e.prototype.cancel=function(){this.uploader.cancelItem(this)},e.prototype.remove=function(){this.uploader.removeFromQueue(this)},e.prototype.onBeforeUpload=function(){},e.prototype.onProgress=function(e){},e.prototype.onSuccess=function(e,t,o){},e.prototype.onError=function(e,t,o){},e.prototype.onCancel=function(e,t,o){},e.prototype.onComplete=function(e,t,o){},e.prototype._onBeforeUpload=function(){this.isReady=!0,this.isUploading=!0,this.isUploaded=!1,this.isSuccess=!1,this.isCancel=!1,this.isError=!1,this.progress=0,this.onBeforeUpload()},e.prototype._onProgress=function(e){this.progress=e,this.onProgress(e)},e.prototype._onSuccess=function(e,t,o){this.isReady=!1,this.isUploading=!1,this.isUploaded=!0,this.isSuccess=!0,this.isCancel=!1,this.isError=!1,this.progress=100,this.index=null,this.onSuccess(e,t,o)},e.prototype._onError=function(e,t,o){this.isReady=!1,this.isUploading=!1,this.isUploaded=!0,this.isSuccess=!1,this.isCancel=!1,this.isError=!0,this.progress=0,this.index=null,this.onError(e,t,o)},e.prototype._onCancel=function(e,t,o){this.isReady=!1,this.isUploading=!1,this.isUploaded=!1,this.isSuccess=!1,this.isCancel=!0,this.isError=!1,this.progress=0,this.index=null,this.onCancel(e,t,o)},e.prototype._onComplete=function(e,t,o){this.onComplete(e,t,o),this.uploader.removeAfterUpload&&this.remove()},e.prototype._prepareToUploading=function(){this.index=this.index||++this.uploader._nextIndex,this.isReady=!0},e}();t.FileItem=i},98:function(e,t,o){function n(e){return File&&e instanceof File}var i=o(40),r=o(97),s=function(){function e(e){this.options=e,this.isUploading=!1,this.queue=[],this.progress=0,this.autoUpload=!1,this.isHTML5=!0,this.removeAfterUpload=!1,this._nextIndex=0,this.filters=[],this.url=e.url,this.authToken=e.authToken,this.filters.unshift({name:"queueLimit",fn:this._queueLimitFilter}),this.filters.unshift({name:"folder",fn:this._folderFilter})}return e.prototype.addToQueue=function(e,t,o){for(var n=this,s=[],p=0;p<e.length;p++){var a=e[p];s.push(a)}var l=this._getFilters(o),u=this.queue.length,h=[];s.map(function(e){var o=new i.FileLikeObject(e);if(n._isValidFile(o,[],t)){var s=new r.FileItem(n,e,t);h.push(s),n.queue.push(s),n._onAfterAddingFile(s)}else{var p=l[n._failFilterIndex];n._onWhenAddingFileFailed(o,p,t)}}),this.queue.length!==u&&(this._onAfterAddingAll(h),this.progress=this._getTotalProgress()),this._render(),this.autoUpload&&this.uploadAll()},e.prototype.removeFromQueue=function(e){var t=this.getIndexOfItem(e),o=this.queue[t];o.isUploading&&o.cancel(),this.queue.splice(t,1),this.progress=this._getTotalProgress()},e.prototype.clearQueue=function(){for(;this.queue.length;)this.queue[0].remove();this.progress=0},e.prototype.uploadItem=function(e){var t=this.getIndexOfItem(e),o=this.queue[t],n=this.isHTML5?"_xhrTransport":"_iframeTransport";o._prepareToUploading(),this.isUploading||(this.isUploading=!0,this[n](o))},e.prototype.cancelItem=function(e){var t=this.getIndexOfItem(e),o=this.queue[t],n=this.isHTML5?"_xhr":"_form";o&&o.isUploading&&o[n].abort()},e.prototype.uploadAll=function(){var e=this.getNotUploadedItems().filter(function(e){return!e.isUploading});e.length&&(e.map(function(e){return e._prepareToUploading()}),e[0].upload())},e.prototype.cancelAll=function(){var e=this.getNotUploadedItems();e.map(function(e){return e.cancel()})},e.prototype.isFile=function(e){return n(e)},e.prototype.isFileLikeObject=function(e){return e instanceof i.FileLikeObject},e.prototype.getIndexOfItem=function(e){return"number"==typeof e?e:this.queue.indexOf(e)},e.prototype.getNotUploadedItems=function(){return this.queue.filter(function(e){return!e.isUploaded})},e.prototype.getReadyItems=function(){return this.queue.filter(function(e){return e.isReady&&!e.isUploading}).sort(function(e,t){return e.index-t.index})},e.prototype.destroy=function(){},e.prototype.onAfterAddingAll=function(e){},e.prototype.onAfterAddingFile=function(e){},e.prototype.onWhenAddingFileFailed=function(e,t,o){},e.prototype.onBeforeUploadItem=function(e){},e.prototype.onProgressItem=function(e,t){},e.prototype.onProgressAll=function(e){},e.prototype.onSuccessItem=function(e,t,o,n){},e.prototype.onErrorItem=function(e,t,o,n){},e.prototype.onCancelItem=function(e,t,o,n){},e.prototype.onCompleteItem=function(e,t,o,n){},e.prototype.onCompleteAll=function(){},e.prototype._getTotalProgress=function(e){if(void 0===e&&(e=0),this.removeAfterUpload)return e;var t=this.getNotUploadedItems().length,o=t?this.queue.length-t:this.queue.length,n=100/this.queue.length,i=e*n/100;return Math.round(o*n+i)},e.prototype._getFilters=function(e){if(!e)return this.filters;if(Array.isArray(e))return e;var t=e.match(/[^\s,]+/g);return this.filters.filter(function(e){return-1!==t.indexOf(e.name)})},e.prototype._render=function(){},e.prototype._folderFilter=function(e){return!(!e.size&&!e.type)},e.prototype._queueLimitFilter=function(){return this.queue.length<this.queueLimit},e.prototype._isValidFile=function(e,t,o){var n=this;return this._failFilterIndex=-1,t.length?t.every(function(t){return n._failFilterIndex++,t.fn.call(n,e,o)}):!0},e.prototype._isSuccessCode=function(e){return e>=200&&300>e||304===e},e.prototype._transformResponse=function(e,t){return e},e.prototype._parseHeaders=function(e){var t,o,n,i={};return e?(e.split("\n").map(function(e){n=e.indexOf(":"),t=e.slice(0,n).trim().toLowerCase(),o=e.slice(n+1).trim(),t&&(i[t]=i[t]?i[t]+", "+o:o)}),i):i},e.prototype._headersGetter=function(e){return function(t){return t?e[t.toLowerCase()]||null:e}},e.prototype._xhrTransport=function(e){var t=this,o=e._xhr=new XMLHttpRequest,n=new FormData;if(this._onBeforeUploadItem(e),"number"!=typeof e._file.size)throw new TypeError("The file specified is no longer valid");n.append(e.alias,e._file,e.file.name),o.upload.onprogress=function(o){var n=Math.round(o.lengthComputable?100*o.loaded/o.total:0);t._onProgressItem(e,n)},o.onload=function(){var n=t._parseHeaders(o.getAllResponseHeaders()),i=t._transformResponse(o.response,n),r=t._isSuccessCode(o.status)?"Success":"Error",s="_on"+r+"Item";t[s](e,i,o.status,n),t._onCompleteItem(e,i,o.status,n)},o.onerror=function(){var n=t._parseHeaders(o.getAllResponseHeaders()),i=t._transformResponse(o.response,n);t._onErrorItem(e,i,o.status,n),t._onCompleteItem(e,i,o.status,n)},o.onabort=function(){var n=t._parseHeaders(o.getAllResponseHeaders()),i=t._transformResponse(o.response,n);t._onCancelItem(e,i,o.status,n),t._onCompleteItem(e,i,o.status,n)},o.open(e.method,e.url,!0),o.withCredentials=e.withCredentials,this.authToken&&o.setRequestHeader("Authorization",this.authToken),o.send(n),this._render()},e.prototype._iframeTransport=function(e){},e.prototype._onWhenAddingFileFailed=function(e,t,o){this.onWhenAddingFileFailed(e,t,o)},e.prototype._onAfterAddingFile=function(e){this.onAfterAddingFile(e)},e.prototype._onAfterAddingAll=function(e){this.onAfterAddingAll(e)},e.prototype._onBeforeUploadItem=function(e){e._onBeforeUpload(),this.onBeforeUploadItem(e)},e.prototype._onProgressItem=function(e,t){var o=this._getTotalProgress(t);this.progress=o,e._onProgress(t),this.onProgressItem(e,t),this.onProgressAll(o),this._render()},e.prototype._onSuccessItem=function(e,t,o,n){e._onSuccess(t,o,n),this.onSuccessItem(e,t,o,n)},e.prototype._onErrorItem=function(e,t,o,n){e._onError(t,o,n),this.onErrorItem(e,t,o,n)},e.prototype._onCancelItem=function(e,t,o,n){e._onCancel(t,o,n),this.onCancelItem(e,t,o,n)},e.prototype._onCompleteItem=function(e,t,o,n){e._onComplete(t,o,n),this.onCompleteItem(e,t,o,n);var i=this.getReadyItems()[0];return this.isUploading=!1,i?void i.upload():(this.onCompleteAll(),this.progress=this._getTotalProgress(),void this._render())},e}();t.FileUploader=s},99:function(e,t,o){function n(e){for(var o in e)t.hasOwnProperty(o)||(t[o]=e[o])}n(o(41)),n(o(39)),n(o(98));var i=o(41),r=o(39);t.FILE_UPLOAD_DIRECTIVES=[i.FileSelect,r.FileDrop]}});
+webpackJsonp([2],{
+
+/***/ 0:
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__(99);
+
+
+/***/ },
+
+/***/ 39:
+/***/ function(module, exports, __webpack_require__) {
+
+	var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+	    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+	    return c > 3 && r && Object.defineProperty(target, key, r), r;
+	};
+	var __metadata = (this && this.__metadata) || function (k, v) {
+	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+	};
+	var core_1 = __webpack_require__(3);
+	var FileDrop = (function () {
+	    function FileDrop(element) {
+	        this.element = element;
+	        this.fileOver = new core_1.EventEmitter();
+	    }
+	    FileDrop.prototype.getOptions = function () {
+	        return this.uploader.options;
+	    };
+	    FileDrop.prototype.getFilters = function () {
+	    };
+	    FileDrop.prototype.onDrop = function (event) {
+	        var transfer = this._getTransfer(event);
+	        if (!transfer) {
+	            return;
+	        }
+	        var options = this.getOptions();
+	        var filters = this.getFilters();
+	        this._preventAndStop(event);
+	        this.uploader.addToQueue(transfer.files, options, filters);
+	        this.fileOver.next(false);
+	    };
+	    FileDrop.prototype.onDragOver = function (event) {
+	        var transfer = this._getTransfer(event);
+	        if (!this._haveFiles(transfer.types)) {
+	            return;
+	        }
+	        transfer.dropEffect = 'copy';
+	        this._preventAndStop(event);
+	        this.fileOver.next(true);
+	    };
+	    FileDrop.prototype.onDragLeave = function (event) {
+	        if (event.currentTarget === this.element[0]) {
+	            return;
+	        }
+	        this._preventAndStop(event);
+	        this.fileOver.next(false);
+	    };
+	    FileDrop.prototype._getTransfer = function (event) {
+	        return event.dataTransfer ? event.dataTransfer : event.originalEvent.dataTransfer;
+	    };
+	    FileDrop.prototype._preventAndStop = function (event) {
+	        event.preventDefault();
+	        event.stopPropagation();
+	    };
+	    FileDrop.prototype._haveFiles = function (types) {
+	        if (!types) {
+	            return false;
+	        }
+	        if (types.indexOf) {
+	            return types.indexOf('Files') !== -1;
+	        }
+	        else if (types.contains) {
+	            return types.contains('Files');
+	        }
+	        else {
+	            return false;
+	        }
+	    };
+	    FileDrop.prototype._addOverClass = function (item) {
+	        item.addOverClass();
+	    };
+	    FileDrop.prototype._removeOverClass = function (item) {
+	        item.removeOverClass();
+	    };
+	    FileDrop = __decorate([
+	        core_1.Directive({
+	            selector: '[ng2-file-drop]',
+	            properties: ['uploader'],
+	            events: ['fileOver'],
+	            host: {
+	                '(drop)': 'onDrop($event)',
+	                '(dragover)': 'onDragOver($event)',
+	                '(dragleave)': 'onDragLeave($event)'
+	            }
+	        }), 
+	        __metadata('design:paramtypes', [core_1.ElementRef])
+	    ], FileDrop);
+	    return FileDrop;
+	})();
+	exports.FileDrop = FileDrop;
+
+
+/***/ },
+
+/***/ 40:
+/***/ function(module, exports) {
+
+	function isElement(node) {
+	    return !!(node && (node.nodeName || node.prop && node.attr && node.find));
+	}
+	var FileLikeObject = (function () {
+	    function FileLikeObject(fileOrInput) {
+	        var isInput = isElement(fileOrInput);
+	        var fakePathOrObject = isInput ? fileOrInput.value : fileOrInput;
+	        var postfix = typeof fakePathOrObject === 'string' ? 'FakePath' : 'Object';
+	        var method = '_createFrom' + postfix;
+	        this[method](fakePathOrObject);
+	    }
+	    FileLikeObject.prototype._createFromFakePath = function (path) {
+	        this.lastModifiedDate = null;
+	        this.size = null;
+	        this.type = 'like/' + path.slice(path.lastIndexOf('.') + 1).toLowerCase();
+	        this.name = path.slice(path.lastIndexOf('/') + path.lastIndexOf('\\') + 2);
+	    };
+	    FileLikeObject.prototype._createFromObject = function (object) {
+	        this.size = object.size;
+	        this.type = object.type;
+	        this.name = object.name;
+	    };
+	    return FileLikeObject;
+	})();
+	exports.FileLikeObject = FileLikeObject;
+
+
+/***/ },
+
+/***/ 41:
+/***/ function(module, exports, __webpack_require__) {
+
+	var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+	    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+	    return c > 3 && r && Object.defineProperty(target, key, r), r;
+	};
+	var __metadata = (this && this.__metadata) || function (k, v) {
+	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+	};
+	var core_1 = __webpack_require__(3);
+	var FileSelect = (function () {
+	    function FileSelect(element) {
+	        this.element = element;
+	    }
+	    FileSelect.prototype.getOptions = function () {
+	        return this.uploader.options;
+	    };
+	    FileSelect.prototype.getFilters = function () {
+	    };
+	    FileSelect.prototype.isEmptyAfterSelection = function () {
+	        return !!this.element.nativeElement.attributes.multiple;
+	    };
+	    FileSelect.prototype.onChange = function () {
+	        var files = this.element.nativeElement.files;
+	        var options = this.getOptions();
+	        var filters = this.getFilters();
+	        this.uploader.addToQueue(files, options, filters);
+	        if (this.isEmptyAfterSelection()) {
+	        }
+	    };
+	    FileSelect = __decorate([
+	        core_1.Directive({
+	            selector: '[ng2-file-select]',
+	            properties: ['uploader'],
+	            host: {
+	                '(change)': 'onChange()'
+	            }
+	        }), 
+	        __metadata('design:paramtypes', [core_1.ElementRef])
+	    ], FileSelect);
+	    return FileSelect;
+	})();
+	exports.FileSelect = FileSelect;
+	exports.fileUpload = [FileSelect];
+
+
+/***/ },
+
+/***/ 97:
+/***/ function(module, exports, __webpack_require__) {
+
+	var file_like_object_1 = __webpack_require__(40);
+	var FileItem = (function () {
+	    function FileItem(uploader, some, options) {
+	        this.uploader = uploader;
+	        this.some = some;
+	        this.options = options;
+	        this.alias = 'file';
+	        this.url = '/';
+	        this.method = 'POST';
+	        this.headers = [];
+	        this.withCredentials = true;
+	        this.formData = [];
+	        this.isReady = false;
+	        this.isUploading = false;
+	        this.isUploaded = false;
+	        this.isSuccess = false;
+	        this.isCancel = false;
+	        this.isError = false;
+	        this.progress = 0;
+	        this.index = null;
+	        this.file = new file_like_object_1.FileLikeObject(some);
+	        this._file = some;
+	        this.url = uploader.url;
+	    }
+	    FileItem.prototype.upload = function () {
+	        try {
+	            this.uploader.uploadItem(this);
+	        }
+	        catch (e) {
+	            this.uploader._onCompleteItem(this, '', 0, []);
+	            this.uploader._onErrorItem(this, '', 0, []);
+	        }
+	    };
+	    FileItem.prototype.cancel = function () {
+	        this.uploader.cancelItem(this);
+	    };
+	    FileItem.prototype.remove = function () {
+	        this.uploader.removeFromQueue(this);
+	    };
+	    FileItem.prototype.onBeforeUpload = function () {
+	    };
+	    FileItem.prototype.onProgress = function (progress) {
+	    };
+	    FileItem.prototype.onSuccess = function (response, status, headers) {
+	    };
+	    FileItem.prototype.onError = function (response, status, headers) {
+	    };
+	    FileItem.prototype.onCancel = function (response, status, headers) {
+	    };
+	    FileItem.prototype.onComplete = function (response, status, headers) {
+	    };
+	    FileItem.prototype._onBeforeUpload = function () {
+	        this.isReady = true;
+	        this.isUploading = true;
+	        this.isUploaded = false;
+	        this.isSuccess = false;
+	        this.isCancel = false;
+	        this.isError = false;
+	        this.progress = 0;
+	        this.onBeforeUpload();
+	    };
+	    FileItem.prototype._onProgress = function (progress) {
+	        this.progress = progress;
+	        this.onProgress(progress);
+	    };
+	    FileItem.prototype._onSuccess = function (response, status, headers) {
+	        this.isReady = false;
+	        this.isUploading = false;
+	        this.isUploaded = true;
+	        this.isSuccess = true;
+	        this.isCancel = false;
+	        this.isError = false;
+	        this.progress = 100;
+	        this.index = null;
+	        this.onSuccess(response, status, headers);
+	    };
+	    FileItem.prototype._onError = function (response, status, headers) {
+	        this.isReady = false;
+	        this.isUploading = false;
+	        this.isUploaded = true;
+	        this.isSuccess = false;
+	        this.isCancel = false;
+	        this.isError = true;
+	        this.progress = 0;
+	        this.index = null;
+	        this.onError(response, status, headers);
+	    };
+	    FileItem.prototype._onCancel = function (response, status, headers) {
+	        this.isReady = false;
+	        this.isUploading = false;
+	        this.isUploaded = false;
+	        this.isSuccess = false;
+	        this.isCancel = true;
+	        this.isError = false;
+	        this.progress = 0;
+	        this.index = null;
+	        this.onCancel(response, status, headers);
+	    };
+	    FileItem.prototype._onComplete = function (response, status, headers) {
+	        this.onComplete(response, status, headers);
+	        if (this.uploader.removeAfterUpload) {
+	            this.remove();
+	        }
+	    };
+	    FileItem.prototype._prepareToUploading = function () {
+	        this.index = this.index || ++this.uploader._nextIndex;
+	        this.isReady = true;
+	    };
+	    return FileItem;
+	})();
+	exports.FileItem = FileItem;
+
+
+/***/ },
+
+/***/ 98:
+/***/ function(module, exports, __webpack_require__) {
+
+	var file_like_object_1 = __webpack_require__(40);
+	var file_item_1 = __webpack_require__(97);
+	function isFile(value) {
+	    return (File && value instanceof File);
+	}
+	function isFileLikeObject(value) {
+	    return value instanceof file_like_object_1.FileLikeObject;
+	}
+	var FileUploader = (function () {
+	    function FileUploader(options) {
+	        this.options = options;
+	        this.isUploading = false;
+	        this.queue = [];
+	        this.progress = 0;
+	        this.autoUpload = false;
+	        this.isHTML5 = true;
+	        this.removeAfterUpload = false;
+	        this._nextIndex = 0;
+	        this.filters = [];
+	        this.url = options.url;
+	        this.authToken = options.authToken;
+	        this.filters.unshift({ name: 'queueLimit', fn: this._queueLimitFilter });
+	        this.filters.unshift({ name: 'folder', fn: this._folderFilter });
+	    }
+	    FileUploader.prototype.addToQueue = function (files, options, filters) {
+	        var _this = this;
+	        var list = [];
+	        for (var _i = 0; _i < files.length; _i++) {
+	            var file = files[_i];
+	            list.push(file);
+	        }
+	        var arrayOfFilters = this._getFilters(filters);
+	        var count = this.queue.length;
+	        var addedFileItems = [];
+	        list.map(function (some) {
+	            var temp = new file_like_object_1.FileLikeObject(some);
+	            if (_this._isValidFile(temp, [], options)) {
+	                var fileItem = new file_item_1.FileItem(_this, some, options);
+	                addedFileItems.push(fileItem);
+	                _this.queue.push(fileItem);
+	                _this._onAfterAddingFile(fileItem);
+	            }
+	            else {
+	                var filter = arrayOfFilters[_this._failFilterIndex];
+	                _this._onWhenAddingFileFailed(temp, filter, options);
+	            }
+	        });
+	        if (this.queue.length !== count) {
+	            this._onAfterAddingAll(addedFileItems);
+	            this.progress = this._getTotalProgress();
+	        }
+	        this._render();
+	        if (this.autoUpload) {
+	            this.uploadAll();
+	        }
+	    };
+	    FileUploader.prototype.removeFromQueue = function (value) {
+	        var index = this.getIndexOfItem(value);
+	        var item = this.queue[index];
+	        if (item.isUploading) {
+	            item.cancel();
+	        }
+	        this.queue.splice(index, 1);
+	        this.progress = this._getTotalProgress();
+	    };
+	    FileUploader.prototype.clearQueue = function () {
+	        while (this.queue.length) {
+	            this.queue[0].remove();
+	        }
+	        this.progress = 0;
+	    };
+	    FileUploader.prototype.uploadItem = function (value) {
+	        var index = this.getIndexOfItem(value);
+	        var item = this.queue[index];
+	        var transport = this.isHTML5 ? '_xhrTransport' : '_iframeTransport';
+	        item._prepareToUploading();
+	        if (this.isUploading) {
+	            return;
+	        }
+	        this.isUploading = true;
+	        this[transport](item);
+	    };
+	    FileUploader.prototype.cancelItem = function (value) {
+	        var index = this.getIndexOfItem(value);
+	        var item = this.queue[index];
+	        var prop = this.isHTML5 ? '_xhr' : '_form';
+	        if (item && item.isUploading) {
+	            item[prop].abort();
+	        }
+	    };
+	    FileUploader.prototype.uploadAll = function () {
+	        var items = this.getNotUploadedItems().filter(function (item) { return !item.isUploading; });
+	        if (!items.length) {
+	            return;
+	        }
+	        items.map(function (item) { return item._prepareToUploading(); });
+	        items[0].upload();
+	    };
+	    FileUploader.prototype.cancelAll = function () {
+	        var items = this.getNotUploadedItems();
+	        items.map(function (item) { return item.cancel(); });
+	    };
+	    FileUploader.prototype.isFile = function (value) {
+	        return isFile(value);
+	    };
+	    FileUploader.prototype.isFileLikeObject = function (value) {
+	        return value instanceof file_like_object_1.FileLikeObject;
+	    };
+	    FileUploader.prototype.getIndexOfItem = function (value) {
+	        return typeof value === 'number' ? value : this.queue.indexOf(value);
+	    };
+	    FileUploader.prototype.getNotUploadedItems = function () {
+	        return this.queue.filter(function (item) { return !item.isUploaded; });
+	    };
+	    FileUploader.prototype.getReadyItems = function () {
+	        return this.queue
+	            .filter(function (item) { return (item.isReady && !item.isUploading); })
+	            .sort(function (item1, item2) { return item1.index - item2.index; });
+	    };
+	    FileUploader.prototype.destroy = function () {
+	    };
+	    FileUploader.prototype.onAfterAddingAll = function (fileItems) {
+	    };
+	    FileUploader.prototype.onAfterAddingFile = function (fileItem) {
+	    };
+	    FileUploader.prototype.onWhenAddingFileFailed = function (item, filter, options) {
+	    };
+	    FileUploader.prototype.onBeforeUploadItem = function (fileItem) {
+	    };
+	    FileUploader.prototype.onProgressItem = function (fileItem, progress) {
+	    };
+	    FileUploader.prototype.onProgressAll = function (progress) {
+	    };
+	    FileUploader.prototype.onSuccessItem = function (item, response, status, headers) {
+	    };
+	    FileUploader.prototype.onErrorItem = function (item, response, status, headers) {
+	    };
+	    FileUploader.prototype.onCancelItem = function (item, response, status, headers) {
+	    };
+	    FileUploader.prototype.onCompleteItem = function (item, response, status, headers) {
+	    };
+	    FileUploader.prototype.onCompleteAll = function () {
+	    };
+	    FileUploader.prototype._getTotalProgress = function (value) {
+	        if (value === void 0) { value = 0; }
+	        if (this.removeAfterUpload) {
+	            return value;
+	        }
+	        var notUploaded = this.getNotUploadedItems().length;
+	        var uploaded = notUploaded ? this.queue.length - notUploaded : this.queue.length;
+	        var ratio = 100 / this.queue.length;
+	        var current = value * ratio / 100;
+	        return Math.round(uploaded * ratio + current);
+	    };
+	    FileUploader.prototype._getFilters = function (filters) {
+	        if (!filters) {
+	            return this.filters;
+	        }
+	        if (Array.isArray(filters)) {
+	            return filters;
+	        }
+	        var names = filters.match(/[^\s,]+/g);
+	        return this.filters
+	            .filter(function (filter) { return names.indexOf(filter.name) !== -1; });
+	    };
+	    FileUploader.prototype._render = function () {
+	    };
+	    FileUploader.prototype._folderFilter = function (item) {
+	        return !!(item.size || item.type);
+	    };
+	    FileUploader.prototype._queueLimitFilter = function () {
+	        return this.queue.length < this.queueLimit;
+	    };
+	    FileUploader.prototype._isValidFile = function (file, filters, options) {
+	        var _this = this;
+	        this._failFilterIndex = -1;
+	        return !filters.length ? true : filters.every(function (filter) {
+	            _this._failFilterIndex++;
+	            return filter.fn.call(_this, file, options);
+	        });
+	    };
+	    FileUploader.prototype._isSuccessCode = function (status) {
+	        return (status >= 200 && status < 300) || status === 304;
+	    };
+	    FileUploader.prototype._transformResponse = function (response, headers) {
+	        return response;
+	    };
+	    FileUploader.prototype._parseHeaders = function (headers) {
+	        var parsed = {}, key, val, i;
+	        if (!headers) {
+	            return parsed;
+	        }
+	        headers.split('\n').map(function (line) {
+	            i = line.indexOf(':');
+	            key = line.slice(0, i).trim().toLowerCase();
+	            val = line.slice(i + 1).trim();
+	            if (key) {
+	                parsed[key] = parsed[key] ? parsed[key] + ', ' + val : val;
+	            }
+	        });
+	        return parsed;
+	    };
+	    FileUploader.prototype._headersGetter = function (parsedHeaders) {
+	        return function (name) {
+	            if (name) {
+	                return parsedHeaders[name.toLowerCase()] || null;
+	            }
+	            return parsedHeaders;
+	        };
+	    };
+	    FileUploader.prototype._xhrTransport = function (item) {
+	        var _this = this;
+	        var xhr = item._xhr = new XMLHttpRequest();
+	        var form = new FormData();
+	        this._onBeforeUploadItem(item);
+	        if (typeof item._file.size !== 'number') {
+	            throw new TypeError('The file specified is no longer valid');
+	        }
+	        form.append(item.alias, item._file, item.file.name);
+	        xhr.upload.onprogress = function (event) {
+	            var progress = Math.round(event.lengthComputable ? event.loaded * 100 / event.total : 0);
+	            _this._onProgressItem(item, progress);
+	        };
+	        xhr.onload = function () {
+	            var headers = _this._parseHeaders(xhr.getAllResponseHeaders());
+	            var response = _this._transformResponse(xhr.response, headers);
+	            var gist = _this._isSuccessCode(xhr.status) ? 'Success' : 'Error';
+	            var method = '_on' + gist + 'Item';
+	            _this[method](item, response, xhr.status, headers);
+	            _this._onCompleteItem(item, response, xhr.status, headers);
+	        };
+	        xhr.onerror = function () {
+	            var headers = _this._parseHeaders(xhr.getAllResponseHeaders());
+	            var response = _this._transformResponse(xhr.response, headers);
+	            _this._onErrorItem(item, response, xhr.status, headers);
+	            _this._onCompleteItem(item, response, xhr.status, headers);
+	        };
+	        xhr.onabort = function () {
+	            var headers = _this._parseHeaders(xhr.getAllResponseHeaders());
+	            var response = _this._transformResponse(xhr.response, headers);
+	            _this._onCancelItem(item, response, xhr.status, headers);
+	            _this._onCompleteItem(item, response, xhr.status, headers);
+	        };
+	        xhr.open(item.method, item.url, true);
+	        xhr.withCredentials = item.withCredentials;
+	        if (this.authToken) {
+	            xhr.setRequestHeader('Authorization', this.authToken);
+	        }
+	        xhr.send(form);
+	        this._render();
+	    };
+	    FileUploader.prototype._iframeTransport = function (item) {
+	    };
+	    FileUploader.prototype._onWhenAddingFileFailed = function (item, filter, options) {
+	        this.onWhenAddingFileFailed(item, filter, options);
+	    };
+	    FileUploader.prototype._onAfterAddingFile = function (item) {
+	        this.onAfterAddingFile(item);
+	    };
+	    FileUploader.prototype._onAfterAddingAll = function (items) {
+	        this.onAfterAddingAll(items);
+	    };
+	    FileUploader.prototype._onBeforeUploadItem = function (item) {
+	        item._onBeforeUpload();
+	        this.onBeforeUploadItem(item);
+	    };
+	    FileUploader.prototype._onProgressItem = function (item, progress) {
+	        var total = this._getTotalProgress(progress);
+	        this.progress = total;
+	        item._onProgress(progress);
+	        this.onProgressItem(item, progress);
+	        this.onProgressAll(total);
+	        this._render();
+	    };
+	    FileUploader.prototype._onSuccessItem = function (item, response, status, headers) {
+	        item._onSuccess(response, status, headers);
+	        this.onSuccessItem(item, response, status, headers);
+	    };
+	    FileUploader.prototype._onErrorItem = function (item, response, status, headers) {
+	        item._onError(response, status, headers);
+	        this.onErrorItem(item, response, status, headers);
+	    };
+	    FileUploader.prototype._onCancelItem = function (item, response, status, headers) {
+	        item._onCancel(response, status, headers);
+	        this.onCancelItem(item, response, status, headers);
+	    };
+	    FileUploader.prototype._onCompleteItem = function (item, response, status, headers) {
+	        item._onComplete(response, status, headers);
+	        this.onCompleteItem(item, response, status, headers);
+	        var nextItem = this.getReadyItems()[0];
+	        this.isUploading = false;
+	        if (nextItem) {
+	            nextItem.upload();
+	            return;
+	        }
+	        this.onCompleteAll();
+	        this.progress = this._getTotalProgress();
+	        this._render();
+	    };
+	    return FileUploader;
+	})();
+	exports.FileUploader = FileUploader;
+
+
+/***/ },
+
+/***/ 99:
+/***/ function(module, exports, __webpack_require__) {
+
+	function __export(m) {
+	    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+	}
+	__export(__webpack_require__(41));
+	__export(__webpack_require__(39));
+	__export(__webpack_require__(98));
+	var file_select_2 = __webpack_require__(41);
+	var file_drop_2 = __webpack_require__(39);
+	exports.FILE_UPLOAD_DIRECTIVES = [file_select_2.FileSelect, file_drop_2.FileDrop];
+
+
+/***/ }
+
+});
 //# sourceMappingURL=angular2-file-upload.js.map
