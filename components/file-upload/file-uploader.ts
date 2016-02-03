@@ -44,7 +44,7 @@ export class FileUploader {
     list.map(some => {
       let temp = new FileLikeObject(some);
 
-      if (this._isValidFile(temp, [], options)) {
+      if (this._isValidFile(temp, arrayOfFilters, options)) {
         let fileItem = new FileItem(this, some, options);
         addedFileItems.push(fileItem);
         this.queue.push(fileItem);
