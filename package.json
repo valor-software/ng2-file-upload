@@ -38,7 +38,7 @@
     "clean-webpack-plugin": "0.1.8",
     "compression-webpack-plugin": "0.2.0",
     "eslint": "1.10.3",
-    "exports-loader": "0.6.2",
+    "exports-loader": "0.6.3",
     "file-loader": "0.8.5",
     "gulp": "3.9.1",
     "gulp-clean": "0.3.1",
