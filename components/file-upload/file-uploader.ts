@@ -225,7 +225,7 @@ export class FileUploader {
   }
 
   private _queueLimitFilter() {
-    return this.queue.length < this.queueLimit;
+    return this.queueLimit === undefined || this.queue.length < this.queueLimit;
   }
 
   private _isValidFile(file:any, filters:any, options:any) {
