@@ -22,7 +22,7 @@
 
             <div ng2-file-drop
                  [ngClass]="{'nv-file-over': hasBaseDropZoneOver}"
-                 (file-over)="fileOverBase($event)"
+                 (fileOver)="fileOverBase($event)"
                  [uploader]="uploader"
                  class="well my-drop-zone">
                 Base drop zone
@@ -30,7 +30,7 @@
 
             <div ng2-file-drop
                  [ngClass]="{'another-file-over-class': hasAnotherDropZoneOver}"
-                 (file-over)="fileOverAnother($event)"
+                 (fileOver)="fileOverAnother($event)"
                  [uploader]="uploader"
                  class="well my-drop-zone">
                 Another drop zone
