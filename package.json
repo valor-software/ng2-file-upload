@@ -57,7 +57,7 @@
     "raw-loader": "0.5.1",
     "require-dir": "0.3.0",
     "ts-loader": "0.8.1",
-    "tslint": "3.3.0",
+    "tslint": "3.4.0",
     "typescript": "1.7.5",
     "webpack": "1.12.13",
     "webpack-dev-server": "1.14.0"
