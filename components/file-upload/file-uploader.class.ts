@@ -1,44 +1,85 @@
 import {FileLikeObject} from './file-like-object.class';
 import {FileItem} from './file-item.class';
-function isFile(value:any):boolean {
+import {FileType} from './file-type';
+function isFile(value: any) {
   return (File && value instanceof File);
 }
 // function isFileLikeObject(value:any) {
-//   return value instanceof FileLikeObject;
-// }
-export class FileUploader {
-  public url:string;
-  public authToken:string;
-  public isUploading:boolean = false;
-  public queue:Array<any> = [];
-  public progress:number = 0;
-  public autoUpload:boolean = false;
-  public isHTML5:boolean = true;
-  public removeAfterUpload:boolean = false;
-  public queueLimit:number;
-  public _nextIndex:number = 0;
-  public filters:Array<any> = [];
-  public options:any;
-  private _failFilterIndex:number;
+export interface Headers {
+  name: string;
+  value: string;
+}
 
-  public constructor(options:any) {
-    // Object.assign(this, options);
-    this.url = options.url;
-    this.authToken = options.authToken;
-    this.autoUpload = options.autoUpload;
-    this.filters.unshift({name: 'queueLimit', fn: this._queueLimitFilter});
-    this.filters.unshift({name: 'folder', fn: this._folderFilter});
+export interface FileUploaderOptionsInterface {
+  allowedMimeType?: Array<string>;
+  allowedFileType?: Array<string>;
+  autoUpload?:boolean;
+  isHTML5?:boolean;
+  filters?:Array<any>;
+  headers?: Array<Headers>;
+  maxFileSize?: number;
+  queueLimit?:number;
+  removeAfterUpload?:boolean;
+  url?:string;
+}
+
+export class FileUploader {
+
+  public authToken: string;
+  public isUploading: boolean = false;
+  public queue: Array<any> = [];
+  public progress: number = 0;
+  public _nextIndex:number = 0;
+  public options:any;
+  private _failFilterIndex: number;
+
+  public options: FileUploaderOptionsInterface = {
+    autoUpload: false,
+    isHTML5: true,
+    filters: [],
+    removeAfterUpload: false,
+  };
+
+
+  constructor() {
   }
 
-  public addToQueue(files:any[], options:any, filters:any):void {
-    let list:any[] = [];
+  public setOptions(options: any) {
+    this.options = Object.assign(this.options, options);
+
+    this.authToken = options.authToken;
+    this.autoUpload = options.autoUpload;
+    this.options.filters.unshift({name: 'queueLimit', fn: this._queueLimitFilter});
+
+    if (this.options.maxFileSize) {
+      this.options.filters.unshift({name: 'fileSize', fn: this._fileSizeFilter});
+    }
+
+    if (this.options.allowedFileType) {
+      this.options.filters.unshift({name: 'fileType', fn: this._fileTypeFilter});
+    }
+
+    if (this.options.allowedMimeType) {
+      this.options.filters.unshift({name: 'mimeType', fn: this._mimeTypeFilter});
+    }
+
+    // this.options.filters.unshift({name: 'folder', fn: this._folderFilter});
+  }
+
+
+  public addToQueue(files: any[], options?: any, filters?: any) {
+    let list: any[] = [];
     for (let file of files) {
       list.push(file);
     }
     let arrayOfFilters = this._getFilters(filters);
     let count = this.queue.length;
-    let addedFileItems:any[] = [];
+    let addedFileItems: any[] = [];
     list.map((some:any) => {
+    if (!options) {
+      options = this.options;
+    }
+
       let temp = new FileLikeObject(some);
       if (this._isValidFile(temp, arrayOfFilters, options)) {
         let fileItem = new FileItem(this, some, options);
@@ -55,7 +96,7 @@ export class FileUploader {
       this.progress = this._getTotalProgress();
     }
     this._render();
-    if (this.autoUpload) {
+    if (this.options.autoUpload) {
       this.uploadAll();
     }
   }
@@ -80,7 +121,7 @@ export class FileUploader {
   public uploadItem(value:FileItem):void {
     let index = this.getIndexOfItem(value);
     let item = this.queue[index];
-    let transport = this.isHTML5 ? '_xhrTransport' : '_iframeTransport';
+    let transport = this.options.isHTML5 ? '_xhrTransport' : '_iframeTransport';
     item._prepareToUploading();
     if (this.isUploading) {
       return;
@@ -92,7 +133,7 @@ export class FileUploader {
   public cancelItem(value:any):void {
     let index = this.getIndexOfItem(value);
     let item = this.queue[index];
-    let prop = this.isHTML5 ? '_xhr' : '_form';
+    let prop = this.options.isHTML5 ? '_xhr' : '_form';
     if (item && item.isUploading) {
       item[prop].abort();
     }
@@ -175,8 +216,19 @@ export class FileUploader {
     return {item, response, status, headers};
   }
 
-  public onCancelItem(item:any, response:any, status:any, headers:any):any {
-    return {item, response, status, headers};
+  private _mimeTypeFilter(item: any) {
+    return !(this.options.allowedMimeType && this.options.allowedMimeType.indexOf(item.type) === -1);
+  }
+
+  private _fileSizeFilter(item: any) {
+    return !(this.options.maxFileSize && item.size > this.options.maxFileSize);
+  }
+
+  private _fileTypeFilter(item: any) {
+    return !(this.options.allowedFileType &&
+    this.options.allowedFileType.indexOf(FileType.getMimeClass(item)) === -1);
+  }
+
   }
 
   public onCompleteItem(item:any, response:any, status:any, headers:any):any {
@@ -207,7 +259,7 @@ export class FileUploader {
   }
 
   protected _headersGetter(parsedHeaders:any):any {
-    return (name:any) => {
+    return (name: any) => {
       if (name) {
         return parsedHeaders[name.toLowerCase()] || void 0;
       }
@@ -259,6 +311,11 @@ export class FileUploader {
     /*item.headers.map((value, name) => {
      xhr.setRequestHeader(name, value);
      });*/
+    if (this.options.headers) {
+      for (let header of this.options.headers) {
+        xhr.setRequestHeader(header.name, header.value);
+      }
+    }
     if (this.authToken) {
       xhr.setRequestHeader('Authorization', this.authToken);
     }

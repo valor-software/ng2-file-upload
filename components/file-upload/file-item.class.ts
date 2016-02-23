@@ -32,7 +32,7 @@ export class FileItem {
     this.options = options;
     this.file = new FileLikeObject(some);
     this._file = some;
-    this.url = uploader.url;
+    this.url = uploader.options.url;
     this._zone = new NgZone({ enableLongStackTrace: false });
   }
 
@@ -134,7 +134,7 @@ export class FileItem {
   public _onComplete(response:any, status:any, headers:any):void {
     this.onComplete(response, status, headers);
 
-    if (this.uploader.removeAfterUpload) {
+    if (this.uploader.options.removeAfterUpload) {
       this.remove();
     }
   }
