@@ -6,13 +6,18 @@ function isFile(value: any) {
   return (File && value instanceof File);
 }
 
+export interface Headers {
+  name: string;
+  value: string;
+}
+
 export interface FileUploaderSettings {
   allowedMimeType?: Array<string>;
   allowedFileType?: Array<string>;
   autoUpload?:boolean;
   isHTML5?:boolean;
   filters?:Array<any>;
-  headers?: Array<any>;
+  headers?: Array<Headers>;
   maxFileSize?: number;
   queueLimit?:number;
   removeAfterUpload?:boolean;
@@ -366,6 +371,11 @@ export class FileUploader {
     /*item.headers.map((value, name) => {
      xhr.setRequestHeader(name, value);
      });*/
+    if (this.options.headers) {
+      for (let header of this.options.headers) {
+        xhr.setRequestHeader(header.name, header.value);
+      }
+    }
 
     if (this.authToken) {
       xhr.setRequestHeader('Authorization', this.authToken);
