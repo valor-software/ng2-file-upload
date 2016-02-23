@@ -37,7 +37,7 @@ export class FileUploader {
   public _nextIndex = 0;
   private _failFilterIndex: number;
 
-  private options: FileUploaderOptionsInterface = {
+  public options: FileUploaderOptionsInterface = {
     autoUpload: false,
     isHTML5: true,
     filters: [],
