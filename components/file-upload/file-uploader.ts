@@ -45,13 +45,17 @@ export class FileUploader {
   };
 
 
-  constructor(public options: any) {
+  constructor() {
+  }
+
+  public setOptions(options: any) {
     this.options = Object.assign(this.options, options);
 
     this.authToken = options.authToken;
     this.options.filters.unshift({name: 'queueLimit', fn: this._queueLimitFilter});
     this.options.filters.unshift({name: 'folder', fn: this._folderFilter});
   }
+
 
   public addToQueue(files: any[], options?: any, filters?: any) {
     let list: any[] = [];
