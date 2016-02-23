@@ -53,7 +53,20 @@ export class FileUploader {
 
     this.authToken = options.authToken;
     this.options.filters.unshift({name: 'queueLimit', fn: this._queueLimitFilter});
-    this.options.filters.unshift({name: 'folder', fn: this._folderFilter});
+
+    if (this.options.maxFileSize) {
+      this.options.filters.unshift({name: 'fileSize', fn: this._fileSizeFilter});
+    }
+
+    if (this.options.allowedFileType) {
+      this.options.filters.unshift({name: 'fileType', fn: this._fileTypeFilter});
+    }
+
+    if (this.options.allowedMimeType) {
+      this.options.filters.unshift({name: 'mimeType', fn: this._mimeTypeFilter});
+    }
+
+    // this.options.filters.unshift({name: 'folder', fn: this._folderFilter});
   }
 
 
