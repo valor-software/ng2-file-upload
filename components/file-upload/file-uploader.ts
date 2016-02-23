@@ -249,6 +249,19 @@ export class FileUploader {
     return this.queue.length < this.options.queueLimit;
   }
 
+  private _mimeTypeFilter(item: any) {
+    return !(this.options.allowedMimeType && this.options.allowedMimeType.indexOf(item.type) === -1);
+  }
+
+  private _fileSizeFilter(item: any) {
+    return !(this.options.maxFileSize && item.size > this.options.maxFileSize);
+  }
+
+  private _fileTypeFilter(item: any) {
+    return !(this.options.allowedFileType &&
+    this.options.allowedFileType.indexOf(FileType.getMimeClass(item)) === -1);
+  }
+
   private _isValidFile(file: any, filters: any, options: any) {
     this._failFilterIndex = -1;
     return !filters.length ? true : filters.every((filter: any) => {
