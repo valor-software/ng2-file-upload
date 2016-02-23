@@ -11,7 +11,7 @@ export interface Headers {
   value: string;
 }
 
-export interface FileUploaderSettings {
+export interface FileUploaderOptionsInterface {
   allowedMimeType?: Array<string>;
   allowedFileType?: Array<string>;
   autoUpload?:boolean;
@@ -37,7 +37,7 @@ export class FileUploader {
   public _nextIndex = 0;
   private _failFilterIndex: number;
 
-  private options: FileUploaderSettings = {
+  private options: FileUploaderOptionsInterface = {
     autoUpload: false,
     isHTML5: true,
     filters: [],
