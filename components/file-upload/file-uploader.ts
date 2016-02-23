@@ -251,7 +251,7 @@ export class FileUploader {
   }
 
   private _queueLimitFilter() {
-    return this.queue.length < this.options.queueLimit;
+    return this.queue.length <= this.options.queueLimit;
   }
 
   private _mimeTypeFilter(item: any) {
