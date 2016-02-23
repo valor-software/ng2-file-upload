@@ -2,10 +2,6 @@ import {FileLikeObject} from './file-like-object';
 import {FileItem} from './file-item';
 import {FileType} from './file-type';
 
-function isFile(value: any) {
-  return (File && value instanceof File);
-}
-
 export interface Headers {
   name: string;
   value: string;
@@ -71,43 +67,42 @@ export class FileUploader {
 
 
   public addToQueue(files: any[], options?: any, filters?: any) {
-    let list: any[] = [];
-    for (let file of files) {
-      list.push(file);
-    }
+    this._removeFoldersFromFiles(files)
+      .then((list: Array<any>) => {
 
-    let arrayOfFilters = this._getFilters(filters);
-    let count = this.queue.length;
-    let addedFileItems: any[] = [];
+        let arrayOfFilters = this._getFilters(filters);
+        let count = this.queue.length;
+        let addedFileItems: any[] = [];
 
-    if (!options) {
-      options = this.options;
-    }
+        if (!options) {
+          options = this.options;
+        }
 
-    list.map(some => {
-      let temp = new FileLikeObject(some);
+        list.map(some => {
+          let temp = new FileLikeObject(some);
 
-      if (this._isValidFile(temp, arrayOfFilters, options)) {
-        let fileItem = new FileItem(this, some, options);
-        addedFileItems.push(fileItem);
-        this.queue.push(fileItem);
-        this._onAfterAddingFile(fileItem);
-      } else {
-        let filter = arrayOfFilters[this._failFilterIndex];
-        this._onWhenAddingFileFailed(temp, filter, options);
-      }
-    });
+          if (this._isValidFile(temp, arrayOfFilters, options)) {
+            let fileItem = new FileItem(this, some, options);
+            addedFileItems.push(fileItem);
+            this.queue.push(fileItem);
+            this._onAfterAddingFile(fileItem);
+          } else {
+            let filter = arrayOfFilters[this._failFilterIndex];
+            this._onWhenAddingFileFailed(temp, filter, options);
+          }
+        });
 
-    if (this.queue.length !== count) {
-      this._onAfterAddingAll(addedFileItems);
-      this.progress = this._getTotalProgress();
-    }
+        if (this.queue.length !== count) {
+          this._onAfterAddingAll(addedFileItems);
+          this.progress = this._getTotalProgress();
+        }
 
-    this._render();
+        this._render();
 
-    if (this.options.autoUpload) {
-      this.uploadAll();
-    }
+        if (this.options.autoUpload) {
+          this.uploadAll();
+        }
+      });
   }
 
   public removeFromQueue(value: any) {
@@ -168,10 +163,6 @@ export class FileUploader {
     items.map(item => item.cancel());
   }
 
-
-  public isFile(value: any) {
-    return isFile(value);
-  }
 
   public isFileLikeObject(value: any) {
     return value instanceof FileLikeObject;
@@ -463,4 +454,67 @@ export class FileUploader {
     this.progress = this._getTotalProgress();
     this._render();
   }
+
+  private isFileTest(file) {
+
+    return new Promise(function (resolve, reject) {
+      if (file.size !== 0) {
+        /*
+         *  reader.readAsText or reader.readAsArrayBuffer
+         *  loads file into RAM
+         *  so we need a chunk for better performance
+         */
+        let from = 0;
+        let to = 100;
+        let chunk;
+        if (file.slice) {
+          chunk = file.slice(from, to);
+        } else if (file.webkitSlice) {
+          chunk = file.webkitSlice(from, to);
+        } else if (file.mozSlice) {
+          chunk = file.mozSlice(from, to);
+        }
+        let reader = new FileReader();
+        reader.onload = () => resolve();
+        reader.onerror = () => reject();
+        reader.readAsArrayBuffer(chunk);
+      } else {
+        reject();
+      }
+    });
+  }
+
+  private _removeFoldersFromFiles(files: any[]) {
+    return new Promise((resolve, reject) => {
+      let list: any[] = [];
+
+      let that = this;
+      let count = 0;
+
+      for (let file of files) {
+        testFile(file);
+      }
+
+      function testFile(file) {
+        let isFileTest = that.isFileTest(file);
+        isFileTest.then(
+          (ok) => {
+            list.push(file);
+            count++;
+            if (count === files.length) {
+              resolve(list);
+            }
+          },
+          (isFolder) => {
+            count++;
+            if (count === files.length) {
+              resolve(list);
+            }
+          }
+        );
+      }
+
+    });
+  }
+
 }
