@@ -1,8 +1,11 @@
 import {FileLikeObject} from './file-like-object';
 import {FileItem} from './file-item';
 import {FileType} from './file-type';
+import {Headers, Http} from 'angular2/http';
+import {Inject} from 'angular2/core';
 
-export interface Headers {
+
+export interface HeadersForUpload {
   name: string;
   value: string;
 }
@@ -13,10 +16,12 @@ export interface FileUploaderOptionsInterface {
   autoUpload?:boolean;
   isHTML5?:boolean;
   filters?:Array<any>;
-  headers?: Array<Headers>;
+  headers?: Array<HeadersForUpload>;
   maxFileSize?: number;
   queueLimit?:number;
   removeAfterUpload?:boolean;
+  uploadPerPart?: boolean;
+  uploadPerPartViaHttp?: boolean;
   url?:string;
 }
 
@@ -41,7 +46,7 @@ export class FileUploader {
   };
 
 
-  constructor() {
+  constructor(@Inject(Http) private http: Http) {
   }
 
   public setOptions(options: any) {
@@ -127,7 +132,9 @@ export class FileUploader {
   public uploadItem(value: FileItem) {
     let index = this.getIndexOfItem(value);
     let item = this.queue[index];
-    let transport = this.options.isHTML5 ? '_xhrTransport' : '_iframeTransport';
+    let transport = this.options.uploadPerPartViaHttp ?
+      '_httpTransport' : this.options.isHTML5 ?
+      '_xhrTransport' : '_iframeTransport';
 
     item._prepareToUploading();
     if (this.isUploading) {
@@ -391,6 +398,87 @@ export class FileUploader {
 
     xhr.send(form);
     this._render();
+  }
+
+
+  private _httpTransport(item: any) {
+
+    let headers = new Headers();
+    let basicSize = 1024 * 1024;
+    let from = item.sizeTransferred;
+    let to = from + basicSize;
+
+    let blob;
+    if (item._file.slice) {
+      blob = item._file.slice(from, to);
+    } else if (item._file.webkitSlice) {
+      blob = item._file.webkitSlice(from, to);
+    } else if (item._file.mozSlice) {
+      blob = item._file.mozSlice(from, to);
+    }
+
+    if (this.options.headers) {
+      for (let header of this.options.headers) {
+        headers.append(header.name, header.value);
+      }
+    }
+
+    let reader = new FileReader();
+    reader.onloadend = (evt) => {
+
+      if (reader.readyState !== 2) {
+        return false;
+      }
+
+
+      let data = {
+        'sizeChunk': reader.result.length,
+        'sizeTotal': item._file.size,
+        'sizeTransferred': item.sizeTransferred,
+        'name': item.file.name,
+        'data': reader.result
+      };
+
+      if (item.uploadID) {
+        data.uploadId = item.uploadID;
+      }
+
+      this.http.post(item.url, JSON.stringify(data), {headers: headers})
+        .subscribe(
+          (response) => {
+            let res = response.json();
+            item.sizeTransferred = item.sizeTransferred + reader.result.length;
+            if (response.status === 201) {
+              this._onProgressItem(item, 100);
+              this._onSuccessItem(item, response, response.status, response.headers);
+              this._onCompleteItem(item, res, response.status, response.headers);
+            } else if (response.status === 202) {
+              let progress = Math.round(item.sizeTransferred / item._file.size * 100);
+              this._onProgressItem(item, progress);
+
+              if (res.uploadID) {
+                item.uploadID = res.uploadID;
+              }
+              if (item.sizeTransferred !== item._file.size) {
+                this._httpTransport(item);
+              }
+            }
+          },
+          (response) => {
+            if (response.status === 200) {
+              setTimeout( () => this._httpTransport(item), 3000);
+            } else {
+              let res = response.json();
+              this._onErrorItem(item, res, response.status, response.headers);
+              this._onCompleteItem(item, res, response.status, response.headers);
+            }
+          }
+        );
+
+    };
+
+    reader.readAsBinaryString(blob);
+
   }
 
   private _iframeTransport(item: any) {
