@@ -432,6 +432,7 @@ export class FileUploader {
 
 
       let data = {
+        'uploadId': undefined,
         'sizeChunk': reader.result.length,
         'sizeTotal': item._file.size,
         'sizeTransferred': item.sizeTransferred,
