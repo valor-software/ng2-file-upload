@@ -21,7 +21,6 @@ export interface FileUploaderOptionsInterface {
   queueLimit?:number;
   removeAfterUpload?:boolean;
   uploadPerPart?: boolean;
-  uploadPerPartViaHttp?: boolean;
   url?:string;
 }
 
@@ -132,9 +131,7 @@ export class FileUploader {
   public uploadItem(value: FileItem) {
     let index = this.getIndexOfItem(value);
     let item = this.queue[index];
-    let transport = this.options.uploadPerPartViaHttp ?
-      '_httpTransport' : this.options.isHTML5 ?
-      '_xhrTransport' : '_iframeTransport';
+    let transport = this.options.isHTML5 ? '_xhrTransport' : '_iframeTransport';
 
     item._prepareToUploading();
     if (this.isUploading) {
@@ -333,7 +330,7 @@ export class FileUploader {
   }
 
   _xhrTransport(item: any) {
-    let xhr = item._xhr = new XMLHttpRequest();
+
     let form = new FormData();
 
     this._onBeforeUploadItem(item);
@@ -349,10 +346,52 @@ export class FileUploader {
       throw new TypeError('The file specified is no longer valid');
     }
 
-    form.append(item.alias, item._file, item.file.name);
+    let basicSize = 1024 * 1024;
+    let from = item.sizeTransferred;
+    let to = from + basicSize;
 
+    let blob;
+    let data;
+
+    if (this.options.uploadPerPart) {
+
+      if (item._file.slice) {
+        blob = item._file.slice(from, to);
+      } else if (item._file.webkitSlice) {
+        blob = item._file.webkitSlice(from, to);
+      } else if (item._file.mozSlice) {
+        blob = item._file.mozSlice(from, to);
+      }
+
+      data = {
+        'uploadId': undefined,
+        'sizeChunk': blob.size,
+        'sizeTotal': item._file.size,
+        'sizeTransferred': item.sizeTransferred,
+        'name': item.file.name
+      };
+
+
+      if (item.uploadID) {
+        data.uploadId = item.uploadID;
+      }
+
+
+    } else {
+      form.append(item.alias, item._file, item.file.name);
+    }
+
+    let xhr = item._xhr = new XMLHttpRequest();
     xhr.upload.onprogress = (event) => {
-      let progress = Math.round(event.lengthComputable ? event.loaded * 100 / event.total : 0);
+      let progress;
+      if (this.options.uploadPerPart) {
+        let progressTransferred = Math.round(item.sizeTransferred / item._file.size * 100);
+        let progressBlob = Math.round(blob.size / item._file.size * 100);
+        let progressUploading = Math.round(event.lengthComputable ? event.loaded * 100 / event.total : 0);
+        progress = Math.round(progressTransferred + progressBlob * progressUploading / 100);
+      } else {
+        progress = Math.round(event.lengthComputable ? event.loaded * 100 / event.total : 0);
+      }
       this._onProgressItem(item, progress);
     };
 
@@ -361,8 +400,24 @@ export class FileUploader {
       let response = this._transformResponse(xhr.response, headers);
       let gist = this._isSuccessCode(xhr.status) ? 'Success' : 'Error';
       let method = '_on' + gist + 'Item';
-      (<any>this)[method](item, response, xhr.status, headers);
-      this._onCompleteItem(item, response, xhr.status, headers);
+
+      if (this.options.uploadPerPart && gist === 'Success') {
+        item.sizeTransferred = item.sizeTransferred + blob.size;
+        if (item.sizeTransferred === item._file.size) {
+          (<any>this)[method](item, response, xhr.status, headers);
+          this._onCompleteItem(item, response, xhr.status, headers);
+        } else {
+          let res = JSON.parse(xhr.response);
+          if (res.uploadID) {
+            item.uploadID = res.uploadID;
+          }
+          this._xhrTransport(item);
+        }
+
+      } else {
+        (<any>this)[method](item, response, xhr.status, headers);
+        this._onCompleteItem(item, response, xhr.status, headers);
+      }
     };
 
     xhr.onerror = () => {
@@ -396,90 +451,23 @@ export class FileUploader {
       xhr.setRequestHeader('Authorization', this.authToken);
     }
 
-    xhr.send(form);
-    this._render();
-  }
+    if (this.options.uploadPerPart) {
 
-
-  private _httpTransport(item: any) {
-
-    let headers = new Headers();
-    let basicSize = 1024 * 1024;
-    let from = item.sizeTransferred;
-    let to = from + basicSize;
-
-    let blob;
-    if (item._file.slice) {
-      blob = item._file.slice(from, to);
-    } else if (item._file.webkitSlice) {
-      blob = item._file.webkitSlice(from, to);
-    } else if (item._file.mozSlice) {
-      blob = item._file.mozSlice(from, to);
-    }
-
-    if (this.options.headers) {
-      for (let header of this.options.headers) {
-        headers.append(header.name, header.value);
-      }
-    }
-
-    let reader = new FileReader();
-    reader.onloadend = (evt) => {
-
-      if (reader.readyState !== 2) {
-        return false;
-      }
-
-
-      let data = {
-        'uploadId': undefined,
-        'sizeChunk': reader.result.length,
-        'sizeTotal': item._file.size,
-        'sizeTransferred': item.sizeTransferred,
-        'name': item.file.name,
-        'data': reader.result
+      let reader = new FileReader();
+      reader.onloadend = (evt) => {
+        if (reader.readyState !== 2) {
+          return false;
+        }
+        data.data = reader.result;
+        xhr.send(JSON.stringify(data));
       };
+      reader.readAsBinaryString(blob);
 
-      if (item.uploadID) {
-        data.uploadId = item.uploadID;
-      }
+    } else {
+      xhr.send(form);
+    }
 
-      this.http.post(item.url, JSON.stringify(data), {headers: headers})
-        .subscribe(
-          (response) => {
-            let res = response.json();
-            item.sizeTransferred = item.sizeTransferred + reader.result.length;
-            if (response.status === 201) {
-              this._onProgressItem(item, 100);
-              this._onSuccessItem(item, response, response.status, response.headers);
-              this._onCompleteItem(item, res, response.status, response.headers);
-            } else if (response.status === 202) {
-              let progress = Math.round(item.sizeTransferred / item._file.size * 100);
-              this._onProgressItem(item, progress);
-
-              if (res.uploadID) {
-                item.uploadID = res.uploadID;
-              }
-              if (item.sizeTransferred !== item._file.size) {
-                this._httpTransport(item);
-              }
-            }
-          },
-          (response) => {
-            if (response.status === 200) {
-              setTimeout( () => this._httpTransport(item), 3000);
-            } else {
-              let res = response.json();
-              this._onErrorItem(item, res, response.status, response.headers);
-              this._onCompleteItem(item, res, response.status, response.headers);
-            }
-          }
-        );
-
-    };
-
-    reader.readAsBinaryString(blob);
-
+    this._render();
   }
 
   private _iframeTransport(item: any) {
