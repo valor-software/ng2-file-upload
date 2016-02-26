@@ -2,7 +2,7 @@ import {FileLikeObject} from './file-like-object';
 import {FileItem} from './file-item';
 import {FileType} from './file-type';
 import {Headers, Http} from 'angular2/http';
-import {Inject} from 'angular2/core';
+import {Inject, Output, EventEmitter} from 'angular2/core';
 
 
 export interface HeadersForUpload {
@@ -44,6 +44,7 @@ export class FileUploader {
     removeAfterUpload: false,
   };
 
+  @Output() events$: EventEmitter<any> = new EventEmitter();
 
   constructor(@Inject(Http) private http: Http) {
   }
@@ -225,6 +226,9 @@ export class FileUploader {
   }
 
   public onCompleteAll() {
+    this.events$.emit({
+      'type': 'completeAll'
+    });
   }
 
   private _getTotalProgress(value = 0) {
@@ -503,21 +507,25 @@ export class FileUploader {
   private _onSuccessItem(item: any, response: any, status: any, headers: any) {
     item._onSuccess(response, status, headers);
     this.onSuccessItem(item, response, status, headers);
+    this.emitEvent('successItem', item, response, status, headers);
   }
 
   public _onErrorItem(item: any, response: any, status: any, headers: any) {
     item._onError(response, status, headers);
     this.onErrorItem(item, response, status, headers);
+    this.emitEvent('errorItem', item, response, status, headers);
   }
 
   private _onCancelItem(item: any, response: any, status: any, headers: any) {
     item._onCancel(response, status, headers);
     this.onCancelItem(item, response, status, headers);
+    this.emitEvent('cancelItem', item, response, status, headers);
   }
 
   public _onCompleteItem(item: any, response: any, status: any, headers: any) {
     item._onComplete(response, status, headers);
     this.onCompleteItem(item, response, status, headers);
+    this.emitEvent('completeItem', item, response, status, headers);
 
     let nextItem = this.getReadyItems()[0];
     this.isUploading = false;
@@ -530,6 +538,16 @@ export class FileUploader {
     this.onCompleteAll();
     this.progress = this._getTotalProgress();
     this._render();
+  }
+
+  private emitEvent(type, item, response, status, headers) {
+    this.events$.emit({
+      'type': type,
+      'item': item,
+      'reponse': response,
+      'status': status,
+      'headers': headers
+    });
   }
 
   private isFileTest(file) {
