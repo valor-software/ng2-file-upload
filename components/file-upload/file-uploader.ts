@@ -544,7 +544,7 @@ export class FileUploader {
     this.events$.emit({
       'type': type,
       'item': item,
-      'reponse': response,
+      'response': response,
       'status': status,
       'headers': headers
     });
