@@ -296,12 +296,11 @@ export class FileUploader {
   }
 
   private _transformResponse(response: any, headers: any): any {
-    // todo: ?
-    /*var headersGetter = this._headersGetter(headers);
-     forEach($http.defaults.transformResponse, (transformFn) => {
-     response = transformFn(response, headersGetter);
-     });*/
-    return response;
+    try {
+      return JSON.parse(response);
+    } catch (e) {
+      return response;
+    }
   }
 
   private _parseHeaders(headers: any) {
