@@ -336,7 +336,9 @@ export class FileUploader {
 
     let form = new FormData();
 
-    this._onBeforeUploadItem(item);
+    if (!item.isUploading) {
+      this._onBeforeUploadItem(item);
+    }
 
     // todo
     /*item.formData.map(obj => {
