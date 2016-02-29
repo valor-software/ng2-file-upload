@@ -18,6 +18,8 @@ export class FileItem {
   public isError:boolean = false;
   public progress:number = 0;
   public index:number = null;
+  public uploadID: string;
+  public sizeTransferred: number = 0;
 
   constructor(private uploader:FileUploader, private some:any, private options:any) {
     this.file = new FileLikeObject(some);

@@ -1,12 +1,11 @@
 import {FileLikeObject} from './file-like-object';
 import {FileItem} from './file-item';
 import {FileType} from './file-type';
+import {Headers, Http} from 'angular2/http';
+import {Inject, Output, EventEmitter} from 'angular2/core';
 
-function isFile(value: any) {
-  return (File && value instanceof File);
-}
 
-export interface Headers {
+export interface HeadersForUpload {
   name: string;
   value: string;
 }
@@ -17,10 +16,11 @@ export interface FileUploaderOptionsInterface {
   autoUpload?:boolean;
   isHTML5?:boolean;
   filters?:Array<any>;
-  headers?: Array<Headers>;
+  headers?: Array<HeadersForUpload>;
   maxFileSize?: number;
   queueLimit?:number;
   removeAfterUpload?:boolean;
+  uploadPerPart?: boolean;
   url?:string;
 }
 
@@ -44,8 +44,9 @@ export class FileUploader {
     removeAfterUpload: false,
   };
 
+  @Output() events$: EventEmitter<any> = new EventEmitter();
 
-  constructor() {
+  constructor(@Inject(Http) private http: Http) {
   }
 
   public setOptions(options: any) {
@@ -71,43 +72,42 @@ export class FileUploader {
 
 
   public addToQueue(files: any[], options?: any, filters?: any) {
-    let list: any[] = [];
-    for (let file of files) {
-      list.push(file);
-    }
+    this._removeFoldersFromFiles(files)
+      .then((list: Array<any>) => {
 
-    let arrayOfFilters = this._getFilters(filters);
-    let count = this.queue.length;
-    let addedFileItems: any[] = [];
+        let arrayOfFilters = this._getFilters(filters);
+        let count = this.queue.length;
+        let addedFileItems: any[] = [];
 
-    if (!options) {
-      options = this.options;
-    }
+        if (!options) {
+          options = this.options;
+        }
 
-    list.map(some => {
-      let temp = new FileLikeObject(some);
+        list.map(some => {
+          let temp = new FileLikeObject(some);
 
-      if (this._isValidFile(temp, arrayOfFilters, options)) {
-        let fileItem = new FileItem(this, some, options);
-        addedFileItems.push(fileItem);
-        this.queue.push(fileItem);
-        this._onAfterAddingFile(fileItem);
-      } else {
-        let filter = arrayOfFilters[this._failFilterIndex];
-        this._onWhenAddingFileFailed(temp, filter, options);
-      }
-    });
+          if (this._isValidFile(temp, arrayOfFilters, options)) {
+            let fileItem = new FileItem(this, some, options);
+            addedFileItems.push(fileItem);
+            this.queue.push(fileItem);
+            this._onAfterAddingFile(fileItem);
+          } else {
+            let filter = arrayOfFilters[this._failFilterIndex];
+            this._onWhenAddingFileFailed(temp, filter, options);
+          }
+        });
 
-    if (this.queue.length !== count) {
-      this._onAfterAddingAll(addedFileItems);
-      this.progress = this._getTotalProgress();
-    }
+        if (this.queue.length !== count) {
+          this._onAfterAddingAll(addedFileItems);
+          this.progress = this._getTotalProgress();
+        }
 
-    this._render();
+        this._render();
 
-    if (this.options.autoUpload) {
-      this.uploadAll();
-    }
+        if (this.options.autoUpload) {
+          this.uploadAll();
+        }
+      });
   }
 
   public removeFromQueue(value: any) {
@@ -169,10 +169,6 @@ export class FileUploader {
   }
 
 
-  public isFile(value: any) {
-    return isFile(value);
-  }
-
   public isFileLikeObject(value: any) {
     return value instanceof FileLikeObject;
   }
@@ -230,6 +226,9 @@ export class FileUploader {
   }
 
   public onCompleteAll() {
+    this.events$.emit({
+      'type': 'completeAll'
+    });
   }
 
   private _getTotalProgress(value = 0) {
@@ -297,12 +296,11 @@ export class FileUploader {
   }
 
   private _transformResponse(response: any, headers: any): any {
-    // todo: ?
-    /*var headersGetter = this._headersGetter(headers);
-     forEach($http.defaults.transformResponse, (transformFn) => {
-     response = transformFn(response, headersGetter);
-     });*/
-    return response;
+    try {
+      return JSON.parse(response);
+    } catch (e) {
+      return response;
+    }
   }
 
   private _parseHeaders(headers: any) {
@@ -335,10 +333,12 @@ export class FileUploader {
   }
 
   _xhrTransport(item: any) {
-    let xhr = item._xhr = new XMLHttpRequest();
+
     let form = new FormData();
 
-    this._onBeforeUploadItem(item);
+    if (!item.isUploading) {
+      this._onBeforeUploadItem(item);
+    }
 
     // todo
     /*item.formData.map(obj => {
@@ -351,10 +351,52 @@ export class FileUploader {
       throw new TypeError('The file specified is no longer valid');
     }
 
-    form.append(item.alias, item._file, item.file.name);
+    let basicSize = 1024 * 1024;
+    let from = item.sizeTransferred;
+    let to = from + basicSize;
 
+    let blob;
+    let data;
+
+    if (this.options.uploadPerPart) {
+
+      if (item._file.slice) {
+        blob = item._file.slice(from, to);
+      } else if (item._file.webkitSlice) {
+        blob = item._file.webkitSlice(from, to);
+      } else if (item._file.mozSlice) {
+        blob = item._file.mozSlice(from, to);
+      }
+
+      data = {
+        'uploadId': undefined,
+        'sizeChunk': blob.size,
+        'sizeTotal': item._file.size,
+        'sizeTransferred': item.sizeTransferred,
+        'name': item.file.name
+      };
+
+
+      if (item.uploadID) {
+        data.uploadId = item.uploadID;
+      }
+
+
+    } else {
+      form.append(item.alias, item._file, item.file.name);
+    }
+
+    let xhr = item._xhr = new XMLHttpRequest();
     xhr.upload.onprogress = (event) => {
-      let progress = Math.round(event.lengthComputable ? event.loaded * 100 / event.total : 0);
+      let progress;
+      if (this.options.uploadPerPart) {
+        let progressTransferred = Math.round(item.sizeTransferred / item._file.size * 100);
+        let progressBlob = Math.round(blob.size / item._file.size * 100);
+        let progressUploading = Math.round(event.lengthComputable ? event.loaded * 100 / event.total : 0);
+        progress = Math.round(progressTransferred + progressBlob * progressUploading / 100);
+      } else {
+        progress = Math.round(event.lengthComputable ? event.loaded * 100 / event.total : 0);
+      }
       this._onProgressItem(item, progress);
     };
 
@@ -363,8 +405,24 @@ export class FileUploader {
       let response = this._transformResponse(xhr.response, headers);
       let gist = this._isSuccessCode(xhr.status) ? 'Success' : 'Error';
       let method = '_on' + gist + 'Item';
-      (<any>this)[method](item, response, xhr.status, headers);
-      this._onCompleteItem(item, response, xhr.status, headers);
+
+      if (this.options.uploadPerPart && gist === 'Success') {
+        item.sizeTransferred = item.sizeTransferred + blob.size;
+        if (item.sizeTransferred === item._file.size) {
+          (<any>this)[method](item, response, xhr.status, headers);
+          this._onCompleteItem(item, response, xhr.status, headers);
+        } else {
+          let res = JSON.parse(xhr.response);
+          if (res.uploadID) {
+            item.uploadID = res.uploadID;
+          }
+          this._xhrTransport(item);
+        }
+
+      } else {
+        (<any>this)[method](item, response, xhr.status, headers);
+        this._onCompleteItem(item, response, xhr.status, headers);
+      }
     };
 
     xhr.onerror = () => {
@@ -398,7 +456,22 @@ export class FileUploader {
       xhr.setRequestHeader('Authorization', this.authToken);
     }
 
-    xhr.send(form);
+    if (this.options.uploadPerPart) {
+
+      let reader = new FileReader();
+      reader.onloadend = (evt) => {
+        if (reader.readyState !== 2) {
+          return false;
+        }
+        data.data = reader.result;
+        xhr.send(JSON.stringify(data));
+      };
+      reader.readAsBinaryString(blob);
+
+    } else {
+      xhr.send(form);
+    }
+
     this._render();
   }
 
@@ -435,21 +508,25 @@ export class FileUploader {
   private _onSuccessItem(item: any, response: any, status: any, headers: any) {
     item._onSuccess(response, status, headers);
     this.onSuccessItem(item, response, status, headers);
+    this.emitEvent('successItem', item, response, status, headers);
   }
 
   public _onErrorItem(item: any, response: any, status: any, headers: any) {
     item._onError(response, status, headers);
     this.onErrorItem(item, response, status, headers);
+    this.emitEvent('errorItem', item, response, status, headers);
   }
 
   private _onCancelItem(item: any, response: any, status: any, headers: any) {
     item._onCancel(response, status, headers);
     this.onCancelItem(item, response, status, headers);
+    this.emitEvent('cancelItem', item, response, status, headers);
   }
 
   public _onCompleteItem(item: any, response: any, status: any, headers: any) {
     item._onComplete(response, status, headers);
     this.onCompleteItem(item, response, status, headers);
+    this.emitEvent('completeItem', item, response, status, headers);
 
     let nextItem = this.getReadyItems()[0];
     this.isUploading = false;
@@ -463,4 +540,77 @@ export class FileUploader {
     this.progress = this._getTotalProgress();
     this._render();
   }
+
+  private emitEvent(type, item, response, status, headers) {
+    this.events$.emit({
+      'type': type,
+      'item': item,
+      'response': response,
+      'status': status,
+      'headers': headers
+    });
+  }
+
+  private isFileTest(file) {
+
+    return new Promise(function (resolve, reject) {
+      if (file.size !== 0) {
+        /*
+         *  reader.readAsText or reader.readAsArrayBuffer
+         *  loads file into RAM
+         *  so we need a chunk for better performance
+         */
+        let from = 0;
+        let to = 100;
+        let chunk;
+        if (file.slice) {
+          chunk = file.slice(from, to);
+        } else if (file.webkitSlice) {
+          chunk = file.webkitSlice(from, to);
+        } else if (file.mozSlice) {
+          chunk = file.mozSlice(from, to);
+        }
+        let reader = new FileReader();
+        reader.onload = () => resolve();
+        reader.onerror = () => reject();
+        reader.readAsArrayBuffer(chunk);
+      } else {
+        reject();
+      }
+    });
+  }
+
+  private _removeFoldersFromFiles(files: any[]) {
+    return new Promise((resolve, reject) => {
+      let list: any[] = [];
+
+      let that = this;
+      let count = 0;
+
+      for (let file of files) {
+        testFile(file);
+      }
+
+      function testFile(file) {
+        let isFileTest = that.isFileTest(file);
+        isFileTest.then(
+          (ok) => {
+            list.push(file);
+            count++;
+            if (count === files.length) {
+              resolve(list);
+            }
+          },
+          (isFolder) => {
+            count++;
+            if (count === files.length) {
+              resolve(list);
+            }
+          }
+        );
+      }
+
+    });
+  }
+
 }
