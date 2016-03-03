@@ -463,10 +463,10 @@ export class FileUploader {
         if (reader.readyState !== 2) {
           return false;
         }
-        data.data = reader.result;
+        data.data = new Buffer(reader.result).toJSON();
         xhr.send(JSON.stringify(data));
       };
-      reader.readAsBinaryString(blob);
+      reader.readAsArrayBuffer(blob);
 
     } else {
       xhr.send(form);
