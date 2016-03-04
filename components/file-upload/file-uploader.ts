@@ -373,9 +373,9 @@ export class FileUploader {
         'sizeChunk': blob.size,
         'sizeTotal': item._file.size,
         'sizeTransferred': item.sizeTransferred,
-        'name': item.file.name
+        'name': item.file.name,
+        'contentType': item._file.type
       };
-
 
       if (item.uploadID) {
         data.uploadId = item.uploadID;
