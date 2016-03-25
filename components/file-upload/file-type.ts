@@ -135,7 +135,6 @@ export class FileType {
             'rtf': 'doc',
             'txt': 'doc',
             'odt': 'doc',
-            'rtf': 'doc',
             'ppt': 'ppt',
             'pptx': 'ppt',
             'pps': 'ppt',
