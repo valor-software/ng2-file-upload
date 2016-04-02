@@ -5,7 +5,7 @@ import { FileUploader } from './file-uploader';
 @Directive({
   selector: '[ng2-file-drop]',
   properties: ['uploader'],
-  events: ['fileOver'],
+  events: ['fileOver','onFileDrop'],
   host: {
     '(drop)': 'onDrop($event)',
     '(dragover)': 'onDragOver($event)',
@@ -15,6 +15,7 @@ import { FileUploader } from './file-uploader';
 export class FileDrop {
   public uploader:FileUploader;
   private fileOver:EventEmitter<any> = new EventEmitter();
+  private onFileDrop:EventEmitter<File> = new EventEmitter();
 
   constructor(private element:ElementRef) {
   }
@@ -36,6 +37,7 @@ export class FileDrop {
     let filters = this.getFilters();
     this._preventAndStop(event);
     this.uploader.addToQueue(transfer.files, options, filters);
+    this.onFileDrop.emit(transfer.files[0]);
     this.fileOver.next(false);
   }
 
