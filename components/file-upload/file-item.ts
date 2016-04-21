@@ -22,7 +22,7 @@ export class FileItem {
   constructor(private uploader:FileUploader, private some:any, private options:any) {
     this.file = new FileLikeObject(some);
     this._file = some;
-    this.url = uploader.url;
+    this.url = uploader.options.url;
   }
 
   public upload() {
@@ -115,7 +115,7 @@ export class FileItem {
   private _onComplete(response:any, status:any, headers:any) {
     this.onComplete(response, status, headers);
 
-    if (this.uploader.removeAfterUpload) {
+    if (this.uploader.options.removeAfterUpload) {
       this.remove();
     }
   }
