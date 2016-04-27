@@ -267,7 +267,7 @@ export class FileUploader {
   }
 
   private _queueLimitFilter() {
-    return !(this.options.queueLimit && this.queue.length > this.options.queueLimit);
+    return !(this.options.queueLimit && this.queue.length >= this.options.queueLimit);
   }
 
   private _mimeTypeFilter(item: any) {
