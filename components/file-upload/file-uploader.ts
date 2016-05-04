@@ -1,8 +1,8 @@
 import {FileLikeObject} from './file-like-object';
 import {FileItem} from './file-item';
 import {FileType} from './file-type';
-import {Headers, Http} from 'angular2/http';
-import {Inject, Output, EventEmitter} from 'angular2/core';
+import {Headers, Http} from '@angular/http';
+import {Inject, Output, EventEmitter} from '@angular/core';
 
 
 export interface HeadersForUpload {
