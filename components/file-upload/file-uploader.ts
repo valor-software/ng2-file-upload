@@ -601,9 +601,6 @@ export class FileUploader {
             list.push(file);
             count++;
             if (count === files.length) {
-              if (list.length === 0) {
-                that.emitEvent('onAllItemsFiltered', undefined, undefined, undefined, undefined);
-              }
               resolve(list);
             }
           },
@@ -611,9 +608,6 @@ export class FileUploader {
             that.emitEvent('fileIsFolder', file, undefined, undefined, undefined);
             count++;
             if (count === files.length) {
-              if (list.length === 0) {
-                that.emitEvent('onAllItemsFiltered', undefined, undefined, undefined, undefined);
-              }
               resolve(list);
             }
           }
