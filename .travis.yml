@@ -1,0 +1,20 @@
+language: node_js
+node_js:
+ - "5"
+ - "4"
+
+before_install:
+- npm install -g npm@latest
+
+script:
+- npm test
+- npm run deploy
+
+addons:
+ firefox: "42.0"
+ apt:
+   sources:
+   - ubuntu-toolchain-r-test
+   # required by node-gyp to build some packages
+   packages:
+   - g++-4.8
