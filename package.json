@@ -7,8 +7,7 @@
     "prepublish": "gulp clean && tsc",
     "server": "webpack-dev-server --hot --inline --colors --display-error-details --display-cached",
     "start": "npm run server",
-    "test": "gulp lint",
-    "postinstall": "typings install"
+    "test": "gulp lint"
   },
   "main": "ng2-file-upload.js",
   "typings": "ng2-file-upload.d.ts",
@@ -67,7 +66,7 @@
     "raw-loader": "0.5.1",
     "reflect-metadata": "0.1.2",
     "require-dir": "0.3.0",
-    "rxjs": "^5.0.0-beta.6",
+    "rxjs": "5.0.0-beta.6",
     "ts-loader": "0.8.2",
     "tslint": "3.9.0",
     "typescript": "1.8.10",
