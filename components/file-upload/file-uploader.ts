@@ -99,6 +99,7 @@ export class FileUploader {
         });
 
         if (this.queue.length !== count) {
+          this.emitEvent('onAllItemsFiltered', undefined, undefined, undefined, undefined);
           this._onAfterAddingAll(addedFileItems);
           this.progress = this._getTotalProgress();
         }
@@ -599,12 +600,19 @@ export class FileUploader {
             list.push(file);
             count++;
             if (count === files.length) {
+              if (list.length === 0) {
+                this.emitEvent('onAllItemsFiltered', undefined, undefined, undefined, undefined);
+              }
               resolve(list);
             }
           },
           (isFolder) => {
+            this.emitEvent('fileIsFolder', file, undefined, undefined, undefined);
             count++;
             if (count === files.length) {
+              if (list.length === 0) {
+                this.emitEvent('onAllItemsFiltered', undefined, undefined, undefined, undefined);
+              }
               resolve(list);
             }
           }
