@@ -4,7 +4,7 @@
   "description": "angular2 file upload directives",
   "scripts": {
     "deploy": "NODE_ENV=production webpack -p --progress --color --optimize-minimize --optimize-dedupe --optimize-occurence-order",
-    "prepublish": "gulp clean && tsc",
+    "prepublish": "gulp clean && ./node_modules/.bin/typings install && tsc",
     "server": "webpack-dev-server --hot --inline --colors --display-error-details --display-cached",
     "start": "npm run server",
     "test": "gulp lint"
