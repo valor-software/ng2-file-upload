@@ -601,17 +601,17 @@ export class FileUploader {
             count++;
             if (count === files.length) {
               if (list.length === 0) {
-                this.emitEvent('onAllItemsFiltered', undefined, undefined, undefined, undefined);
+                that.emitEvent('onAllItemsFiltered', undefined, undefined, undefined, undefined);
               }
               resolve(list);
             }
           },
           (isFolder) => {
-            this.emitEvent('fileIsFolder', file, undefined, undefined, undefined);
+            that.emitEvent('fileIsFolder', file, undefined, undefined, undefined);
             count++;
             if (count === files.length) {
               if (list.length === 0) {
-                this.emitEvent('onAllItemsFiltered', undefined, undefined, undefined, undefined);
+                that.emitEvent('onAllItemsFiltered', undefined, undefined, undefined, undefined);
               }
               resolve(list);
             }
