@@ -13,15 +13,15 @@ export interface HeadersForUpload {
 export interface FileUploaderOptionsInterface {
   allowedMimeType?: Array<string>;
   allowedFileType?: Array<string>;
-  autoUpload?:boolean;
-  isHTML5?:boolean;
-  filters?:Array<any>;
+  autoUpload?: boolean;
+  isHTML5?: boolean;
+  filters?: Array<any>;
   headers?: Array<HeadersForUpload>;
   maxFileSize?: number;
-  queueLimit?:number;
-  removeAfterUpload?:boolean;
+  queueLimit?: number;
+  removeAfterUpload?: boolean;
   uploadPerPart?: boolean;
-  url?:string;
+  url?: string;
 }
 
 function isFileLikeObject(value: any) {
@@ -99,10 +99,11 @@ export class FileUploader {
         });
 
         if (this.queue.length !== count) {
-          this.emitEvent('onAllItemsFiltered', undefined, undefined, undefined, undefined);
           this._onAfterAddingAll(addedFileItems);
           this.progress = this._getTotalProgress();
         }
+
+        this.emitEvent('onAllItemsFiltered', undefined, undefined, undefined, undefined);
 
         this._render();
 
