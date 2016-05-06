@@ -94,6 +94,7 @@ export class FileUploader {
           } else {
             let filter = arrayOfFilters[this._failFilterIndex];
             this._onWhenAddingFileFailed(temp, filter, options);
+            this.emitEvent('fileNotValid', temp, undefined, filter, undefined);
           }
         });
 
