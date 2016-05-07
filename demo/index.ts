@@ -1,16 +1,14 @@
 /// <reference path="../tsd.d.ts" />
-import {bootstrap} from 'angular2/platform/browser';
-import {Component, View} from 'angular2/core';
-import {NgClass} from 'angular2/common';
+import {bootstrap} from '@angular/platform-browser-dynamic';
+import {Component} from '@angular/core';
+import {NgClass} from '@angular/common';
 
 import {FileUploadSection} from './components/file-upload-section';
 
 let gettingStarted = require('./getting-started.md');
 
 @Component({
-  selector: 'app'
-})
-@View({
+  selector: 'app',
   template: `
   <main class="bd-pageheader">
     <div class="container">
