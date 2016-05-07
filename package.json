@@ -28,7 +28,6 @@
   },
   "homepage": "https://github.com/valor-software/ng2-file-upload#readme",
   "dependencies": {
-    "rxjs": "5.0.0-beta.6"
   },
   "peerDependencies": {
     "@angular/common": "^2.0.0-rc.1",
@@ -68,7 +67,7 @@
     "raw-loader": "0.5.1",
     "reflect-metadata": "0.1.2",
     "require-dir": "0.3.0",
-    "rxjs": "^5.0.0-beta.6",
+    "rxjs": "5.0.0-beta.6",
     "ts-loader": "0.8.2",
     "tslint": "3.9.0",
     "typescript": "1.8.10",

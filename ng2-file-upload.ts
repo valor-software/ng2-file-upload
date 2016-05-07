@@ -1,5 +1,3 @@
-/// <reference path="node_modules/@angular/platform-browser/index.d.ts" />
-
 export * from  './components/file-upload/file-select';
 export * from  './components/file-upload/file-drop';
 export * from  './components/file-upload/file-uploader';
