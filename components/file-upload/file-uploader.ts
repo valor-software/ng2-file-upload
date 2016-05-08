@@ -23,12 +23,13 @@ export class FileUploader {
   public filters:Array<any> = [];
   private _failFilterIndex:number;
 
-  constructor(public options:any) {
+  constructor(public options:any, public qLimit?:any) {
     // Object.assign(this, options);
     this.url = options.url;
     this.authToken = options.authToken;
     this.filters.unshift({name: 'queueLimit', fn: this._queueLimitFilter});
     this.filters.unshift({name: 'folder', fn: this._folderFilter});
+    qLimit ? this.queueLimit = qLimit.queueLimit : this.queueLimit = 0;
   }
 
   public addToQueue(files:any[], options:any, filters:any) {
@@ -225,7 +226,7 @@ export class FileUploader {
   }
 
   private _queueLimitFilter() {
-    return this.queue.length < this.queueLimit;
+    return this.queueLimit === 0 || this.queue.length < this.queueLimit;
   }
 
   private _isValidFile(file:any, filters:any, options:any) {
