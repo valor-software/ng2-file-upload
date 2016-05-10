@@ -168,6 +168,9 @@ export class FileUploader {
   public onBeforeUploadItem(fileItem:any) {
   }
 
+  public onBuildItemForm(fileItem:any, form:any) {
+  }
+
   public onProgressItem(fileItem:any, progress:any) {
   }
 
@@ -295,6 +298,8 @@ export class FileUploader {
       throw new TypeError('The file specified is no longer valid');
     }
 
+    this._onBuildItemForm(item, form)
+
     form.append(item.alias, item._file, item.file.name);
 
     xhr.upload.onprogress = (event) => {
@@ -360,6 +365,11 @@ export class FileUploader {
   private _onBeforeUploadItem(item:any) {
     item._onBeforeUpload();
     this.onBeforeUploadItem(item);
+  }
+
+  private _onBuildItemForm(item:any, form:any) {
+    item._onBuildForm(form);
+    this.onBuildItemForm(item, form);
   }
 
   private _onProgressItem(item:any, progress:any) {
