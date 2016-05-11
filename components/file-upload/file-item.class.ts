@@ -1,3 +1,5 @@
+import {NgZone} from '@angular/core';
+
 import {FileLikeObject} from './file-like-object.class';
 import {FileUploader} from './file-uploader.class';
 
@@ -18,6 +20,7 @@ export class FileItem {
   public isError:boolean = false;
   public progress:number = 0;
   public index:number = void 0;
+  private _zone:NgZone;
 
   private uploader:FileUploader;
   private some:any;
@@ -30,6 +33,7 @@ export class FileItem {
     this.file = new FileLikeObject(some);
     this._file = some;
     this.url = uploader.url;
+    this._zone = new NgZone({ enableLongStackTrace: false });
   }
 
   public upload():void {
@@ -85,7 +89,9 @@ export class FileItem {
   }
 
   public _onProgress(progress:number):void {
-    this.progress = progress;
+    this._zone.run(() => {
+      this.progress = progress;
+    });
     this.onProgress(progress);
   }
 
