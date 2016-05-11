@@ -1,32 +1,27 @@
-import { Directive, EventEmitter, ElementRef } from '@angular/core';
+import { Directive, EventEmitter, ElementRef, HostListener, Input, Output } from '@angular/core';
 
-import { FileUploader } from './file-uploader';
+import { FileUploader } from './file-uploader.class';
 
-@Directive({
-  selector: '[ng2-file-drop]',
-  properties: ['uploader'],
-  events: ['fileOver'],
-  host: {
-    '(drop)': 'onDrop($event)',
-    '(dragover)': 'onDragOver($event)',
-    '(dragleave)': 'onDragLeave($event)'
-  }
-})
-export class FileDrop {
-  public uploader:FileUploader;
-  private fileOver:EventEmitter<any> = new EventEmitter();
+@Directive({selector: '[ng2FileDrop]'})
+export class FileDropDirective {
+  @Input() public uploader:FileUploader;
+  @Output() public fileOver:EventEmitter<any> = new EventEmitter();
 
-  constructor(private element:ElementRef) {
+  private element:ElementRef;
+  public constructor(element:ElementRef) {
+    this.element = element;
   }
 
-  getOptions() {
+  public getOptions():any {
     return this.uploader.options;
   }
 
-  getFilters() {
+  public getFilters():any {
+    return {};
   }
 
-  onDrop(event:any) {
+  @HostListener('drop', ['$event'])
+  public onDrop(event:any):void {
     let transfer = this._getTransfer(event);
     if (!transfer) {
       return;
@@ -36,10 +31,11 @@ export class FileDrop {
     let filters = this.getFilters();
     this._preventAndStop(event);
     this.uploader.addToQueue(transfer.files, options, filters);
-    this.fileOver.next(false);
+    this.fileOver.emit(false);
   }
 
-  onDragOver(event:any) {
+  @HostListener('dragover', ['$event'])
+  public onDragOver(event:any):void {
     let transfer = this._getTransfer(event);
     if (!this._haveFiles(transfer.types)) {
       return;
@@ -47,16 +43,17 @@ export class FileDrop {
 
     transfer.dropEffect = 'copy';
     this._preventAndStop(event);
-    this.fileOver.next(true);
+    this.fileOver.emit(true);
   }
 
-  onDragLeave(event:any):any {
-    if (event.currentTarget === (<any>this).element[0]) {
+  @HostListener('dragleave', ['$event'])
+  public onDragLeave(event:any):any {
+    if (event.currentTarget === (this as any).element[0]) {
       return;
     }
 
     this._preventAndStop(event);
-    this.fileOver.next(false);
+    this.fileOver.emit(false);
   }
 
   private _getTransfer(event:any):any {
@@ -81,12 +78,12 @@ export class FileDrop {
       return false;
     }
   }
-
+/*
   _addOverClass(item:any):any {
     item.addOverClass();
   }
 
   _removeOverClass(item:any):any {
     item.removeOverClass();
-  }
+  }*/
 }

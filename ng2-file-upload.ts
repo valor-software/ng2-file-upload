@@ -1,8 +1,14 @@
-export * from  './components/file-upload/file-select';
-export * from  './components/file-upload/file-drop';
-export * from  './components/file-upload/file-uploader';
+export * from  './components/file-upload/file-select.directive';
+export * from  './components/file-upload/file-drop.directive';
+export * from  './components/file-upload/file-uploader.class';
 
-import {FileSelect} from './components/file-upload/file-select';
-import {FileDrop} from './components/file-upload/file-drop';
+import {FileSelectDirective} from './components/file-upload/file-select.directive';
+import {FileDropDirective} from './components/file-upload/file-drop.directive';
 
-export const FILE_UPLOAD_DIRECTIVES:[any] = [FileSelect, FileDrop];
+export const FILE_UPLOAD_DIRECTIVES:[any] = [FileSelectDirective, FileDropDirective];
+
+export default {
+  directives: [
+    FILE_UPLOAD_DIRECTIVES
+  ]
+};

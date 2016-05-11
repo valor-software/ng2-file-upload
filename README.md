@@ -1,7 +1,7 @@
 # ng2-file-upload [![npm version](https://badge.fury.io/js/ng2-file-upload.svg)](http://badge.fury.io/js/ng2-file-upload)
 Easy to use Angular2 directives for files upload ([demo](http://valor-software.github.io/ng2-file-upload/))
 
-Follow me at [twitter](https://twitter.com/valorkin) to be notified about new releases.
+Follow me [![twitter](https://img.shields.io/twitter/follow/valorkin.svg?style=social&label=%20valorkin)](https://twitter.com/valorkin) to be notified about new releases.
 
 [![Code Climate](https://codeclimate.com/github/valor-software/ng2-file-upload/badges/gpa.svg)](https://codeclimate.com/github/valor-software/ng2-file-upload)
 [![Join the chat at https://gitter.im/valor-software/ng2-bootstrap](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/valor-software/ng2-bootstrap?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
@@ -17,9 +17,9 @@ Follow me at [twitter](https://twitter.com/valorkin) to be notified about new re
 
   Alternatively, you can [download it in a ZIP file](https://github.com/valor-software/ng2-file-upload/archive/master.zip).
 
-2. Currently `ng2-file-upload` contains two directives: `ng2-file-select` and `ng2-file-drop`. `ng2-file-select` is used for 'file-input' field of form and 
+2. Currently `ng2-file-upload` contains two directives: `ng2-file-select` and `ng2-file-drop`. `ng2-file-select` is used for 'file-input' field of form and
   `ng2-file-drop` is used for area that will be used for dropping of file or files.
-  
+
 3. More information regarding using of ***ng2-file-upload*** is located in
   [demo](http://valor-software.github.io/ng2-file-upload/) and [demo sources](https://github.com/valor-software/ng2-file-upload/tree/master/demo).
 
@@ -28,7 +28,7 @@ Follow me at [twitter](https://twitter.com/valorkin) to be notified about new re
 ### Properties
 
   - `uploader` - (`FileUploader`) - uploader object. See using in [demo](https://github.com/valor-software/ng2-file-upload/blob/master/demo/components/file-upload/simple-demo.ts)
-  
+
 ## API for `ng2-file-drop`
 
 ### Properties

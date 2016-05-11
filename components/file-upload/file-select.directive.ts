@@ -1,34 +1,32 @@
-import { Directive, ElementRef } from '@angular/core';
+import { Directive, ElementRef, Input, HostListener } from '@angular/core';
 
-import {FileUploader} from './file-uploader';
+import {FileUploader} from './file-uploader.class';
 
 // todo: filters
 
-@Directive({
-  selector: '[ng2-file-select]',
-  properties: ['uploader'],
-  host: {
-    '(change)': 'onChange()'
-  }
-})
-export class FileSelect {
-  public uploader:FileUploader;
+@Directive({selector: '[ng2FileSelect]'})
+export class FileSelectDirective {
+  @Input() public uploader:FileUploader;
 
-  constructor(private element:ElementRef) {
+  private element:ElementRef;
+  public constructor(element:ElementRef) {
+    this.element = element;
   }
 
-  public getOptions() {
+  public getOptions():any {
     return this.uploader.options;
   }
 
-  public getFilters() {
+  public getFilters():any {
+    return void 0;
   }
 
   public isEmptyAfterSelection():boolean {
     return !!this.element.nativeElement.attributes.multiple;
   }
 
-  onChange() {
+  @HostListener('change')
+  public onChange():any {
     // let files = this.uploader.isHTML5 ? this.element.nativeElement[0].files : this.element.nativeElement[0];
     let files = this.element.nativeElement.files;
     let options = this.getOptions();
@@ -45,5 +43,3 @@ export class FileSelect {
     }
   }
 }
-
-export const fileUpload:Array<any> = [FileSelect];

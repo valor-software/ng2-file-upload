@@ -1,9 +1,8 @@
-/// <reference path="../tsd.d.ts" />
 import {bootstrap} from '@angular/platform-browser-dynamic';
 import {Component} from '@angular/core';
 import {NgClass} from '@angular/common';
 
-import {FileUploadSection} from './components/file-upload-section';
+import {FileUploadSectionComponent} from './components/file-upload-section';
 
 let gettingStarted = require('./getting-started.md');
 
@@ -36,10 +35,10 @@ let gettingStarted = require('./getting-started.md');
   `,
   directives: [
     NgClass,
-    FileUploadSection
+    FileUploadSectionComponent
   ]
 })
-export class Demo {
+export class DemoComponent {
 }
 
-bootstrap(Demo);
+bootstrap(DemoComponent);

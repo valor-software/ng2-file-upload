@@ -1,32 +1,17 @@
 ### Usage
 ```typescript
-import {FileSelect, FileDrop, FileUploader} from 'ng2-file-upload';
+import {FileSelectDirective, FileDropDirective, FileUploader} from 'ng2-file-upload/ng2-file-upload';
 ```
 
 ### Annotations
 ```typescript
-// class FileSelect
-@Directive({
-  selector: '[ng2-file-select]',
-  properties: ['uploader'],
-  host: {
-    '(change)': 'onChange()'
-  }
-})
+// class FileSelectDirective
+@Directive({ selector: '[ng2FileSelect]' })
 ```
 
 ```typescript
-// class FileDrop
-@Directive({
-  selector: '[ng2-file-drop]',
-  properties: ['uploader'],
-  events: ['fileOver'],
-  host: {
-    '(drop)': 'onDrop($event)',
-    '(dragover)': 'onDragOver($event)',
-    '(dragleave)': 'onDragLeave($event)'
-  }
-})
+// class FileDropDirective
+@Directive({ selector: '[ng2FileDrop]' })
 ```
 
 ## FileSelect API
@@ -48,6 +33,6 @@ import {FileSelect, FileDrop, FileUploader} from 'ng2-file-upload';
 
 ### Events
 
-  - `file-over` - it fires during 'over' and 'out' events for Drop Area; returns `boolean`: `true` if file is over Drop Area, `false` in case of out.
+  - `fileOver` - it fires during 'over' and 'out' events for Drop Area; returns `boolean`: `true` if file is over Drop Area, `false` in case of out.
   See using in [ts demo](https://github.com/valor-software/ng2-file-upload/blob/master/demo/components/file-upload/simple-demo.ts) and
   [html demo](https://github.com/valor-software/ng2-file-upload/blob/master/demo/components/file-upload/simple-demo.html)

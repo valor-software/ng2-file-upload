@@ -1,10 +1,8 @@
-/// <reference path="../../tsd.d.ts" />
-
 import {Component} from '@angular/core';
 import {CORE_DIRECTIVES} from '@angular/common';
 
 import {TAB_DIRECTIVES} from 'ng2-bootstrap/ng2-bootstrap';
-import {SimpleDemo} from './file-upload/simple-demo';
+import {SimpleDemoComponent} from './file-upload/simple-demo';
 
 let name = 'File Upload';
 let doc = require('../../components/file-upload/readme.md');
@@ -19,7 +17,7 @@ let tabDesc:Array<any> = [
 ];
 
 let tabsContent:string = ``;
-tabDesc.forEach(desc => {
+tabDesc.forEach((desc:any) => {
   tabsContent += `
           <tab heading="${desc.heading}" (select)="select($event)">
           <div class="card card-block panel panel-default panel-body">
@@ -70,12 +68,12 @@ tabDesc.forEach(desc => {
     </div>
   </section>
   `,
-  directives: [SimpleDemo, TAB_DIRECTIVES, CORE_DIRECTIVES]
+  directives: [SimpleDemoComponent, TAB_DIRECTIVES, CORE_DIRECTIVES]
 })
-export class FileUploadSection {
-  private currentHeading:string = 'Simple';
+export class FileUploadSectionComponent {
+  public currentHeading:string = 'Simple';
 
-  private select(e:any) {
+  public select(e:any):void {
     if (e.heading) {
       this.currentHeading = e.heading;
     }

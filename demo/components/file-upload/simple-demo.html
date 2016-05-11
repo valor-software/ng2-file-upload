@@ -20,7 +20,7 @@
 
             <h3>Select files</h3>
 
-            <div ng2-file-drop
+            <div ng2FileDrop
                  [ngClass]="{'nv-file-over': hasBaseDropZoneOver}"
                  (fileOver)="fileOverBase($event)"
                  [uploader]="uploader"
@@ -28,7 +28,7 @@
                 Base drop zone
             </div>
 
-            <div ng2-file-drop
+            <div ng2FileDrop
                  [ngClass]="{'another-file-over-class': hasAnotherDropZoneOver}"
                  (fileOver)="fileOverAnother($event)"
                  [uploader]="uploader"
@@ -37,10 +37,10 @@
             </div>
 
             Multiple
-            <input type="file" ng2-file-select [uploader]="uploader" multiple  /><br/>
+            <input type="file" ng2FileSelect [uploader]="uploader" multiple  /><br/>
 
             Single
-            <input type="file" ng2-file-select [uploader]="uploader" />
+            <input type="file" ng2FileSelect [uploader]="uploader" />
         </div>
 
         <div class="col-md-9" style="margin-bottom: 40px">
