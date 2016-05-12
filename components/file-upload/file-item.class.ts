@@ -57,6 +57,10 @@ export class FileItem {
     return void 0;
   }
 
+  public onBuildForm(form:any):any {
+    return {form};
+  }
+
   public onProgress(progress:number):any {
     return {progress};
   }
@@ -86,6 +90,10 @@ export class FileItem {
     this.isError = false;
     this.progress = 0;
     this.onBeforeUpload();
+  }
+
+  public _onBuildForm(form:any):void {
+    this.onBuildForm(form);
   }
 
   public _onProgress(progress:number):void {
