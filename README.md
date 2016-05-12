@@ -25,13 +25,13 @@ Follow me [![twitter](https://img.shields.io/twitter/follow/valorkin.svg?style=s
 3. More information regarding using of ***ng2-file-upload*** is located in
   [demo](http://valor-software.github.io/ng2-file-upload/) and [demo sources](https://github.com/valor-software/ng2-file-upload/tree/master/demo).
 
-## API for `ng2-file-select`
+## API for `ng2FileSelect`
 
 ### Properties
 
   - `uploader` - (`FileUploader`) - uploader object. See using in [demo](https://github.com/valor-software/ng2-file-upload/blob/master/demo/components/file-upload/simple-demo.ts)
 
-## API for `ng2-file-drop`
+## API for `ng2FileDrop`
 
 ### Properties
 
@@ -44,7 +44,7 @@ Follow me [![twitter](https://img.shields.io/twitter/follow/valorkin.svg?style=s
 
 ### Events
 
-  - `file-over` - it fires during 'over' and 'out' events for Drop Area; returns `boolean`: `true` if file is over Drop Area, `false` in case of out.
+  - `fileOver` - it fires during 'over' and 'out' events for Drop Area; returns `boolean`: `true` if file is over Drop Area, `false` in case of out.
   See using in [ts demo](https://github.com/valor-software/ng2-file-upload/blob/master/demo/components/file-upload/simple-demo.ts) and
   [html demo](https://github.com/valor-software/ng2-file-upload/blob/master/demo/components/file-upload/simple-demo.html)
 

@@ -9,7 +9,7 @@
 
 ### Chores
 
-* **build:** ng2 style guide applied, ([aee69d8](https://github.com/valor-software/ng2-file-upload/commit/aee69d8))
+* **build:** ng2 style guide applied ([aee69d8](https://github.com/valor-software/ng2-file-upload/commit/aee69d8))
 
 
 ### Features
@@ -19,7 +19,6 @@
 
 ### BREAKING CHANGES
 
-* build: S:
 - directives and selectors renamed to ng2FileSelect and ng2FileDrop
 
 

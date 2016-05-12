@@ -8,7 +8,6 @@ script:
 
 after_success:
   - ./node_modules/.bin/codecov
-  - npm run deploy
 
 addons:
   # sauce labs tunel connector (read more https://docs.travis-ci.com/user/sauce-connect/ )
