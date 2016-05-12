@@ -6,6 +6,7 @@ import { FileUploader } from './file-uploader.class';
 export class FileDropDirective {
   @Input() public uploader:FileUploader;
   @Output() public fileOver:EventEmitter<any> = new EventEmitter();
+  @Output() public onFileDrop:EventEmitter<File> = new EventEmitter();
 
   private element:ElementRef;
   public constructor(element:ElementRef) {
@@ -32,6 +33,7 @@ export class FileDropDirective {
     this._preventAndStop(event);
     this.uploader.addToQueue(transfer.files, options, filters);
     this.fileOver.emit(false);
+    this.onFileDrop.emit(transfer.files[0]);
   }
 
   @HostListener('dragover', ['$event'])
