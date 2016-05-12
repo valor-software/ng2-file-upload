@@ -189,6 +189,10 @@ export class FileUploader {
     return {fileItems};
   }
 
+  public onBuildItemForm(fileItem:any, form:any):any {
+    return {fileItem, form};
+  }
+
   public onAfterAddingFile(fileItem:any):any {
     return {fileItem};
   }
@@ -283,6 +287,8 @@ export class FileUploader {
     if (typeof item._file.size !== 'number') {
       throw new TypeError('The file specified is no longer valid');
     }
+    this._onBuildItemForm(item, form);
+
     form.append(item.alias, item._file, item.file.name);
     xhr.upload.onprogress = (event:any) => {
       let progress = Math.round(event.lengthComputable ? event.loaded * 100 / event.total : 0);
@@ -426,6 +432,11 @@ export class FileUploader {
   private _onBeforeUploadItem(item:any):void {
     item._onBeforeUpload();
     this.onBeforeUploadItem(item);
+  }
+
+  private _onBuildItemForm(item:any, form:any):void {
+    item._onBuildForm(form);
+    this.onBuildItemForm(item, form);
   }
 
   private _onProgressItem(item:any, progress:any):void {
