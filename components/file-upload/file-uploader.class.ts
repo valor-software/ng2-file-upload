@@ -1,23 +1,24 @@
 import {FileLikeObject} from './file-like-object.class';
 import {FileItem} from './file-item.class';
-import {FileType} from './file-type';
-function isFile(value: any) {
+import {FileType} from './file-type.class';
+
+function isFile(value:any):boolean {
   return (File && value instanceof File);
 }
 // function isFileLikeObject(value:any) {
 export interface Headers {
-  name: string;
-  value: string;
+  name:string;
+  value:string;
 }
 
-export interface FileUploaderOptionsInterface {
-  allowedMimeType?: Array<string>;
-  allowedFileType?: Array<string>;
+export interface FileUploaderOptions {
+  allowedMimeType?:Array<string>;
+  allowedFileType?:Array<string>;
   autoUpload?:boolean;
   isHTML5?:boolean;
   filters?:Array<any>;
-  headers?: Array<Headers>;
-  maxFileSize?: number;
+  headers?:Array<Headers>;
+  maxFileSize?:number;
   queueLimit?:number;
   removeAfterUpload?:boolean;
   url?:string;
@@ -25,26 +26,27 @@ export interface FileUploaderOptionsInterface {
 
 export class FileUploader {
 
-  public authToken: string;
-  public isUploading: boolean = false;
-  public queue: Array<any> = [];
-  public progress: number = 0;
+  public authToken:string;
+  public isUploading:boolean = false;
+  public queue:Array<any> = [];
+  public progress:number = 0;
   public _nextIndex:number = 0;
-  public options:any;
-  private _failFilterIndex: number;
+  public autoUpload:any;
 
-  public options: FileUploaderOptionsInterface = {
+  public options:FileUploaderOptions = {
     autoUpload: false,
     isHTML5: true,
     filters: [],
-    removeAfterUpload: false,
+    removeAfterUpload: false
   };
 
+  private _failFilterIndex:number;
 
-  constructor() {
+  public constructor(options:any) {
+    this.setOptions(options);
   }
 
-  public setOptions(options: any) {
+  public setOptions(options:any):void {
     this.options = Object.assign(this.options, options);
 
     this.authToken = options.authToken;
@@ -66,19 +68,18 @@ export class FileUploader {
     // this.options.filters.unshift({name: 'folder', fn: this._folderFilter});
   }
 
-
-  public addToQueue(files: any[], options?: any, filters?: any) {
-    let list: any[] = [];
+  public addToQueue(files:any[], options?:any, filters?:any):void {
+    let list:any[] = [];
     for (let file of files) {
       list.push(file);
     }
     let arrayOfFilters = this._getFilters(filters);
     let count = this.queue.length;
-    let addedFileItems: any[] = [];
+    let addedFileItems:any[] = [];
     list.map((some:any) => {
-    if (!options) {
-      options = this.options;
-    }
+      if (!options) {
+        options = this.options;
+      }
 
       let temp = new FileLikeObject(some);
       if (this._isValidFile(temp, arrayOfFilters, options)) {
@@ -216,19 +217,8 @@ export class FileUploader {
     return {item, response, status, headers};
   }
 
-  private _mimeTypeFilter(item: any) {
-    return !(this.options.allowedMimeType && this.options.allowedMimeType.indexOf(item.type) === -1);
-  }
-
-  private _fileSizeFilter(item: any) {
-    return !(this.options.maxFileSize && item.size > this.options.maxFileSize);
-  }
-
-  private _fileTypeFilter(item: any) {
-    return !(this.options.allowedFileType &&
-    this.options.allowedFileType.indexOf(FileType.getMimeClass(item)) === -1);
-  }
-
+  public onCancelItem(item:any, response:any, status:any, headers:any):any {
+    return {item, response, status, headers};
   }
 
   public onCompleteItem(item:any, response:any, status:any, headers:any):any {
@@ -237,6 +227,19 @@ export class FileUploader {
 
   public onCompleteAll():any {
     return void 0;
+  }
+
+  public _mimeTypeFilter(item:any):boolean {
+    return !(this.options.allowedMimeType && this.options.allowedMimeType.indexOf(item.type) === -1);
+  }
+
+  public _fileSizeFilter(item:any):boolean {
+    return !(this.options.maxFileSize && item.size > this.options.maxFileSize);
+  }
+
+  public _fileTypeFilter(item:any):boolean {
+    return !(this.options.allowedFileType &&
+    this.options.allowedFileType.indexOf(FileType.getMimeClass(item)) === -1);
   }
 
   public _onErrorItem(item:any, response:any, status:any, headers:any):void {
@@ -259,7 +262,7 @@ export class FileUploader {
   }
 
   protected _headersGetter(parsedHeaders:any):any {
-    return (name: any) => {
+    return (name:any) => {
       if (name) {
         return parsedHeaders[name.toLowerCase()] || void 0;
       }
@@ -324,7 +327,7 @@ export class FileUploader {
   }
 
   private _getTotalProgress(value:number = 0):number {
-    if (this.removeAfterUpload) {
+    if (this.options.removeAfterUpload) {
       return value;
     }
     let notUploaded = this.getNotUploadedItems().length;
@@ -336,14 +339,17 @@ export class FileUploader {
 
   private _getFilters(filters:any):any {
     if (!filters) {
-      return this.filters;
+      return this.options.filters;
     }
     if (Array.isArray(filters)) {
       return filters;
     }
-    let names = filters.match(/[^\s,]+/g);
-    return this.filters
-      .filter((filter:any) => names.indexOf(filter.name) !== -1);
+    if (typeof filters === 'string') {
+      let names = filters.match(/[^\s,]+/g);
+      return this.options.filters
+        .filter((filter:any) => names.indexOf(filter.name) !== -1);
+    }
+    return this.options.filters;
   }
 
   private _render():any {
@@ -351,12 +357,12 @@ export class FileUploader {
     // todo: ?
   }
 
-  private _folderFilter(item:any):boolean {
-    return !!(item.size || item.type);
-  }
+  // private _folderFilter(item:any):boolean {
+  //   return !!(item.size || item.type);
+  // }
 
   private _queueLimitFilter():boolean {
-    return this.queueLimit === undefined || this.queue.length < this.queueLimit;
+    return this.options.queueLimit === undefined || this.queue.length < this.options.queueLimit;
   }
 
   private _isValidFile(file:any, filters:any, options:any):boolean {
@@ -380,6 +386,7 @@ export class FileUploader {
      });*/
     return response;
   }
+
   /* tslint:enable */
   private _parseHeaders(headers:any):any {
     let parsed:any = {};
@@ -401,8 +408,8 @@ export class FileUploader {
   }
 
   /*private _iframeTransport(item:any) {
-    // todo: implement it later
-  }*/
+   // todo: implement it later
+   }*/
 
   private _onWhenAddingFileFailed(item:any, filter:any, options:any):void {
     this.onWhenAddingFileFailed(item, filter, options);
@@ -429,11 +436,13 @@ export class FileUploader {
     this.onProgressAll(total);
     this._render();
   }
+
   /* tslint:disable */
   private _onSuccessItem(item:any, response:any, status:any, headers:any):void {
     item._onSuccess(response, status, headers);
     this.onSuccessItem(item, response, status, headers);
   }
+
   /* tslint:enable */
   private _onCancelItem(item:any, response:any, status:any, headers:any):void {
     item._onCancel(response, status, headers);

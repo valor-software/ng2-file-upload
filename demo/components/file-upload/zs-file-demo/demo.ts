@@ -1,32 +1,26 @@
-import {Component, EventEmitter, ElementRef, Renderer, Input} from 'angular2/core';
-import {FileUploader, FileUploaderOptionsInterface} from '../../../../ng2-file-upload';
+import {Component, ElementRef, Renderer, Input, HostListener, HostBinding, OnInit} from '@angular/core';
+import {FileUploader, FileUploaderOptions} from '../../../../ng2-file-upload';
 
 @Component({
   selector: 'demo-file-upload',
   providers: [FileUploader],
-  directives: [],
-  pipes: [],
-  host: {
-    '(drop)': 'onDrop($event)',
-    '(dragover)': 'onDragOver($event)',
-    '(dragleave)': 'onDragLeave($event)',
-    '[class.hover]': 'isHover'
-  },
   template: require('./demo.html'),
   styles: [':host {border:1px solid black; padding:59px;display: block;}' +
   '.hover {border: 3px solid green; backgroud: black;}']
 })
-export class DemoFileUpload {
+export class DemoFileUploadComponent implements OnInit {
 
-  @Input() url: string;
-  @Input() queueLimit: number;
-  @Input() maxFileSize: number;
-  @Input() autoUpload: boolean;
-  @Input() allowedMimeType: Array<string>;
-  @Input() allowedFileType: Array<string>;
-  @Input() headers: Array<any>;
+  @Input() public url:string;
+  @Input() public queueLimit:number;
+  @Input() public maxFileSize:number;
+  @Input() public autoUpload:boolean;
+  @Input() public allowedMimeType:Array<string>;
+  @Input() public allowedFileType:Array<string>;
+  @Input() public headers:Array<any>;
 
-  private inputs = ['allowedMimeType',
+  @HostBinding('class.hover') private isHover:boolean = false;
+
+  private inputs:string[] = ['allowedMimeType',
     'allowedFileType',
     'autoUpload',
     'isHTML5',
@@ -34,20 +28,24 @@ export class DemoFileUpload {
     'maxFileSize',
     'queueLimit',
     'removeAfterUpload',
-    'url',
+    'url'
   ];
 
-  private uploaderOptions: FileUploaderOptionsInterface = {};
+  private uploaderOptions:FileUploaderOptions = {};
 
-  private isHover: boolean = false;
-  private multiple: boolean = true;
+  private multiple:boolean = true;
 
-  constructor(private element: ElementRef,
-              private fileUploadService: FileUploader,
-              private renderer: Renderer) {
+  private element:ElementRef;
+  private fileUploadService:FileUploader;
+  private renderer:Renderer;
+
+  public constructor(element:ElementRef, fileUploadService:FileUploader, renderer:Renderer) {
+    this.element = element;
+    this.fileUploadService = fileUploadService;
+    this.renderer = renderer;
   }
 
-  ngOnInit() {
+  public ngOnInit():any {
     for (let input of this.inputs) {
       if (this[input]) {
         this.uploaderOptions[input] = this[input];
@@ -58,8 +56,8 @@ export class DemoFileUpload {
     this.multiple = (!this.queueLimit || this.queueLimit > 1);
   }
 
-
-  onDrop(event: any) {
+  @HostListener('drop', ['$event'])
+  public onDrop(event:any):void {
     this._preventAndStop(event);
     this.isHover = false;
 
@@ -70,7 +68,8 @@ export class DemoFileUpload {
     this.fileUploadService.addToQueue(transfer.files);
   }
 
-  onDragOver(event: any) {
+  @HostListener('dragover', ['$event'])
+  public onDragOver(event:any):void {
     this._preventAndStop(event);
 
     if (this.isHover) {
@@ -84,29 +83,29 @@ export class DemoFileUpload {
     this.isHover = true;
   }
 
-  onDragLeave(event: any): any {
+  @HostListener('dragleave', ['$event'])
+  public onDragLeave(event:any):void {
     this._preventAndStop(event);
-    if (event.currentTarget === (<any>this).element[0]) {
+    if (event.currentTarget === (this as any).element[0]) {
       return;
     }
     this.isHover = false;
   }
 
-  onChange($event) {
+  public onChange($event:any):void {
     this.fileUploadService.addToQueue($event.srcElement.files);
   }
 
-
-  private _getTransfer(event: any): any {
+  private _getTransfer(event:any):any {
     return event.dataTransfer ? event.dataTransfer : event.originalEvent.dataTransfer;
   }
 
-  private _preventAndStop(event: any): any {
+  private _preventAndStop(event:any):any {
     event.preventDefault();
     event.stopPropagation();
   }
 
-  private _haveFiles(types: any): any {
+  private _haveFiles(types:any):any {
     if (!types) {
       return false;
     }
@@ -119,6 +118,5 @@ export class DemoFileUpload {
       return false;
     }
   }
-
 
 }
