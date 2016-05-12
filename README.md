@@ -3,6 +3,8 @@ Easy to use Angular2 directives for files upload ([demo](http://valor-software.g
 
 Follow me [![twitter](https://img.shields.io/twitter/follow/valorkin.svg?style=social&label=%20valorkin)](https://twitter.com/valorkin) to be notified about new releases.
 
+[![Angular 2 Style Guide](https://mgechev.github.io/angular2-style-guide/images/badge.svg)](https://github.com/mgechev/angular2-style-guide)
+[![Build Status](https://travis-ci.org/valor-software/ng2-file-upload.svg?branch=master)](https://travis-ci.org/valor-software/ng2-file-upload)
 [![Code Climate](https://codeclimate.com/github/valor-software/ng2-file-upload/badges/gpa.svg)](https://codeclimate.com/github/valor-software/ng2-file-upload)
 [![Join the chat at https://gitter.im/valor-software/ng2-bootstrap](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/valor-software/ng2-bootstrap?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Dependency Status](https://david-dm.org/valor-software/ng2-file-upload.svg)](https://david-dm.org/valor-software/ng2-file-upload)
