@@ -1,3 +1,8 @@
+<a name="1.0.3"></a>
+## [1.0.3](https://github.com/valor-software/ng2-file-upload/compare/v1.0.2...v1.0.3) (2016-05-12)
+
+
+
 <a name="1.0.2"></a>
 ## 1.0.2 (2016-05-12)
 

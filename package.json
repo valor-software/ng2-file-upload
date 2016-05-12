@@ -1,6 +1,6 @@
 {
   "name": "ng2-file-upload",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "angular2 file upload directives",
   "scripts": {
     "flow.install:typings": "./node_modules/.bin/typings install",
