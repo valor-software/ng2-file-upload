@@ -50,6 +50,7 @@ export class FileUploader {
     this.options = Object.assign(this.options, options);
 
     this.authToken = options.authToken;
+    this.authTokenHeader = options.authTokenHeader || 'Authorization';
     this.autoUpload = options.autoUpload;
     this.options.filters.unshift({name: 'queueLimit', fn: this._queueLimitFilter});
 
@@ -326,7 +327,7 @@ export class FileUploader {
       }
     }
     if (this.authToken) {
-      xhr.setRequestHeader('Authorization', this.authToken);
+      xhr.setRequestHeader(this.authTokenHeader, this.authToken);
     }
     xhr.send(form);
     this._render();
