@@ -69,37 +69,39 @@ export class FileUploader {
   }
 
   public addToQueue(files:any[], options?:any, filters?:any):void {
-    let list:any[] = [];
-    for (let file of files) {
-      list.push(file);
-    }
-    let arrayOfFilters = this._getFilters(filters);
-    let count = this.queue.length;
-    let addedFileItems:any[] = [];
-    list.map((some:any) => {
-      if (!options) {
-        options = this.options;
-      }
+    this._removeFoldersFromFiles(files)
+      .then((list: any[]) => {
+        for (let file of files) {
+          list.push(file);
+        }
+        let arrayOfFilters = this._getFilters(filters);
+        let count = this.queue.length;
+        let addedFileItems:any[] = [];
+        list.map((some:any) => {
+          if (!options) {
+            options = this.options;
+          }
 
-      let temp = new FileLikeObject(some);
-      if (this._isValidFile(temp, arrayOfFilters, options)) {
-        let fileItem = new FileItem(this, some, options);
-        addedFileItems.push(fileItem);
-        this.queue.push(fileItem);
-        this._onAfterAddingFile(fileItem);
-      } else {
-        let filter = arrayOfFilters[this._failFilterIndex];
-        this._onWhenAddingFileFailed(temp, filter, options);
-      }
+          let temp = new FileLikeObject(some);
+          if (this._isValidFile(temp, arrayOfFilters, options)) {
+            let fileItem = new FileItem(this, some, options);
+            addedFileItems.push(fileItem);
+            this.queue.push(fileItem);
+            this._onAfterAddingFile(fileItem);
+          } else {
+            let filter = arrayOfFilters[this._failFilterIndex];
+            this._onWhenAddingFileFailed(temp, filter, options);
+          }
+        });
+        if (this.queue.length !== count) {
+          this._onAfterAddingAll(addedFileItems);
+          this.progress = this._getTotalProgress();
+        }
+        this._render();
+        if (this.options.autoUpload) {
+          this.uploadAll();
+        }
     });
-    if (this.queue.length !== count) {
-      this._onAfterAddingAll(addedFileItems);
-      this.progress = this._getTotalProgress();
-    }
-    this._render();
-    if (this.options.autoUpload) {
-      this.uploadAll();
-    }
   }
 
   public removeFromQueue(value:any):void {
@@ -458,5 +460,63 @@ export class FileUploader {
   private _onCancelItem(item:any, response:any, status:any, headers:any):void {
     item._onCancel(response, status, headers);
     this.onCancelItem(item, response, status, headers);
+  }
+
+  private _isFileTest(file: any): Promise<any> {
+    return new Promise((resolve: any, reject: any) => {
+      if (file.size !== 0) {
+        /*
+         *  reader.readAsText or reader.readAsArrayBuffer
+         *  load file into RAM
+         *  we need a small chunk for better performance
+         */
+        let from = 0;
+        let to = 100;
+        let chunk: any;
+        if (file.slice) {
+          chunk = file.slice(from, to);
+        } else if (file.webkitSlice) {
+          chunk = file.webkitSlice(from, to);
+        } else if (file.mozSlice) {
+          chunk = file.mozSlice(from, to);
+        }
+        let reader = new FileReader();
+        reader.onload = () => resolve();
+        reader.onerror = () => reject();
+        reader.readAsArrayBuffer(chunk);
+      } else {
+        reject();
+      }
+    });
+  }
+
+  private _removeFoldersFromFiles(files: any[]): Promise<any[]>  {
+    return new Promise((resolve: any, reject: any) => {
+      let list: any[] = [];
+      let that = this;
+      let count = 0;
+      if (files.length > 0) {
+        for (let file of files) {
+          that._isFileTest(file)
+            .then(
+              () => {
+                list.push(file);
+                count++;
+                if (count === files.length) {
+                  resolve(list);
+                }
+              },
+              () => {
+                count++;
+                if (count === files.length) {
+                  resolve(list);
+                }
+              }
+            );
+        }
+      } else {
+        reject();
+      }
+    });
   }
 }
