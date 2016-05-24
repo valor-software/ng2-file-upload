@@ -73,15 +73,15 @@ export class FileUploader {
     // this.options.filters.unshift({name: 'folder', fn: this._folderFilter});
   }
 
-  public addToQueue(files:FileItem[], options?:FileUploaderOptions, filters?:FilterFunction[]|string):void {
-    let list:any[] = [];
+  public addToQueue(files:File[], options?:FileUploaderOptions, filters?:FilterFunction[]|string):void {
+    let list:File[] = [];
     for (let file of files) {
       list.push(file);
     }
     let arrayOfFilters = this._getFilters(filters);
     let count = this.queue.length;
     let addedFileItems:FileItem[] = [];
-    list.map((some:any) => {
+    list.map((some:File) => {
       if (!options) {
         options = this.options;
       }
