@@ -18,6 +18,8 @@ export class FileItem {
   public isError:boolean = false;
   public progress:number = 0;
   public index:number = void 0;
+  public _xhr:XMLHttpRequest;
+  public _form:any;
 
   private uploader:FileUploader;
   private some:any;
@@ -36,8 +38,8 @@ export class FileItem {
     try {
       this.uploader.uploadItem(this);
     } catch (e) {
-      this.uploader._onCompleteItem(this, '', 0, []);
-      this.uploader._onErrorItem(this, '', 0, []);
+      this.uploader._onCompleteItem(this, '', 0, {});
+      this.uploader._onErrorItem(this, '', 0, {});
     }
   }
 
