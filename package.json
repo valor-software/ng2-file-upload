@@ -91,7 +91,7 @@
     "lite-server": "2.2.0",
     "markdown-loader": "0.1.7",
     "marked": "0.3.5",
-    "ng2-bootstrap": "1.0.16",
+    "ng2-bootstrap": "1.0.17",
     "phantomjs-polyfill": "0.0.2",
     "phantomjs-prebuilt": "2.1.7",
     "pre-commit": "1.1.3",
