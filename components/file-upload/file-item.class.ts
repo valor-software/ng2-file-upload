@@ -1,7 +1,5 @@
-import {NgZone} from '@angular/core';
-
 import {FileLikeObject} from './file-like-object.class';
-import {FileUploader} from './file-uploader.class';
+import {FileUploader, ParsedResponseHeaders, FileUploaderOptions} from './file-uploader.class';
 
 export class FileItem {
   public file:FileLikeObject;
@@ -20,28 +18,28 @@ export class FileItem {
   public isError:boolean = false;
   public progress:number = 0;
   public index:number = void 0;
-  private _zone:NgZone;
+  public _xhr:XMLHttpRequest;
+  public _form:any;
 
   private uploader:FileUploader;
-  private some:any;
-  private options:any;
+  private some:File;
+  private options:FileUploaderOptions;
 
-  public constructor(uploader:FileUploader, some:any, options:any) {
+  public constructor(uploader:FileUploader, some:File, options:FileUploaderOptions) {
     this.uploader = uploader;
     this.some = some;
     this.options = options;
     this.file = new FileLikeObject(some);
     this._file = some;
     this.url = uploader.options.url;
-    this._zone = new NgZone({ enableLongStackTrace: false });
   }
 
   public upload():void {
     try {
       this.uploader.uploadItem(this);
     } catch (e) {
-      this.uploader._onCompleteItem(this, '', 0, []);
-      this.uploader._onErrorItem(this, '', 0, []);
+      this.uploader._onCompleteItem(this, '', 0, {});
+      this.uploader._onErrorItem(this, '', 0, {});
     }
   }
 
@@ -65,19 +63,19 @@ export class FileItem {
     return {progress};
   }
 
-  public onSuccess(response:any, status:any, headers:any):any {
+  public onSuccess(response:string, status:number, headers:ParsedResponseHeaders):any {
     return {response,status,headers};
   }
 
-  public onError(response:any, status:any, headers:any):any {
+  public onError(response:string, status:number, headers:ParsedResponseHeaders):any {
     return {response,status,headers};
   }
 
-  public onCancel(response:any, status:any, headers:any):any {
+  public onCancel(response:string, status:number, headers:ParsedResponseHeaders):any {
     return {response,status,headers};
   }
 
-  public onComplete(response:any, status:any, headers:any):any {
+  public onComplete(response:string, status:number, headers:ParsedResponseHeaders):any {
     return {response,status,headers};
   }
 
@@ -97,13 +95,11 @@ export class FileItem {
   }
 
   public _onProgress(progress:number):void {
-    this._zone.run(() => {
-      this.progress = progress;
-    });
+    this.progress = progress;
     this.onProgress(progress);
   }
 
-  public _onSuccess(response:any, status:any, headers:any):void {
+  public _onSuccess(response:string, status:number, headers:ParsedResponseHeaders):void {
     this.isReady = false;
     this.isUploading = false;
     this.isUploaded = true;
@@ -115,7 +111,7 @@ export class FileItem {
     this.onSuccess(response, status, headers);
   }
 
-  public _onError(response:any, status:any, headers:any):void {
+  public _onError(response:string, status:number, headers:ParsedResponseHeaders):void {
     this.isReady = false;
     this.isUploading = false;
     this.isUploaded = true;
@@ -127,7 +123,7 @@ export class FileItem {
     this.onError(response, status, headers);
   }
 
-  public _onCancel(response:any, status:any, headers:any):void {
+  public _onCancel(response:string, status:number, headers:ParsedResponseHeaders):void {
     this.isReady = false;
     this.isUploading = false;
     this.isUploaded = false;
@@ -139,7 +135,7 @@ export class FileItem {
     this.onCancel(response, status, headers);
   }
 
-  public _onComplete(response:any, status:any, headers:any):void {
+  public _onComplete(response:string, status:number, headers:ParsedResponseHeaders):void {
     this.onComplete(response, status, headers);
 
     if (this.uploader.options.removeAfterUpload) {
