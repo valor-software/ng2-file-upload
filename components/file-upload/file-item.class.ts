@@ -31,6 +31,9 @@ export class FileItem {
     this.options = options;
     this.file = new FileLikeObject(some);
     this._file = some;
+    if (uploader.options && uploader.options.method) {
+      this.method = uploader.options.method;
+    }
     this.url = uploader.options.url;
   }
 

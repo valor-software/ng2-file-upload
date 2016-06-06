@@ -22,6 +22,7 @@ export interface FileUploaderOptions {
   isHTML5?:boolean;
   filters?:Array<FilterFunction>;
   headers?:Array<Headers>;
+  method?:string;
   authToken?:string;
   maxFileSize?:number;
   queueLimit?:number;
