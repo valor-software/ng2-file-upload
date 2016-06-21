@@ -28,6 +28,7 @@ export interface FileUploaderOptions {
   queueLimit?:number;
   removeAfterUpload?:boolean;
   url?:string;
+  disableMultipart?:boolean;
 }
 
 export class FileUploader {
@@ -43,7 +44,8 @@ export class FileUploader {
     autoUpload: false,
     isHTML5: true,
     filters: [],
-    removeAfterUpload: false
+    removeAfterUpload: false,
+    disableMultipart: false
   };
 
   private _failFilterIndex:number;
@@ -282,7 +284,7 @@ export class FileUploader {
 
   protected _xhrTransport(item:FileItem):any {
     let xhr = item._xhr = new XMLHttpRequest();
-    let form = new FormData();
+    let sendable:any;
     this._onBeforeUploadItem(item);
     // todo
     /*item.formData.map(obj => {
@@ -293,9 +295,15 @@ export class FileUploader {
     if (typeof item._file.size !== 'number') {
       throw new TypeError('The file specified is no longer valid');
     }
-    this._onBuildItemForm(item, form);
+    if(!this.options.disableMultipart) {
+        sendable = new FormData();
+        this._onBuildItemForm(item, sendable);
 
-    form.append(item.alias, item._file, item.file.name);
+        sendable.append(item.alias, item._file, item.file.name);
+    } else {
+        sendable = item._file;
+    }
+
     xhr.upload.onprogress = (event:any) => {
       let progress = Math.round(event.lengthComputable ? event.loaded * 100 / event.total : 0);
       this._onProgressItem(item, progress);
@@ -334,7 +342,7 @@ export class FileUploader {
     if (this.authToken) {
       xhr.setRequestHeader('Authorization', this.authToken);
     }
-    xhr.send(form);
+    xhr.send(sendable);
     this._render();
   }
 
