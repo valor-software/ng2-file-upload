@@ -50,8 +50,10 @@ export class FileDropDirective {
 
   @HostListener('dragleave', ['$event'])
   public onDragLeave(event:any):any {
-    if (event.currentTarget === (this as any).element[0]) {
-      return;
+    if ((this as any).element) {
+      if (event.currentTarget === (this as any).element[0]) {
+        return;
+      }
     }
 
     this._preventAndStop(event);
