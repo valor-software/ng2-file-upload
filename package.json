@@ -57,7 +57,7 @@
     "@angular/core": "^2.0.0-rc.1",
     "@angular/platform-browser": "^2.0.0-rc.1",
     "@angular/platform-browser-dynamic": "^2.0.0-rc.1",
-    "async": "1.5.2",
+    "async": "2.0.1",
     "bootstrap": "3.3.6",
     "codecov": "1.0.1",
     "compression-webpack-plugin": "0.3.1",
