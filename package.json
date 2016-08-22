@@ -110,7 +110,7 @@
     "typings": "0.8.1",
     "webpack": "1.13.1",
     "webpack-dev-server": "1.14.1",
-    "zone.js": "0.6.12"
+    "zone.js": "0.6.16"
   },
   "contributors": [
     {
