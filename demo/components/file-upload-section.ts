@@ -1,8 +1,5 @@
 import {Component} from '@angular/core';
 
-import {SimpleDemoComponent} from './file-upload/simple-demo';
-
-let name = 'File Upload';
 let doc = require('../../components/file-upload/readme.md');
 
 let tabDesc:Array<any> = [
@@ -14,39 +11,7 @@ let tabDesc:Array<any> = [
   }
 ];
 
-let tabsContent:string = ``;
-tabDesc.forEach((desc:any) => {
-  tabsContent += `
-          <tab [heading]="desc.heading" (select)="select($event)">
-          <div class="card card-block panel panel-default panel-body">
-
-            <{{desc.heading.toLowerCase()}}-demo *ngIf="currentHeading === '{{desc.heading}}'"></{{desc.heading.toLowerCase()}}-demo>
-
-            <br>
-
-            <div class="row" style="margin: 0px;">
-              <tabset>
-                <tab heading="Markup">
-                  <div class="card card-block panel panel-default panel-body">
-                    <pre class="language-html"><code class="language-html" ng-non-bindable>{{desc.html}}</code></pre>
-                  </div>
-                </tab>
-                <tab heading="TypeScript">
-                  <div class="card card-block panel panel-default panel-body">
-                    <pre class="language-typescript"><code class="language-typescript" ng-non-bindable>{{desc.ts}}</code></pre>
-                  </div>
-                </tab>
-                <tab heading="Backend Demo">
-                  <div class="card card-block panel panel-default panel-body">
-                    <pre class="language-javascript"><code class="language-javascript" ng-non-bindable>{{desc.js}}</code></pre>
-                  </div>
-                </tab>
-              </tabset>
-            </div>
-          </div>
-        </tab>
-  `;
-});
+// <{{desc.heading.toLowerCase()}}-demo *ngIf="currentHeading === '{{desc.heading}}'"></{{desc.heading.toLowerCase()}}-demo>
 
 @Component({
   selector: 'file-upload-section',
@@ -54,21 +19,49 @@ tabDesc.forEach((desc:any) => {
   <section [id]="name.toLowerCase()">
     <div class="row">
       <tabset>
+         <tab *ngFor="let desc of tabs" heading="{{desc.heading}}" (select)="select($event)">
+          <div class="card card-block panel panel-default panel-body">
 
-        {{tabsContent}}
+            <simple-demo></simple-demo>
 
+            <br>
+
+            <div class="row" style="margin: 0px;">
+              <tabset>
+                <tab heading="Markup">
+                  <div class="card card-block panel panel-default panel-body">
+                    <pre class="language-html"><code class="language-html" ng-non-bindable [innerHTML]="desc.html"></code></pre>
+                  </div>
+                </tab>
+                <tab heading="TypeScript">
+                  <div class="card card-block panel panel-default panel-body">
+                    <pre class="language-typescript"><code class="language-typescript" ng-non-bindable [innerHTML]="desc.ts"></code></pre>
+                  </div>
+                </tab>
+                <tab heading="Backend Demo">
+                  <div class="card card-block panel panel-default panel-body">
+                    <pre class="language-javascript"><code class="language-javascript" ng-non-bindable [innerHTML]="desc.js"></code></pre>
+                  </div>
+                </tab>
+              </tabset>
+            </div>
+          </div>
+        </tab>
       </tabset>
     </div>
 
     <div class="row">
       <h2>API</h2>
-      <div class="card card-block panel panel-default panel-body">{{doc}}</div>
+      <div class="card card-block panel panel-default panel-body" [innerHTML]="doc"></div>
     </div>
   </section>
-  `
+  `,
 })
 export class FileUploadSectionComponent {
+  public name:string = 'File Upload';
   public currentHeading:string = 'Simple';
+  public doc:string = doc;
+  public tabs:any = tabDesc;
 
   public select(e:any):void {
     if (e.heading) {
