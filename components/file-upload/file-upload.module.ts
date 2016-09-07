@@ -9,4 +9,5 @@ import { FileSelectDirective } from './file-select.directive';
     declarations: [FileDropDirective, FileSelectDirective],
     exports: [FileDropDirective, FileSelectDirective]
 })
-export class FileUploadModule { }
+export class FileUploadModule {
+}

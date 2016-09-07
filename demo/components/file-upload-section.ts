@@ -11,8 +11,6 @@ let tabDesc:Array<any> = [
   }
 ];
 
-// <{{desc.heading.toLowerCase()}}-demo *ngIf="currentHeading === '{{desc.heading}}'"></{{desc.heading.toLowerCase()}}-demo>
-
 @Component({
   selector: 'file-upload-section',
   template: `
@@ -55,7 +53,7 @@ let tabDesc:Array<any> = [
       <div class="card card-block panel panel-default panel-body" [innerHTML]="doc"></div>
     </div>
   </section>
-  `,
+  `
 })
 export class FileUploadSectionComponent {
   public name:string = 'File Upload';
