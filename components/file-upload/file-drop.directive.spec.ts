@@ -1,8 +1,8 @@
-import {Component} from '@angular/core';
-import {inject,ComponentFixture, TestBed} from '@angular/core/testing';
+import { Component} from '@angular/core';
+import { inject, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import {FileUploader} from './file-uploader.class';
-import {FileUploadModule} from './file-upload.module';
+import { FileUploader } from './file-uploader.class';
+import { FileUploadModule } from './file-upload.module';
 
 @Component({
   selector: 'container',
@@ -13,13 +13,14 @@ export class ContainerComponent {
 }
 
 describe('Directive: FileSelectDirective', () => {
-  beforeEach(() => [
+
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [FileUploadModule],
       declarations: [ContainerComponent],
       providers: [ContainerComponent]
-    })
-  ]);
+    });
+  });
 
   it('should be fine', inject([ContainerComponent], (fixture:ComponentFixture<ContainerComponent>) => {
     expect(fixture).not.toBeNull();
