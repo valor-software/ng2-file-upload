@@ -9,6 +9,7 @@ export class FileDropDirective {
   @Output() public onFileDrop:EventEmitter<File[]> = new EventEmitter<File[]>();
 
   private element:ElementRef;
+
   public constructor(element:ElementRef) {
     this.element = element;
   }
@@ -80,12 +81,13 @@ export class FileDropDirective {
       return false;
     }
   }
-/*
-  _addOverClass(item:any):any {
-    item.addOverClass();
-  }
 
-  _removeOverClass(item:any):any {
-    item.removeOverClass();
-  }*/
+  /*
+   _addOverClass(item:any):any {
+   item.addOverClass();
+   }
+
+   _removeOverClass(item:any):any {
+   item.removeOverClass();
+   }*/
 }

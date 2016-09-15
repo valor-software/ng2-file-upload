@@ -1,5 +1,5 @@
-import {FileLikeObject} from './file-like-object.class';
-import {FileUploader, ParsedResponseHeaders, FileUploaderOptions} from './file-uploader.class';
+import { FileLikeObject } from './file-like-object.class';
+import { FileUploader, ParsedResponseHeaders, FileUploaderOptions } from './file-uploader.class';
 
 export class FileItem {
   public file:FileLikeObject;
@@ -67,19 +67,19 @@ export class FileItem {
   }
 
   public onSuccess(response:string, status:number, headers:ParsedResponseHeaders):any {
-    return {response,status,headers};
+    return {response, status, headers};
   }
 
   public onError(response:string, status:number, headers:ParsedResponseHeaders):any {
-    return {response,status,headers};
+    return {response, status, headers};
   }
 
   public onCancel(response:string, status:number, headers:ParsedResponseHeaders):any {
-    return {response,status,headers};
+    return {response, status, headers};
   }
 
   public onComplete(response:string, status:number, headers:ParsedResponseHeaders):any {
-    return {response,status,headers};
+    return {response, status, headers};
   }
 
   public _onBeforeUpload():void {

@@ -1,6 +1,6 @@
-import {FileLikeObject} from './file-like-object.class';
-import {FileItem} from './file-item.class';
-import {FileType} from './file-type.class';
+import { FileLikeObject } from './file-like-object.class';
+import { FileItem } from './file-item.class';
+import { FileType } from './file-type.class';
 
 function isFile(value:any):boolean {
   return (File && value instanceof File);
@@ -295,13 +295,13 @@ export class FileUploader {
     if (typeof item._file.size !== 'number') {
       throw new TypeError('The file specified is no longer valid');
     }
-    if(!this.options.disableMultipart) {
-        sendable = new FormData();
-        this._onBuildItemForm(item, sendable);
+    if (!this.options.disableMultipart) {
+      sendable = new FormData();
+      this._onBuildItemForm(item, sendable);
 
-        sendable.append(item.alias, item._file, item.file.name);
+      sendable.append(item.alias, item._file, item.file.name);
     } else {
-        sendable = item._file;
+      sendable = item._file;
     }
 
     xhr.upload.onprogress = (event:any) => {
