@@ -2,18 +2,22 @@
   "compilerOptions": {
     "target": "es5",
     "module": "commonjs",
-    "moduleResolution": "node",
     "sourceMap": false,
     "declaration": true,
-    "removeComments": false,
+    "removeComments": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "noImplicitAny": true,
     "listFiles": false,
-    "noLib": false
+    "noLib": false,
+    "noImplicitAny": true,
+    "suppressImplicitAnyIndexErrors": true
   },
+  "exclude": [
+    "node_modules"
+  ],
   "files": [
-    "./typings/browser.d.ts",
-    "./ng2-file-upload.ts"
+    "./ng2-file-upload.ts",
+    "./demo/custom-typings.d.ts",
+    "./typings/index.d.ts"
   ]
 }

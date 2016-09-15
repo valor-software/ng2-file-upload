@@ -10,9 +10,9 @@ import { FileUploadSectionComponent } from './components/file-upload-section';
 import { SimpleDemoComponent } from './components/file-upload/simple-demo';
 
 @NgModule({
-    imports: [BrowserModule, CommonModule, FileUploadModule, Ng2BootstrapModule, FormsModule],
-    declarations: [DemoComponent, FileUploadSectionComponent, SimpleDemoComponent],
-    bootstrap: [DemoComponent]
+  imports: [BrowserModule, CommonModule, FileUploadModule, Ng2BootstrapModule, FormsModule],
+  declarations: [DemoComponent, FileUploadSectionComponent, SimpleDemoComponent],
+  bootstrap: [DemoComponent]
 })
 export class NgFileUploadDemo {
 }

@@ -1,4 +1,4 @@
-import { Component} from '@angular/core';
+import { Component } from '@angular/core';
 import { inject, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { FileUploader } from './file-uploader.class';
