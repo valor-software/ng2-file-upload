@@ -29,6 +29,7 @@ export interface FileUploaderOptions {
   removeAfterUpload?:boolean;
   url?:string;
   disableMultipart?:boolean;
+  itemAlias?: string;
 }
 
 export class FileUploader {

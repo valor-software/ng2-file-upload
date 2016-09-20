@@ -4,9 +4,9 @@ import { FileUploader, ParsedResponseHeaders, FileUploaderOptions } from './file
 export class FileItem {
   public file:FileLikeObject;
   public _file:File;
-  public alias:string = 'file';
+  public alias:string;
   public url:string = '/';
-  public method:string = 'POST';
+  public method:string;
   public headers:any = [];
   public withCredentials:boolean = true;
   public formData:any = [];
@@ -31,8 +31,9 @@ export class FileItem {
     this.options = options;
     this.file = new FileLikeObject(some);
     this._file = some;
-    if (uploader.options && uploader.options.method) {
-      this.method = uploader.options.method;
+    if (uploader.options) {
+      this.method = uploader.options.method || 'POST';
+      this.alias = uploader.options.itemAlias || 'file';
     }
     this.url = uploader.options.url;
   }
