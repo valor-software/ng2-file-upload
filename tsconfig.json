@@ -10,14 +10,26 @@
     "listFiles": false,
     "noLib": false,
     "noImplicitAny": true,
-    "suppressImplicitAnyIndexErrors": true
+    "suppressImplicitAnyIndexErrors": true,
+    "skipLibCheck": true,
+    "stripInternal": true,
+    "lib": [
+      "dom",
+      "es6"
+    ],
+    "types": [
+      "jasmine",
+      "node",
+      "webpack"
+    ]
   },
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "bundles",
+    "dist"
   ],
   "files": [
     "./ng2-file-upload.ts",
-    "./demo/custom-typings.d.ts",
-    "./typings/index.d.ts"
+    "./demo/custom-typings.d.ts"
   ]
 }
