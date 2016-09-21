@@ -42,6 +42,7 @@ Follow me [![twitter](https://img.shields.io/twitter/follow/valorkin.svg?style=s
   1. `url` - URL of File Uploader's route
   2. `authToken` - Auth token that will be applied as 'Authorization' header during file send.
   3. `disableMultipart` - If 'true', disable using a multipart form for file upload and instead stream the file. Some APIs (e.g. Amazon S3) may expect the file to be streamed rather than sent via a form. Defaults to false.
+  4. `itemAlias` - item alias (form name redefenition)
 
 ### Events
 
