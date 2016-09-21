@@ -12,9 +12,6 @@
     "listFiles": false,
     "noLib": false
   },
-  "exclude": [
-    "node_modules"
-  ],
   "files": [
     "./typings/browser.d.ts",
     "./ng2-file-upload.ts"
