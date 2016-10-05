@@ -6,9 +6,10 @@ import { FileUploader } from './file-uploader.class';
 export class FileDropDirective {
   @Input() public uploader:FileUploader;
   @Output() public fileOver:EventEmitter<any> = new EventEmitter();
-  @Output() public onFileDrop:EventEmitter<File[]> = new EventEmitter();
+  @Output() public onFileDrop:EventEmitter<File[]> = new EventEmitter<File[]>();
 
   private element:ElementRef;
+
   public constructor(element:ElementRef) {
     this.element = element;
   }
@@ -80,12 +81,13 @@ export class FileDropDirective {
       return false;
     }
   }
-/*
-  _addOverClass(item:any):any {
-    item.addOverClass();
-  }
 
-  _removeOverClass(item:any):any {
-    item.removeOverClass();
-  }*/
+  /*
+   _addOverClass(item:any):any {
+   item.addOverClass();
+   }
+
+   _removeOverClass(item:any):any {
+   item.removeOverClass();
+   }*/
 }

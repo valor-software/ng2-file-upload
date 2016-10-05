@@ -23,7 +23,7 @@ export class FileLikeObject {
     this.name = path.slice(path.lastIndexOf('/') + path.lastIndexOf('\\') + 2);
   }
 
-  public _createFromObject(object:{size: number, type: string, name: string}):void {
+  public _createFromObject(object:{size:number, type:string, name:string}):void {
     // this.lastModifiedDate = copy(object.lastModifiedDate);
     this.size = object.size;
     this.type = object.type;

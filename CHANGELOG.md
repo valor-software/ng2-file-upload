@@ -1,3 +1,20 @@
+<a name="1.1.0"></a>
+# [1.1.0](https://github.com/valor-software/ng2-file-upload/compare/v1.0.3...v1.1.0) (2016-09-21)
+
+
+### Bug Fixes
+
+* **uploader:** Add the ability to upload files via PUT instead of POST ([#239](https://github.com/valor-software/ng2-file-upload/issues/239)) ([e068511](https://github.com/valor-software/ng2-file-upload/commit/e068511))
+* **zone.js:**  error in Safari, Added Typings ([#221](https://github.com/valor-software/ng2-file-upload/issues/221)) ([db77e89](https://github.com/valor-software/ng2-file-upload/commit/db77e89))
+
+
+### Features
+
+* **multipart:** Create disableMultipart option in FileUploader ([#224](https://github.com/valor-software/ng2-file-upload/issues/224)) ([22307d2](https://github.com/valor-software/ng2-file-upload/commit/22307d2))
+* **package:** updated to typescript 2 ([4fef496](https://github.com/valor-software/ng2-file-upload/commit/4fef496))
+
+
+
 <a name="1.0.3"></a>
 ## [1.0.3](https://github.com/valor-software/ng2-file-upload/compare/v1.0.2...v1.0.3) (2016-05-12)
 

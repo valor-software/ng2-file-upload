@@ -1,6 +1,6 @@
 import { Directive, ElementRef, Input, HostListener } from '@angular/core';
 
-import {FileUploader} from './file-uploader.class';
+import { FileUploader } from './file-uploader.class';
 
 // todo: filters
 
@@ -9,6 +9,7 @@ export class FileSelectDirective {
   @Input() public uploader:FileUploader;
 
   private element:ElementRef;
+
   public constructor(element:ElementRef) {
     this.element = element;
   }

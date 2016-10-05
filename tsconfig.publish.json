@@ -2,15 +2,13 @@
   "compilerOptions": {
     "target": "es5",
     "module": "commonjs",
-    "sourceMap": false,
-    "declaration": true,
-    "removeComments": true,
+    "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "listFiles": false,
-    "noLib": false,
+    "sourceMap": false,
+    "noEmitHelpers": false,
     "noImplicitAny": true,
-    "suppressImplicitAnyIndexErrors": true,
+    "declaration": true,
     "skipLibCheck": true,
     "stripInternal": true,
     "lib": [
@@ -29,7 +27,7 @@
     "dist"
   ],
   "files": [
-    "./ng2-file-upload.ts",
-    "./demo/custom-typings.d.ts"
+    "./demo/custom-typings.d.ts",
+    "./ng2-file-upload.ts"
   ]
 }
