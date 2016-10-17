@@ -1,3 +1,13 @@
+<a name="1.1.2"></a>
+## [1.1.2](https://github.com/valor-software/ng2-file-upload/compare/v1.1.1...v1.1.2) (2016-10-17)
+
+
+### Features
+
+* **package:** allow of ng2 v2.0.* and v2.*.* ([87395e6](https://github.com/valor-software/ng2-file-upload/commit/87395e6))
+
+
+
 <a name="1.1.1"></a>
 ## [1.1.1](https://github.com/valor-software/ng2-file-upload/compare/v1.0.3...v1.1.1) (2016-10-17)
 
