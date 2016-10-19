@@ -1,3 +1,19 @@
+<a name="1.1.3-0"></a>
+## [1.1.3-0](https://github.com/valor-software/ng2-file-upload/compare/v1.1.2...v1.1.3-0) (2016-10-19)
+
+
+### Bug Fixes
+
+* **typing:** added authTokenHeader property to options and file upload class ([b55c852](https://github.com/valor-software/ng2-file-upload/commit/b55c852))
+
+
+### Features
+
+* **build:** added support for AoT and ng-cli ([f0b2879](https://github.com/valor-software/ng2-file-upload/commit/f0b2879)), closes [#436](https://github.com/valor-software/ng2-file-upload/issues/436)
+* **file-upload:** Add the possibility of set the token header ([#213](https://github.com/valor-software/ng2-file-upload/issues/213)) ([282295c](https://github.com/valor-software/ng2-file-upload/commit/282295c))
+
+
+
 <a name="1.1.2"></a>
 ## [1.1.2](https://github.com/valor-software/ng2-file-upload/compare/v1.1.1...v1.1.2) (2016-10-17)
 
