@@ -26,6 +26,7 @@ export interface FileUploaderOptions {
     url?: string;
     disableMultipart?: boolean;
     itemAlias?: string;
+    authTokenHeader?: string;
 }
 export declare class FileUploader {
     authToken: string;
@@ -34,6 +35,7 @@ export declare class FileUploader {
     progress: number;
     _nextIndex: number;
     autoUpload: any;
+    authTokenHeader: string;
     options: FileUploaderOptions;
     private _failFilterIndex;
     constructor(options: FileUploaderOptions);
