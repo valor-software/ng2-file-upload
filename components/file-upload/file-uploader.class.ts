@@ -74,6 +74,9 @@ export class FileUploader {
       this.options.filters.unshift({name: 'mimeType', fn: this._mimeTypeFilter});
     }
 
+    for(let i = 0; i < this.queue.length; i++) {
+      this.queue[i].url = this.options.url;
+    }
     // this.options.filters.unshift({name: 'folder', fn: this._folderFilter});
   }
 
