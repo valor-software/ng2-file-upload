@@ -4,10 +4,6 @@
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/@angular/common/-/common-2.1.0.tgz#159037ee8ea5b75951cbcb371749504b535f2c2d"
 
-"@angular/compiler":
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/@angular/compiler/-/compiler-2.1.0.tgz#1388e1b6adadb4495e1cb5f0fa5322728de0d003"
-
 "@angular/compiler-cli@2.1.0":
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/@angular/compiler-cli/-/compiler-cli-2.1.0.tgz#9678e4104265f2a8313672562309a63e360784e1"
@@ -15,6 +11,10 @@
     "@angular/tsc-wrapped" "^0.3.0"
     minimist "^1.2.0"
     reflect-metadata "^0.1.2"
+
+"@angular/compiler@^2.1.0":
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/@angular/compiler/-/compiler-2.1.0.tgz#1388e1b6adadb4495e1cb5f0fa5322728de0d003"
 
 "@angular/core@2.1.0":
   version "2.1.0"
@@ -4792,8 +4792,8 @@ parse-json@^2.1.0, parse-json@^2.2.0:
     error-ex "^1.2.0"
 
 parse5@^2.2.1:
-  version "2.2.2"
-  resolved "https://registry.yarnpkg.com/parse5/-/parse5-2.2.2.tgz#27f04785e9aee58aa824bc0a31c3049c3e39c51e"
+  version "2.2.3"
+  resolved "https://registry.yarnpkg.com/parse5/-/parse5-2.2.3.tgz#0c4fc41c1000c5e6b93d48b03f8083837834e9f6"
 
 parsejson@0.0.1:
   version "0.0.1"
