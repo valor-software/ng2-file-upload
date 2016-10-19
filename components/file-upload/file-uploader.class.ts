@@ -30,6 +30,7 @@ export interface FileUploaderOptions {
   url?:string;
   disableMultipart?:boolean;
   itemAlias?: string;
+  authTokenHeader?: string;
 }
 
 export class FileUploader {
@@ -40,6 +41,7 @@ export class FileUploader {
   public progress:number = 0;
   public _nextIndex:number = 0;
   public autoUpload:any;
+  public authTokenHeader: string;
 
   public options:FileUploaderOptions = {
     autoUpload: false,
