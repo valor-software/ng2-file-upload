@@ -31,3 +31,8 @@ ng2-file-upload.js.map
 /logs
 
 !/demo/components/file-upload/file-catcher.js
+
+# AoT generated files
+factories
+/**/*.metadata.json
+/**/*.ngfactory.ts

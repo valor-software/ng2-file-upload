@@ -22,3 +22,6 @@ webpack.config.js
 /components/**/*.ts
 !/components/**/*.d.ts
 
+# AoT generated files
+factories
+/**/*.ngfactory.ts
