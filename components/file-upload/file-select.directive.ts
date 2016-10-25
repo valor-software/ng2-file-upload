@@ -8,7 +8,7 @@ import { FileUploader } from './file-uploader.class';
 export class FileSelectDirective {
   @Input() public uploader:FileUploader;
 
-  private element:ElementRef;
+  protected element:ElementRef;
 
   public constructor(element:ElementRef) {
     this.element = element;
