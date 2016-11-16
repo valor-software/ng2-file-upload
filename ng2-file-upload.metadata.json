@@ -1,0 +1,1 @@
+{"__symbolic":"module","version":1,"metadata":{},"exports":[{"from":"./components/file-upload/file-select.directive"},{"from":"./components/file-upload/file-drop.directive"},{"from":"./components/file-upload/file-uploader.class"},{"from":"./components/file-upload/file-upload.module","export":["FileUploadModule"]}]}

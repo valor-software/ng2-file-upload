@@ -34,5 +34,4 @@ ng2-file-upload.js.map
 
 # AoT generated files
 factories
-/**/*.metadata.json
 /**/*.ngfactory.ts
