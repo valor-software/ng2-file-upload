@@ -36,3 +36,6 @@ ng2-file-upload.js.map
 factories
 /**/*.metadata.json
 /**/*.ngfactory.ts
+
+dist
+temp

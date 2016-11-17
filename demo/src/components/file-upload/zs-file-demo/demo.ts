@@ -1,5 +1,5 @@
 import { Component, ElementRef, Renderer, Input, HostListener, HostBinding, OnInit } from '@angular/core';
-import { FileUploader, FileUploaderOptions } from '../../../../ng2-file-upload';
+import { FileUploader, FileUploaderOptions } from '../../../../src/ng2-file-upload';
 
 @Component({
   selector: 'demo-file-upload',

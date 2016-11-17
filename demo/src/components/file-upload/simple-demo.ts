@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FileUploader } from '../../../ng2-file-upload';
+import { FileUploader } from '../../../src/ng2-file-upload';
 
 // webpack html imports
 let template = require('./simple-demo.html');

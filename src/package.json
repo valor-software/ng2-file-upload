@@ -1,0 +1,12 @@
+{
+  "name": "ng2-file-upload",
+  "main": "bundles/ng2-file-upload.umd.js",
+  "module": "index.js",
+  "typings": "index.d.ts",
+  "peerDependencies": {
+    "@angular/common": "*",
+    "@angular/compiler": "*",
+    "@angular/core": "*",
+    "@angular/forms": "*"
+  }
+}

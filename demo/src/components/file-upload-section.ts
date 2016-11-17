@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 
-let doc = require('../../components/file-upload/readme.md');
+let doc = require('.././readme.md');
 
 let tabDesc:Array<any> = [
   {
