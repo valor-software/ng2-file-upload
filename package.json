@@ -78,7 +78,7 @@
     "es6-shim": "0.35.1",
     "es7-reflect-metadata": "1.6.0",
     "eslint-config-valorsoft": "0.1.0",
-    "gh-pages": "0.11.0",
+    "gh-pages": "0.12.0",
     "gitignore-to-glob": "0.2.1",
     "gulp": "3.9.1",
     "gulp-size": "2.1.0",
