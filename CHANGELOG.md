@@ -1,3 +1,20 @@
+<a name="1.2.0"></a>
+# [1.2.0](https://github.com/valor-software/ng2-file-upload/compare/v1.1.3-0...v1.2.0) (2017-01-17)
+
+
+### Bug Fixes
+
+* **headers:** Add FileItem headers to XHR ([#553](https://github.com/valor-software/ng2-file-upload/issues/553)) ([e4a7099](https://github.com/valor-software/ng2-file-upload/commit/e4a7099)), closes [#552](https://github.com/valor-software/ng2-file-upload/issues/552)
+
+
+### Features
+
+* **file-select:** Clear file select automatically ([#524](https://github.com/valor-software/ng2-file-upload/issues/524)) ([410efda](https://github.com/valor-software/ng2-file-upload/commit/410efda))
+* **fileUpload:** added additionalParameter ([#565](https://github.com/valor-software/ng2-file-upload/issues/565)) ([397de09](https://github.com/valor-software/ng2-file-upload/commit/397de09))
+* **package:** upgrade to ng v2.3+ ([#574](https://github.com/valor-software/ng2-file-upload/issues/574)) ([3cc6a99](https://github.com/valor-software/ng2-file-upload/commit/3cc6a99))
+
+
+
 <a name="1.1.3-0"></a>
 ## [1.1.3-0](https://github.com/valor-software/ng2-file-upload/compare/v1.1.2...v1.1.3-0) (2016-10-19)
 
