@@ -1,0 +1,8 @@
+{
+  "name": "ng2-file-upload",
+  "version": "1.1.0",
+  "peerDependencies": {
+    "@angular/common": "*",
+    "@angular/core": "*"
+  }
+}
