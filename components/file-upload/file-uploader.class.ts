@@ -31,6 +31,7 @@ export interface FileUploaderOptions {
   disableMultipart?:boolean;
   itemAlias?: string;
   authTokenHeader?: string;
+  additionalParameter?:{[key: string]: any};
 }
 
 export class FileUploader {
@@ -307,6 +308,12 @@ export class FileUploader {
       this._onBuildItemForm(item, sendable);
 
       sendable.append(item.alias, item._file, item.file.name);
+
+      if (this.options.additionalParameter !== undefined) {
+        Object.keys(this.options.additionalParameter).forEach((key:string) => {
+          sendable.append(key, this.options.additionalParameter[key]);
+        });
+      }
     } else {
       sendable = item._file;
     }
