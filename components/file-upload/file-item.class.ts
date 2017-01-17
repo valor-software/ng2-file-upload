@@ -21,9 +21,9 @@ export class FileItem {
   public _xhr:XMLHttpRequest;
   public _form:any;
 
-  private uploader:FileUploader;
-  private some:File;
-  private options:FileUploaderOptions;
+  protected uploader:FileUploader;
+  protected some:File;
+  protected options:FileUploaderOptions;
 
   public constructor(uploader:FileUploader, some:File, options:FileUploaderOptions) {
     this.uploader = uploader;

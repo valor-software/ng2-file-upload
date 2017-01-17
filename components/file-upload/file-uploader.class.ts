@@ -31,6 +31,7 @@ export interface FileUploaderOptions {
   disableMultipart?:boolean;
   itemAlias?: string;
   authTokenHeader?: string;
+  additionalParameter?:{[key: string]: any};
 }
 
 export class FileUploader {
@@ -51,7 +52,7 @@ export class FileUploader {
     disableMultipart: false
   };
 
-  private _failFilterIndex:number;
+  protected _failFilterIndex:number;
 
   public constructor(options:FileUploaderOptions) {
     this.setOptions(options);
@@ -307,6 +308,12 @@ export class FileUploader {
       this._onBuildItemForm(item, sendable);
 
       sendable.append(item.alias, item._file, item.file.name);
+
+      if (this.options.additionalParameter !== undefined) {
+        Object.keys(this.options.additionalParameter).forEach((key:string) => {
+          sendable.append(key, this.options.additionalParameter[key]);
+        });
+      }
     } else {
       sendable = item._file;
     }
@@ -337,12 +344,13 @@ export class FileUploader {
     };
     xhr.open(item.method, item.url, true);
     xhr.withCredentials = item.withCredentials;
-    // todo
-    /*item.headers.map((value, name) => {
-     xhr.setRequestHeader(name, value);
-     });*/
     if (this.options.headers) {
       for (let header of this.options.headers) {
+        xhr.setRequestHeader(header.name, header.value);
+      }
+    }
+    if (item.headers.length) {
+      for (let header of item.headers) {
         xhr.setRequestHeader(header.name, header.value);
       }
     }
@@ -353,7 +361,7 @@ export class FileUploader {
     this._render();
   }
 
-  private _getTotalProgress(value:number = 0):number {
+  protected _getTotalProgress(value:number = 0):number {
     if (this.options.removeAfterUpload) {
       return value;
     }
@@ -364,7 +372,7 @@ export class FileUploader {
     return Math.round(uploaded * ratio + current);
   }
 
-  private _getFilters(filters:FilterFunction[]|string):FilterFunction[] {
+  protected _getFilters(filters:FilterFunction[]|string):FilterFunction[] {
     if (!filters) {
       return this.options.filters;
     }
@@ -379,20 +387,20 @@ export class FileUploader {
     return this.options.filters;
   }
 
-  private _render():any {
+  protected _render():any {
     return void 0;
     // todo: ?
   }
 
-  // private _folderFilter(item:FileItem):boolean {
+  // protected _folderFilter(item:FileItem):boolean {
   //   return !!(item.size || item.type);
   // }
 
-  private _queueLimitFilter():boolean {
+  protected _queueLimitFilter():boolean {
     return this.options.queueLimit === undefined || this.queue.length < this.options.queueLimit;
   }
 
-  private _isValidFile(file:FileLikeObject, filters:FilterFunction[], options:FileUploaderOptions):boolean {
+  protected _isValidFile(file:FileLikeObject, filters:FilterFunction[], options:FileUploaderOptions):boolean {
     this._failFilterIndex = -1;
     return !filters.length ? true : filters.every((filter:FilterFunction) => {
       this._failFilterIndex++;
@@ -400,12 +408,12 @@ export class FileUploader {
     });
   }
 
-  private _isSuccessCode(status:number):boolean {
+  protected _isSuccessCode(status:number):boolean {
     return (status >= 200 && status < 300) || status === 304;
   }
 
   /* tslint:disable */
-  private _transformResponse(response:string, headers:ParsedResponseHeaders):string {
+  protected _transformResponse(response:string, headers:ParsedResponseHeaders):string {
     // todo: ?
     /*var headersGetter = this._headersGetter(headers);
      forEach($http.defaults.transformResponse, (transformFn) => {
@@ -415,7 +423,7 @@ export class FileUploader {
   }
 
   /* tslint:enable */
-  private _parseHeaders(headers:string):ParsedResponseHeaders {
+  protected _parseHeaders(headers:string):ParsedResponseHeaders {
     let parsed:any = {};
     let key:any;
     let val:any;
@@ -434,33 +442,33 @@ export class FileUploader {
     return parsed;
   }
 
-  /*private _iframeTransport(item:FileItem) {
+  /*protected _iframeTransport(item:FileItem) {
    // todo: implement it later
    }*/
 
-  private _onWhenAddingFileFailed(item:FileLikeObject, filter:any, options:any):void {
+  protected _onWhenAddingFileFailed(item:FileLikeObject, filter:any, options:any):void {
     this.onWhenAddingFileFailed(item, filter, options);
   }
 
-  private _onAfterAddingFile(item:FileItem):void {
+  protected _onAfterAddingFile(item:FileItem):void {
     this.onAfterAddingFile(item);
   }
 
-  private _onAfterAddingAll(items:any):void {
+  protected _onAfterAddingAll(items:any):void {
     this.onAfterAddingAll(items);
   }
 
-  private _onBeforeUploadItem(item:FileItem):void {
+  protected _onBeforeUploadItem(item:FileItem):void {
     item._onBeforeUpload();
     this.onBeforeUploadItem(item);
   }
 
-  private _onBuildItemForm(item:FileItem, form:any):void {
+  protected _onBuildItemForm(item:FileItem, form:any):void {
     item._onBuildForm(form);
     this.onBuildItemForm(item, form);
   }
 
-  private _onProgressItem(item:FileItem, progress:any):void {
+  protected _onProgressItem(item:FileItem, progress:any):void {
     let total = this._getTotalProgress(progress);
     this.progress = total;
     item._onProgress(progress);
@@ -470,13 +478,13 @@ export class FileUploader {
   }
 
   /* tslint:disable */
-  private _onSuccessItem(item:FileItem, response:string, status:number, headers:ParsedResponseHeaders):void {
+  protected _onSuccessItem(item:FileItem, response:string, status:number, headers:ParsedResponseHeaders):void {
     item._onSuccess(response, status, headers);
     this.onSuccessItem(item, response, status, headers);
   }
 
   /* tslint:enable */
-  private _onCancelItem(item:FileItem, response:string, status:number, headers:ParsedResponseHeaders):void {
+  protected _onCancelItem(item:FileItem, response:string, status:number, headers:ParsedResponseHeaders):void {
     item._onCancel(response, status, headers);
     this.onCancelItem(item, response, status, headers);
   }
