@@ -337,12 +337,13 @@ export class FileUploader {
     };
     xhr.open(item.method, item.url, true);
     xhr.withCredentials = item.withCredentials;
-    // todo
-    /*item.headers.map((value, name) => {
-     xhr.setRequestHeader(name, value);
-     });*/
     if (this.options.headers) {
       for (let header of this.options.headers) {
+        xhr.setRequestHeader(header.name, header.value);
+      }
+    }
+    if (item.headers.length) {
+      for (let header of item.headers) {
         xhr.setRequestHeader(header.name, header.value);
       }
     }
