@@ -38,7 +38,7 @@ export class FileSelectDirective {
     this.uploader.addToQueue(files, options, filters);
     if (this.isEmptyAfterSelection()) {
       // todo
-      // this.element.nativeElement.properties.value = '';
+      this.element.nativeElement.value = '';
       /*this.element.nativeElement
        .replaceWith(this.element = this.element.nativeElement.clone(true)); // IE fix*/
     }
