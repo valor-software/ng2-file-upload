@@ -1,15 +1,9 @@
-# ng2-file-upload [![npm version](https://badge.fury.io/js/ng2-file-upload.svg)](http://badge.fury.io/js/ng2-file-upload)
+# ng2-file-upload [![npm version](https://badge.fury.io/js/ng2-file-upload.svg)](http://badge.fury.io/js/ng2-file-upload) [![npm downloads](https://img.shields.io/npm/dm/ng2-file-upload.svg)](https://npmjs.org/ng2-file-upload)[![slack](https://ngx-slack.herokuapp.com/badge.svg)](https://ngx-slack.herokuapp.com)
 Easy to use Angular2 directives for files upload ([demo](http://valor-software.github.io/ng2-file-upload/))
 
-Follow me [![twitter](https://img.shields.io/twitter/follow/valorkin.svg?style=social&label=%20valorkin)](https://twitter.com/valorkin) to be notified about new releases.
-
 [![Angular 2 Style Guide](https://mgechev.github.io/angular2-style-guide/images/badge.svg)](https://github.com/mgechev/angular2-style-guide)
-[![Build Status](https://travis-ci.org/valor-software/ng2-file-upload.svg?branch=master)](https://travis-ci.org/valor-software/ng2-file-upload)
-[![Code Climate](https://codeclimate.com/github/valor-software/ng2-file-upload/badges/gpa.svg)](https://codeclimate.com/github/valor-software/ng2-file-upload)
-[![Join the chat at https://gitter.im/valor-software/ng2-bootstrap](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/valor-software/ng2-bootstrap?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Build Status](https://travis-ci.org/valor-software/ng2-file-upload.svg?branch=development)](https://travis-ci.org/valor-software/ng2-file-upload)
 [![Dependency Status](https://david-dm.org/valor-software/ng2-file-upload.svg)](https://david-dm.org/valor-software/ng2-file-upload)
-[![devDependency Status](https://david-dm.org/valor-software/ng2-file-upload/dev-status.svg)](https://david-dm.org/valor-software/ng2-file-upload#info=devDependencies)
-[![Throughput Graph](https://graphs.waffle.io/valor-software/ng2-file-upload/throughput.svg)](https://waffle.io/valor-software/ng2-file-upload/metrics)
 
 ## Quick start
 
