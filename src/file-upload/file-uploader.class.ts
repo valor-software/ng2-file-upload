@@ -96,7 +96,6 @@ export class FileUploader {
       if (!options) {
         options = this.options;
       }
-
       let temp = new FileLikeObject(some);
       if (this._isValidFile(temp, arrayOfFilters, options)) {
         let fileItem = new FileItem(this, some, options);
@@ -278,6 +277,7 @@ export class FileUploader {
     }
     this.onCompleteAll();
     this.progress = this._getTotalProgress();
+    this.item.observer.next(response);
     this._render();
   }
 
@@ -328,7 +328,8 @@ export class FileUploader {
       let gist = this._isSuccessCode(xhr.status) ? 'Success' : 'Error';
       let method = '_on' + gist + 'Item';
       (this as any)[method](item, response, xhr.status, headers);
-      this._onCompleteItem(item, response, xhr.status, headers);
+      this._
+      (item, response, xhr.status, headers);
     };
     xhr.onerror = () => {
       let headers = this._parseHeaders(xhr.getAllResponseHeaders());
