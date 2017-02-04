@@ -1,7 +1,14 @@
 import { FileLikeObject } from './file-like-object.class';
 import { FileUploader, ParsedResponseHeaders, FileUploaderOptions } from './file-uploader.class';
 
+import {Observable} from "rxjs/Rx";
+
 export class FileItem {
+  public observer:any;
+  /**
+  * Observable for subscribing the server result
+  */
+  public resObservable:Observable;
   public file:FileLikeObject;
   public _file:File;
   public alias:string;
@@ -36,6 +43,7 @@ export class FileItem {
       this.alias = uploader.options.itemAlias || 'file';
     }
     this.url = uploader.options.url;
+    this.resObservable=new Observable.create(observer=>{this.observer=observer});
   }
 
   public upload():void {
