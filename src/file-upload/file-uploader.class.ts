@@ -314,7 +314,7 @@ export class FileUploader {
           let paramVal = this.options.additionalParameter[key];
           // Allow an additional parameter to include the filename
           if (paramVal.indexOf('{{file_name}}') >= 0) {
-            paramVal.replace('{{file_name}}', item.file.name);
+            paramVal = paramVal.replace('{{file_name}}', item.file.name);
           }
           sendable.append(key, paramVal);
         });
