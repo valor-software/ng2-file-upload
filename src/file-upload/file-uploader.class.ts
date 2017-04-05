@@ -307,13 +307,14 @@ export class FileUploader {
       sendable = new FormData();
       this._onBuildItemForm(item, sendable);
 
-      sendable.append(item.alias, item._file, item.file.name);
-
       if (this.options.additionalParameter !== undefined) {
         Object.keys(this.options.additionalParameter).forEach((key:string) => {
           sendable.append(key, this.options.additionalParameter[key]);
         });
       }
+
+      sendable.append(item.alias, item._file, item.file.name);
+
     } else {
       sendable = item._file;
     }
