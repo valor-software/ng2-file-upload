@@ -1,3 +1,13 @@
+<a name="1.2.1"></a>
+## [1.2.1](https://github.com/valor-software/ng2-file-upload/compare/v1.2.0...v1.2.1) (2017-04-10)
+
+
+### Features
+
+* **package:** relaxed peer dependencies to allow ng v4  ([#713](https://github.com/valor-software/ng2-file-upload/issues/713)) ([7704e0e](https://github.com/valor-software/ng2-file-upload/commit/7704e0e))
+
+
+
 <a name="1.2.0"></a>
 # [1.2.0](https://github.com/valor-software/ng2-file-upload/compare/v1.1.3-0...v1.2.0) (2017-01-17)
 
