@@ -1,4 +1,4 @@
-import { Directive, ElementRef, Input, HostListener } from '@angular/core';
+import { Directive, EventEmitter, ElementRef, Input, HostListener, Output } from '@angular/core';
 
 import { FileUploader } from './file-uploader.class';
 
@@ -7,6 +7,7 @@ import { FileUploader } from './file-uploader.class';
 @Directive({selector: '[ng2FileSelect]'})
 export class FileSelectDirective {
   @Input() public uploader:FileUploader;
+  @Output() public onFileSelected:EventEmitter<File[]> = new EventEmitter<File[]>();
 
   protected element:ElementRef;
 
@@ -26,7 +27,7 @@ export class FileSelectDirective {
     return !!this.element.nativeElement.attributes.multiple;
   }
 
-  @HostListener('change')
+  @HostListener('change', ['$event'])
   public onChange():any {
     // let files = this.uploader.isHTML5 ? this.element.nativeElement[0].files : this.element.nativeElement[0];
     let files = this.element.nativeElement.files;
@@ -36,6 +37,8 @@ export class FileSelectDirective {
     // if(!this.uploader.isHTML5) this.destroy();
 
     this.uploader.addToQueue(files, options, filters);
+    this.onFileSelected.emit(files);
+
     if (this.isEmptyAfterSelection()) {
       // todo
       this.element.nativeElement.value = '';
