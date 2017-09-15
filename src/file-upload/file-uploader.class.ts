@@ -32,6 +32,7 @@ export interface FileUploaderOptions {
   itemAlias?: string;
   authTokenHeader?: string;
   additionalParameter?:{[key: string]: any};
+  formatDataFunction?:Function;
 }
 
 export class FileUploader {
@@ -49,7 +50,8 @@ export class FileUploader {
     isHTML5: true,
     filters: [],
     removeAfterUpload: false,
-    disableMultipart: false
+    disableMultipart: false,
+    formatDataFunction: function (item:FileItem) { return item._file; }
   };
 
   protected _failFilterIndex:number;
@@ -315,7 +317,7 @@ export class FileUploader {
         });
       }
     } else {
-      sendable = item._file;
+      sendable = this.options.formatDataFunction(item);
     }
 
     xhr.upload.onprogress = (event:any) => {
