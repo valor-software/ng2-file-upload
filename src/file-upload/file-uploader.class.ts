@@ -33,6 +33,7 @@ export interface FileUploaderOptions {
   authTokenHeader?: string;
   additionalParameter?:{[key: string]: any};
   formatDataFunction?:Function;
+  formatDataFunctionIsAsync?:boolean;
 }
 
 export class FileUploader {
@@ -51,7 +52,8 @@ export class FileUploader {
     filters: [],
     removeAfterUpload: false,
     disableMultipart: false,
-    formatDataFunction: function (item:FileItem) { return item._file; }
+    formatDataFunction: function (item:FileItem) { return item._file; },
+    formatDataFunctionIsAsync: false
   };
 
   protected _failFilterIndex:number;
@@ -359,7 +361,13 @@ export class FileUploader {
     if (this.authToken) {
       xhr.setRequestHeader(this.authTokenHeader, this.authToken);
     }
-    xhr.send(sendable);
+    if (this.options.formatDataFunctionIsAsync) {
+      sendable.then(
+        result => xhr.send(JSON.stringify(result))
+      );
+    } else {
+      xhr.send(sendable);
+    }
     this._render();
   }
 
