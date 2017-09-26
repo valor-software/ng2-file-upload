@@ -1,28 +1,147 @@
-import { Component } from '@angular/core';
+import { Component, DebugElement } from '@angular/core';
+import { By } from '@angular/platform-browser';
 import { inject, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { FileUploader } from '../file-upload/file-uploader.class';
 import { FileUploadModule } from '../file-upload/file-upload.module';
+import { FileDropDirective } from '../file-upload/file-drop.directive';
 
 @Component({
   selector: 'container',
-  template: `<input type="file" ng2FileSelect [uploader]="uploader" />`
+  template: `<input type="file"
+                    ng2FileDrop
+                    [uploader]="uploader"
+             />`
 })
 export class ContainerComponent {
-  public uploader:FileUploader = new FileUploader({url: 'localhost:3000'});
+  public get url(): string { return 'localhost:3000'; }
+  public uploader: FileUploader = new FileUploader({ url: this.url });
 }
 
 describe('Directive: FileSelectDirective', () => {
 
+  let fixture: ComponentFixture<ContainerComponent>;
+  let hostComponent: ContainerComponent;
+  let directiveElement: DebugElement;
+  let fileDropDirective: FileDropDirective;
+
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [FileUploadModule],
-      declarations: [ContainerComponent],
-      providers: [ContainerComponent]
+      imports: [ FileUploadModule ],
+      declarations: [ ContainerComponent ],
+      providers: [ ContainerComponent ]
     });
   });
 
-  it('should be fine', inject([ContainerComponent], (fixture:ComponentFixture<ContainerComponent>) => {
-    expect(fixture).not.toBeNull();
-  }));
+  beforeEach(() => {
+    fixture = TestBed.createComponent(ContainerComponent);
+    hostComponent = fixture.componentInstance;
+
+    fixture.detectChanges();
+
+    directiveElement = fixture.debugElement.query(By.directive(FileDropDirective));
+    fileDropDirective = directiveElement.injector.get(FileDropDirective) as FileDropDirective;
+  });
+
+  it('can be initialized', () => {
+    expect(fixture).toBeDefined();
+    expect(hostComponent).toBeDefined();
+    expect(fileDropDirective).toBeDefined();
+  });
+
+  it('can set file uploader', () => {
+    expect(fileDropDirective.uploader).toBe(hostComponent.uploader);
+  });
+
+  it('can get uploader options', () => {
+    const options = fileDropDirective.getOptions();
+
+    // Check url set through binding
+    expect(options.url).toBe(hostComponent.url);
+
+    // Check default options
+    expect(options.autoUpload).toBeFalsy();
+    expect(options.isHTML5).toBeTruthy();
+    expect(options.removeAfterUpload).toBeFalsy();
+    expect(options.disableMultipart).toBeFalsy();
+  });
+
+  it('can get filters', () => {
+    const filters = fileDropDirective.getFilters();
+
+    // TODO: Update test once implemented
+    expect(filters).toEqual({});
+  });
+
+  it('handles drop event', () => {
+    spyOn(fileDropDirective, 'onDrop');
+
+    directiveElement.triggerEventHandler('drop', getFakeEvent());
+
+    expect(fileDropDirective.onDrop).toHaveBeenCalled();
+  });
+
+  it('adds file to upload', () => {
+    spyOn(fileDropDirective.uploader, 'addToQueue');
+
+    let fileOverData;
+    fileDropDirective.fileOver.subscribe((data: any) => fileOverData = data);
+
+    let fileDropData;
+    fileDropDirective.onFileDrop.subscribe((data: File[]) => fileDropData = data);
+
+    fileDropDirective.onDrop(getFakeEvent());
+
+    const uploadedFiles = getFakeEvent().dataTransfer.files;
+    const expectedArguments = [ uploadedFiles, fileDropDirective.getOptions(), fileDropDirective.getFilters() ];
+
+    expect(fileDropDirective.uploader.addToQueue).toHaveBeenCalledWith(...expectedArguments);
+    expect(fileOverData).toBeFalsy();
+    expect(fileDropData).toEqual(uploadedFiles);
+  });
+
+  it('handles dragover event', () => {
+    spyOn(fileDropDirective, 'onDragOver');
+
+    directiveElement.triggerEventHandler('dragover', getFakeEvent());
+
+    expect(fileDropDirective.onDragOver).toHaveBeenCalled();
+  });
+
+  it('handles file over', () => {
+    let fileOverData;
+    fileDropDirective.fileOver.subscribe((data: any) => fileOverData = data);
+
+    fileDropDirective.onDragOver(getFakeEvent());
+
+    expect(fileOverData).toBeTruthy();
+  });
+
+  it('handles dragleave event', () => {
+    spyOn(fileDropDirective, 'onDragLeave');
+
+    directiveElement.triggerEventHandler('dragleave', getFakeEvent());
+
+    expect(fileDropDirective.onDragLeave).toHaveBeenCalled();
+  });
+
+  it('handles file over leave', () => {
+    let fileOverData;
+    fileDropDirective.fileOver.subscribe((data: any) => fileOverData = data);
+
+    fileDropDirective.onDragLeave(getFakeEvent());
+
+    expect(fileOverData).toBeFalsy();
+  });
 });
+
+function getFakeEvent(): any {
+  return {
+    dataTransfer: {
+      files: [ 'foo.bar' ],
+      types: [ 'Files' ]
+    },
+    preventDefault: () => undefined,
+    stopPropagation: () => undefined
+  }
+}
