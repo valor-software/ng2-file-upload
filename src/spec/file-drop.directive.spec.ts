@@ -8,17 +8,17 @@ import { FileDropDirective } from '../file-upload/file-drop.directive';
 
 @Component({
   selector: 'container',
-  template: `<input type="file"
+  template: `<div type="file"
                     ng2FileDrop
                     [uploader]="uploader"
-             />`
+             ></div>`
 })
 export class ContainerComponent {
   public get url(): string { return 'localhost:3000'; }
   public uploader: FileUploader = new FileUploader({ url: this.url });
 }
 
-describe('Directive: FileSelectDirective', () => {
+describe('Directive: FileDropDirective', () => {
 
   let fixture: ComponentFixture<ContainerComponent>;
   let hostComponent: ContainerComponent;
@@ -76,7 +76,7 @@ describe('Directive: FileSelectDirective', () => {
   it('handles drop event', () => {
     spyOn(fileDropDirective, 'onDrop');
 
-    directiveElement.triggerEventHandler('drop', getFakeEvent());
+    directiveElement.triggerEventHandler('drop', getFakeEventData());
 
     expect(fileDropDirective.onDrop).toHaveBeenCalled();
   });
@@ -90,9 +90,9 @@ describe('Directive: FileSelectDirective', () => {
     let fileDropData;
     fileDropDirective.onFileDrop.subscribe((data: File[]) => fileDropData = data);
 
-    fileDropDirective.onDrop(getFakeEvent());
+    fileDropDirective.onDrop(getFakeEventData());
 
-    const uploadedFiles = getFakeEvent().dataTransfer.files;
+    const uploadedFiles = getFakeEventData().dataTransfer.files;
     const expectedArguments = [ uploadedFiles, fileDropDirective.getOptions(), fileDropDirective.getFilters() ];
 
     expect(fileDropDirective.uploader.addToQueue).toHaveBeenCalledWith(...expectedArguments);
@@ -103,7 +103,7 @@ describe('Directive: FileSelectDirective', () => {
   it('handles dragover event', () => {
     spyOn(fileDropDirective, 'onDragOver');
 
-    directiveElement.triggerEventHandler('dragover', getFakeEvent());
+    directiveElement.triggerEventHandler('dragover', getFakeEventData());
 
     expect(fileDropDirective.onDragOver).toHaveBeenCalled();
   });
@@ -112,7 +112,7 @@ describe('Directive: FileSelectDirective', () => {
     let fileOverData;
     fileDropDirective.fileOver.subscribe((data: any) => fileOverData = data);
 
-    fileDropDirective.onDragOver(getFakeEvent());
+    fileDropDirective.onDragOver(getFakeEventData());
 
     expect(fileOverData).toBeTruthy();
   });
@@ -120,7 +120,7 @@ describe('Directive: FileSelectDirective', () => {
   it('handles dragleave event', () => {
     spyOn(fileDropDirective, 'onDragLeave');
 
-    directiveElement.triggerEventHandler('dragleave', getFakeEvent());
+    directiveElement.triggerEventHandler('dragleave', getFakeEventData());
 
     expect(fileDropDirective.onDragLeave).toHaveBeenCalled();
   });
@@ -129,13 +129,13 @@ describe('Directive: FileSelectDirective', () => {
     let fileOverData;
     fileDropDirective.fileOver.subscribe((data: any) => fileOverData = data);
 
-    fileDropDirective.onDragLeave(getFakeEvent());
+    fileDropDirective.onDragLeave(getFakeEventData());
 
     expect(fileOverData).toBeFalsy();
   });
 });
 
-function getFakeEvent(): any {
+function getFakeEventData(): any {
   return {
     dataTransfer: {
       files: [ 'foo.bar' ],
