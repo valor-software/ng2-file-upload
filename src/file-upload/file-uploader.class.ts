@@ -33,6 +33,8 @@ export interface FileUploaderOptions {
   itemAlias?: string;
   authTokenHeader?: string;
   additionalParameter?:{[key: string]: any};
+  formatDataFunction?:Function;
+  formatDataFunctionIsAsync?:boolean;
 }
 
 export class FileUploader {
@@ -51,7 +53,9 @@ export class FileUploader {
     isHTML5: true,
     filters: [],
     removeAfterUpload: false,
-    disableMultipart: false
+    disableMultipart: false,
+    formatDataFunction: function (item:FileItem) { return item._file; },
+    formatDataFunctionIsAsync: false
   };
 
   protected _failFilterIndex:number;
@@ -318,7 +322,7 @@ export class FileUploader {
         });
       }
     } else {
-      sendable = item._file;
+      sendable = this.options.formatDataFunction(item);
     }
 
     xhr.upload.onprogress = (event:any) => {
@@ -360,11 +364,17 @@ export class FileUploader {
     if (this.authToken) {
       xhr.setRequestHeader(this.authTokenHeader, this.authToken);
     }
-    xhr.send(sendable);
     xhr.onreadystatechange = function() {
       if (xhr.readyState == XMLHttpRequest.DONE) {
         this.response.emit(xhr.responseText)
       }
+    }
+    if (this.options.formatDataFunctionIsAsync) {
+      sendable.then(
+        (result:any) => xhr.send(JSON.stringify(result))
+      );
+    } else {
+      xhr.send(sendable);
     }
     this._render();
   }
