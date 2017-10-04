@@ -1,3 +1,4 @@
+import { EventEmitter } from '@angular/core';
 import { FileLikeObject } from './file-like-object.class';
 import { FileItem } from './file-item.class';
 import { FileType } from './file-type.class';
@@ -43,6 +44,7 @@ export class FileUploader {
   public _nextIndex:number = 0;
   public autoUpload:any;
   public authTokenHeader: string;
+  public response: EventEmitter<any>;
 
   public options:FileUploaderOptions = {
     autoUpload: false,
@@ -56,6 +58,7 @@ export class FileUploader {
 
   public constructor(options:FileUploaderOptions) {
     this.setOptions(options);
+    this.response = new EventEmitter<any>();
   }
 
   public setOptions(options:FileUploaderOptions):void {
@@ -358,6 +361,11 @@ export class FileUploader {
       xhr.setRequestHeader(this.authTokenHeader, this.authToken);
     }
     xhr.send(sendable);
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState == XMLHttpRequest.DONE) {
+        this.response.emit(xhr.responseText)
+      }
+    }
     this._render();
   }
 
