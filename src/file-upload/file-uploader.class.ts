@@ -298,6 +298,7 @@ export class FileUploader {
   }
 
   protected _xhrTransport(item:FileItem):any {
+    let that = this;
     let xhr = item._xhr = new XMLHttpRequest();
     let sendable:any;
     this._onBeforeUploadItem(item);
@@ -366,7 +367,7 @@ export class FileUploader {
     }
     xhr.onreadystatechange = function() {
       if (xhr.readyState == XMLHttpRequest.DONE) {
-        this.response.emit(xhr.responseText)
+        that.response.emit(xhr.responseText)
       }
     }
     if (this.options.formatDataFunctionIsAsync) {
