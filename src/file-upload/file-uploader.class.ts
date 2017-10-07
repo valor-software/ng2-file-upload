@@ -14,7 +14,7 @@ export interface Headers {
 
 export type ParsedResponseHeaders = {[headerFieldName:string]:string};
 
-export type FilterFunction = {name:string, fn:(item?:FileLikeObject, options?:FileUploaderOptions)=>boolean};
+export type FilterFunction = {name:string, fn:(item?:FileLikeObject, options?:FileUploaderOptions)=>boolean|Promise<boolean>};
 
 export interface FileUploaderOptions {
   allowedMimeType?:Array<string>;
@@ -105,15 +105,15 @@ export class FileUploader {
       }
 
       let temp = new FileLikeObject(some);
-      if (this._isValidFile(temp, arrayOfFilters, options)) {
+      this._isValidFile(temp, arrayOfFilters, options).then(() => {
         let fileItem = new FileItem(this, some, options);
         addedFileItems.push(fileItem);
         this.queue.push(fileItem);
         this._onAfterAddingFile(fileItem);
-      } else {
+      }).catch(() => {
         let filter = arrayOfFilters[this._failFilterIndex];
         this._onWhenAddingFileFailed(temp, filter, options);
-      }
+      });
     });
     if (this.queue.length !== count) {
       this._onAfterAddingAll(addedFileItems);
@@ -426,11 +426,27 @@ export class FileUploader {
     return this.options.queueLimit === undefined || this.queue.length < this.options.queueLimit;
   }
 
-  protected _isValidFile(file:FileLikeObject, filters:FilterFunction[], options:FileUploaderOptions):boolean {
+  protected _isValidFile(file:FileLikeObject, filters:FilterFunction[], options:FileUploaderOptions): Promise<boolean> {
+    if (!filters.length) {
+      return Promise.resolve(true);
+    }
+
     this._failFilterIndex = -1;
-    return !filters.length ? true : filters.every((filter:FilterFunction) => {
-      this._failFilterIndex++;
-      return filter.fn.call(this, file, options);
+
+    return Promise.all(
+      filters.map((filter: FilterFunction) => {
+        const isValid: boolean = filter.fn.call(this, file, options);
+
+        return Promise.resolve(isValid);
+      })
+    ).then((values) => {
+      const isValid = values.every((value: boolean) => {
+        this._failFilterIndex++;
+
+        return value;
+      })
+
+      return isValid ? Promise.resolve(isValid) : Promise.reject(isValid);
     });
   }
 
