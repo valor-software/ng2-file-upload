@@ -25,6 +25,9 @@ Easy to use Angular2 directives for files upload ([demo](http://valor-software.g
 
   - `uploader` - (`FileUploader`) - uploader object. See using in [demo](https://github.com/valor-software/ng2-file-upload/blob/master/demo/components/file-upload/simple-demo.ts)
 
+### Events
+ - `onFileSelected` - fires when files are selected and added to the uploader queue
+
 ## API for `ng2FileDrop`
 
 ### Properties
@@ -39,6 +42,7 @@ Easy to use Angular2 directives for files upload ([demo](http://valor-software.g
   4. `itemAlias` - item alias (form name redefenition)
   5. `formatDataFunction` - Function to modify the request body. 'DisableMultipart' must be 'true' for this function to be called.
   6. `formatDataFunctionIsAsync` - Informs if the function sent in 'formatDataFunction' is asynchronous. Defaults to false.
+  7. `parametersBeforeFiles` - States if additional parameters should be appended before or after the file. Defaults to false.
 
 ### Events
 

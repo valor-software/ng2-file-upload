@@ -1,6 +1,6 @@
 export class FileType {
   /*  MS office  */
-  public static mime_doc:string[] = [
+  public static mime_doc: string[] = [
     'application/msword',
     'application/msword',
     'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
@@ -8,7 +8,7 @@ export class FileType {
     'application/vnd.ms-word.document.macroEnabled.12',
     'application/vnd.ms-word.template.macroEnabled.12'
   ];
-  public static mime_xsl:string[] = [
+  public static mime_xsl: string[] = [
     'application/vnd.ms-excel',
     'application/vnd.ms-excel',
     'application/vnd.ms-excel',
@@ -19,7 +19,7 @@ export class FileType {
     'application/vnd.ms-excel.addin.macroEnabled.12',
     'application/vnd.ms-excel.sheet.binary.macroEnabled.12'
   ];
-  public static mime_ppt:string[] = [
+  public static mime_ppt: string[] = [
     'application/vnd.ms-powerpoint',
     'application/vnd.ms-powerpoint',
     'application/vnd.ms-powerpoint',
@@ -34,7 +34,7 @@ export class FileType {
   ];
 
   /* PSD */
-  public static mime_psd:string[] = [
+  public static mime_psd: string[] = [
     'image/photoshop',
     'image/x-photoshop',
     'image/psd',
@@ -44,7 +44,7 @@ export class FileType {
   ];
 
   /* Compressed files */
-  public static mime_compress:string[] = [
+  public static mime_compress: string[] = [
     'application/x-gtar',
     'application/x-gcompress',
     'application/compress',
@@ -53,7 +53,7 @@ export class FileType {
     'application/octet-stream'
   ];
 
-  public static getMimeClass(file:any):string {
+  public static getMimeClass(file: any): string {
     let mimeClass = 'application';
     if (this.mime_psd.indexOf(file.type) !== -1) {
       mimeClass = 'image';
@@ -81,8 +81,8 @@ export class FileType {
     return mimeClass;
   }
 
-  public static fileTypeDetection(inputFilename:string):string {
-    let types:{[key:string]:string} = {
+  public static fileTypeDetection(inputFilename: string): string {
+    let types: { [ key: string ]: string } = {
       'jpg': 'image',
       'jpeg': 'image',
       'tif': 'image',
@@ -144,11 +144,11 @@ export class FileType {
     if (chunks.length < 2) {
       return 'application';
     }
-    let extension = chunks[chunks.length - 1].toLowerCase();
-    if (types[extension] === undefined) {
+    let extension = chunks[ chunks.length - 1 ].toLowerCase();
+    if (types[ extension ] === undefined) {
       return 'application';
     } else {
-      return types[extension];
+      return types[ extension ];
     }
   }
 }
