@@ -1,3 +1,4 @@
+import { EventEmitter } from '@angular/core';
 import { FileLikeObject } from './file-like-object.class';
 import { FileItem } from './file-item.class';
 import { FileType } from './file-type.class';
@@ -32,6 +33,8 @@ export interface FileUploaderOptions {
   itemAlias?: string;
   authTokenHeader?: string;
   additionalParameter?:{[key: string]: any};
+  formatDataFunction?:Function;
+  formatDataFunctionIsAsync?:boolean;
 }
 
 export class FileUploader {
@@ -43,19 +46,23 @@ export class FileUploader {
   public _nextIndex:number = 0;
   public autoUpload:any;
   public authTokenHeader: string;
+  public response: EventEmitter<any>;
 
   public options:FileUploaderOptions = {
     autoUpload: false,
     isHTML5: true,
     filters: [],
     removeAfterUpload: false,
-    disableMultipart: false
+    disableMultipart: false,
+    formatDataFunction: function (item:FileItem) { return item._file; },
+    formatDataFunctionIsAsync: false
   };
 
   protected _failFilterIndex:number;
 
   public constructor(options:FileUploaderOptions) {
     this.setOptions(options);
+    this.response = new EventEmitter<any>();
   }
 
   public setOptions(options:FileUploaderOptions):void {
@@ -291,6 +298,7 @@ export class FileUploader {
   }
 
   protected _xhrTransport(item:FileItem):any {
+    let that = this;
     let xhr = item._xhr = new XMLHttpRequest();
     let sendable:any;
     this._onBeforeUploadItem(item);
@@ -315,7 +323,7 @@ export class FileUploader {
         });
       }
     } else {
-      sendable = item._file;
+      sendable = this.options.formatDataFunction(item);
     }
 
     xhr.upload.onprogress = (event:any) => {
@@ -357,7 +365,18 @@ export class FileUploader {
     if (this.authToken) {
       xhr.setRequestHeader(this.authTokenHeader, this.authToken);
     }
-    xhr.send(sendable);
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState == XMLHttpRequest.DONE) {
+        that.response.emit(xhr.responseText)
+      }
+    }
+    if (this.options.formatDataFunctionIsAsync) {
+      sendable.then(
+        (result:any) => xhr.send(JSON.stringify(result))
+      );
+    } else {
+      xhr.send(sendable);
+    }
     this._render();
   }
 
