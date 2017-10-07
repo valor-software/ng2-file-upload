@@ -315,13 +315,20 @@ export class FileUploader {
       sendable = new FormData();
       this._onBuildItemForm(item, sendable);
 
-      sendable.append(item.alias, item._file, item.file.name);
 
+      // For AWS, Additional Parameters must come BEFORE Files
       if (this.options.additionalParameter !== undefined) {
         Object.keys(this.options.additionalParameter).forEach((key:string) => {
-          sendable.append(key, this.options.additionalParameter[key]);
+          let paramVal = this.options.additionalParameter[key];
+          // Allow an additional parameter to include the filename
+          if (typeof paramVal === 'string' && paramVal.indexOf('{{file_name}}') >= 0) {
+            paramVal = paramVal.replace('{{file_name}}', item.file.name);
+          }
+          sendable.append(key, paramVal);
         });
       }
+
+      sendable.append(item.alias, item._file, item.file.name);
     } else {
       sendable = this.options.formatDataFunction(item);
     }
