@@ -107,6 +107,7 @@ export class FileType {
       'mod': 'audio',
       'm4a': 'audio',
       'compress': 'compress',
+      'zip': 'compress',
       'rar': 'compress',
       '7z': 'compress',
       'lz': 'compress',
