@@ -72,9 +72,9 @@ export class FileUploader {
   public setOptions(options: FileUploaderOptions): void {
     this.options = Object.assign(this.options, options);
 
-    this.authToken = options.authToken;
-    this.authTokenHeader = options.authTokenHeader || 'Authorization';
-    this.autoUpload = options.autoUpload;
+    this.authToken = this.options.authToken;
+    this.authTokenHeader = this.options.authTokenHeader || 'Authorization';
+    this.autoUpload = this.options.autoUpload;
     this.options.filters.unshift({ name: 'queueLimit', fn: this._queueLimitFilter });
 
     if (this.options.maxFileSize) {
