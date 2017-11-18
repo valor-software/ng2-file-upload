@@ -1,3 +1,5 @@
+import { FileLikeObject } from "../ng2-file-upload";
+
 export class FileType {
   /*  MS office  */
   public static mime_doc: string[] = [
@@ -50,10 +52,15 @@ export class FileType {
     'application/compress',
     'application/x-tar',
     'application/x-rar-compressed',
-    'application/octet-stream'
+    'application/octet-stream',
+    'application/x-zip-compressed',
+    'application/zip-compressed',
+    'application/x-7z-compressed',
+    'application/gzip',
+    'application/x-bzip2'
   ];
 
-  public static getMimeClass(file: any): string {
+  public static getMimeClass(file: FileLikeObject): string {
     let mimeClass = 'application';
     if (this.mime_psd.indexOf(file.type) !== -1) {
       mimeClass = 'image';
@@ -112,6 +119,8 @@ export class FileType {
       '7z': 'compress',
       'lz': 'compress',
       'z01': 'compress',
+      'bz2': 'compress',
+      'gz': 'compress',
       'pdf': 'pdf',
       'xls': 'xls',
       'xlsx': 'xls',
