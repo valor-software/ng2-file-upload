@@ -1,3 +1,18 @@
+<a name="1.3.0"></a>
+# [1.3.0](https://github.com/valor-software/ng2-file-upload/compare/v1.2.0...v1.3.0) (2017-11-25)
+
+
+### Features
+
+* **file-upload:** Add response and function to modify the request body ([#901](https://github.com/valor-software/ng2-file-upload/pull/901))
+* **file-upload** add file type .zip ([#911](https://github.com/valor-software/ng2-file-upload/pull/911))
+
+### Bug Fixes
+* **file-uploader** Update: setOptions ([#904](https://github.com/valor-software/ng2-file-upload/pull/904))
+* **docs** Fix correct path for isHTML5 option ([#844](https://github.com/valor-software/ng2-file-upload/pull/844))
+* **docs** Added onFileDrop() event to documentation ([#857](https://github.com/valor-software/ng2-file-upload/pull/857))
+
+
 <a name="1.2.1"></a>
 ## [1.2.1](https://github.com/valor-software/ng2-file-upload/compare/v1.2.0...v1.2.1) (2017-04-10)
 
