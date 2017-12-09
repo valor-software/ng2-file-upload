@@ -18,6 +18,30 @@ Easy to use Angular2 directives for files upload ([demo](http://valor-software.g
 
 3. More information regarding using of ***ng2-file-upload*** is located in
   [demo](http://valor-software.github.io/ng2-file-upload/) and [demo sources](https://github.com/valor-software/ng2-file-upload/tree/master/demo).
+  
+## Using ***ng2-file-upload*** in a project
+
+1. Install as shown in the above section.
+
+2. Import `FileUploadModule` into the module that declares the component using ***ng2-file-upload***:
+
+```import { FileUploadModule } from 'ng2-file-upload';```
+
+3. Add it to `[imports]` under `@NgModule`:
+
+```imports: [ ... FileUploadModule, ... ]```
+
+4. Import `FileUploader` into the component:
+
+```import {  FileUploader } from 'ng2-file-upload';```
+
+5. Create a variable for the API url:
+
+```const URL = 'path_to_api';```
+
+6. Initialize it:
+
+```public uploader:FileUploader = new FileUploader({url: URL}); ```
 
 ## API for `ng2FileSelect`
 
