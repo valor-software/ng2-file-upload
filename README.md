@@ -43,6 +43,63 @@ Easy to use Angular2 directives for files upload ([demo](http://valor-software.g
 
 ```public uploader:FileUploader = new FileUploader({url: URL}); ```
 
+## Using ***ng2-file-upload*** with multiple uploads and other parameters
+To add extra information (i.e. title, description) when uploading multiple files:
+
+In your template:
+```
+<tr *ngFor="let item of uploader.queue">
+                            <td><strong>{{ item?.file?.name }}</strong></td>
+
+                            **<td><input type="text" [(ngModel)]="item.formData['title']" placeholder="Title of File"></td>**
+                            **<td><input type="text" [(ngModel)]="item.formData['description']" placeholder="File Description"></td>**
+                            <td nowrap>{{ item?.file?.size/1024/1024 | number:'.2' }} MB</td>
+                            <td >
+                                <div class="progress" style="margin-bottom: 0;">
+                                    <div class="progress-bar" role="progressbar" [ngStyle]="{ 'width': item.progress + '%' }"></div>
+                                </div>
+                            </td>
+                            <td class="text-center">
+                                <span *ngIf="item.isSuccess"><i class="glyphicon glyphicon-ok"></i></span>
+                                <span *ngIf="item.isCancel"><i class="glyphicon glyphicon-ban-circle"></i></span>
+                                <span *ngIf="item.isError"><i class="glyphicon glyphicon-remove"></i></span>
+                            </td>
+                            <td nowrap>
+                                <button type="button" class="btn btn-success btn-xs"
+                                        (click)="item.upload()" [disabled]="item.isReady || item.isUploading || item.isSuccess">
+                                    <span class="glyphicon glyphicon-upload"></span> Upload
+                                </button>
+                                <button type="button" class="btn btn-warning btn-xs"
+                                        (click)="item.cancel()" [disabled]="!item.isUploading">
+                                    <span class="glyphicon glyphicon-ban-circle"></span> Cancel
+                                </button>
+                                <button type="button" class="btn btn-danger btn-xs"
+                                        (click)="item.remove()">
+                                    <span class="glyphicon glyphicon-trash"></span> Remove
+                                </button>
+                            </td>
+
+                        </tr>
+```
+You can add inputs outside of a form, and use ```[(ngModel)]``` to add keys to the ```item``` object.
+
+```
+                            **<td><input type="text" [(ngModel)]="item.formData['title']" placeholder="Title of File"></td>**
+                            **<td><input type="text" [(ngModel)]="item.formData['description']" placeholder="File Description"></td>**
+```
+Inside your upload component, add the following:
+
+```
+    this.uploader.onBuildItemForm = (item, form) => {
+      form.append('title', item.formData.title);
+      form.append('description', item.formData.description);
+      console.log(item);
+    };
+
+```
+If you are using `Node.js` with `multer`, the extra information will not show up in the `req.files` object. You will have to pull the data from the `req.body` object.
+
+
 ## API for `ng2FileSelect`
 
 ### Properties
