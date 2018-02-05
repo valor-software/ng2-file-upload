@@ -305,44 +305,12 @@ export class FileUploader {
 
     this._onBeforeUploadItem(item);
 
-    // let chunker = new ChunkFileUpload({
-    //   file: item,
-    //   success: (file: FileItem) => {
-    //     let headers = this._parseHeaders(xhr.getAllResponseHeaders());
-    //     let response = this._transformResponse(xhr.response, headers);
-    //     let gist = this._isSuccessCode(xhr.status) ? 'Success' : 'Error';
-    //     let method = '_on' + gist + 'Item';
-    //     (this as any)[ method ](file, response, xhr.status, headers);
-    //     this._onCompleteItem(file, response, xhr.status, headers);
-    //   },
-    //   fail: () => {
-    //
-    //   }
-    // });
-
-    //this.file = obj.item;
     var blob = item._file;
-    //this.fileSize = obj.item.file.size;
 
-
-    var NUM_CHUNKS,
-        start,
-        end;
-
-    var SIZE = blob.size;
-
-    NUM_CHUNKS = Math.max(Math.ceil(SIZE / this.options.chunkSize), 1);
-    start = 0;
-    end = this.options.chunkSize;
-
-    while(start < SIZE) {
-      if(end >= SIZE) {
-        end = SIZE;
-      }
-      this.chunkUploadXhr(blob.slice(start, end), item, start, end, SIZE);
-      start = end;
-      end = start + this.options.chunkSize;
-    }
+    var start = 0,
+        end = this.options.chunkSize;
+	
+	  this.chunkUploadXhr(blob.slice(start, end), item, start, end, blob.size);
   }
 
   protected chunkUploadXhr(blob: any, item: any, start: any, end: any, SIZE: any) {
@@ -401,12 +369,15 @@ export class FileUploader {
       this._onCompleteItem(item, response, xhr.status, headers);
     };
     xhr.onloadend = () => {
-      this.uploaders.pop();
-      if(!that.uploaders.length) {
-        console.log(item);
-        console.log("ChunkFileUpload Done");
+      start = end;
+      end = start + this.options.chunkSize;
 
-
+      if(start < SIZE) {
+        if(end >= SIZE) {
+        end = SIZE;
+        }
+        this.chunkUploadXhr(blob.slice(start, end), item, start, end, SIZE);
+      } else {
         let headers = this._parseHeaders(xhr.getAllResponseHeaders());
         let response = this._transformResponse(xhr.response, headers);
         let gist = this._isSuccessCode(xhr.status) ? 'Success' : 'Error';
@@ -442,10 +413,11 @@ export class FileUploader {
     } else {
 
       xhr.setRequestHeader('Content-Range', `bytes ${start}-${end}/${SIZE}`);
-      this.uploaders.push(xhr);
+
       xhr.send(sendable);
     }
-    this._render();
+    
+	  this._render();
   }
 
   protected _xhrTransport(item: FileItem): any {
