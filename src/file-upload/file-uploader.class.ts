@@ -53,6 +53,7 @@ export class FileUploader {
   public autoUpload: any;
   public authTokenHeader: string;
   public response: EventEmitter<any>;
+  public uploaders: any[] = [];
 
   public options: FileUploaderOptions = {
     autoUpload: false,
@@ -301,6 +302,7 @@ export class FileUploader {
   }
 
   protected _xhrTransport_chunked(item: FileItem): any {
+
     this._onBeforeUploadItem(item);
 
     var blob = item._file;
@@ -308,7 +310,7 @@ export class FileUploader {
     var start = 0,
         end = this.options.chunkSize;
 	
-	this.chunkUploadXhr(blob.slice(start, end), item, start, end, blob.size);
+	  this.chunkUploadXhr(blob.slice(start, end), item, start, end, blob.size);
   }
 
   protected chunkUploadXhr(blob: any, item: any, start: any, end: any, SIZE: any) {
@@ -367,22 +369,22 @@ export class FileUploader {
       this._onCompleteItem(item, response, xhr.status, headers);
     };
     xhr.onloadend = () => {
-        start = end;
-		end = start + this.options.chunkSize;
-		
-		if(start < SIZE) {
-		  if(end >= SIZE) {
-			end = SIZE;
-		  }
-		  this.chunkUploadXhr(blob.slice(start, end), item, start, end, SIZE);
-		} else {
-			let headers = this._parseHeaders(xhr.getAllResponseHeaders());
-			let response = this._transformResponse(xhr.response, headers);
-			let gist = this._isSuccessCode(xhr.status) ? 'Success' : 'Error';
-			let method = '_on' + gist + 'Item';
-			(this as any)[ method ](item, response, xhr.status, headers);
-			this._onCompleteItem(item, response, xhr.status, headers);
-		}
+      start = end;
+      end = start + this.options.chunkSize;
+
+      if(start < SIZE) {
+        if(end >= SIZE) {
+        end = SIZE;
+        }
+        this.chunkUploadXhr(blob.slice(start, end), item, start, end, SIZE);
+      } else {
+        let headers = this._parseHeaders(xhr.getAllResponseHeaders());
+        let response = this._transformResponse(xhr.response, headers);
+        let gist = this._isSuccessCode(xhr.status) ? 'Success' : 'Error';
+        let method = '_on' + gist + 'Item';
+        (this as any)[ method ](item, response, xhr.status, headers);
+        this._onCompleteItem(item, response, xhr.status, headers);
+      }
     };
     xhr.open(item.method, item.url, true);
     xhr.withCredentials = item.withCredentials;
@@ -411,10 +413,11 @@ export class FileUploader {
     } else {
 
       xhr.setRequestHeader('Content-Range', `bytes ${start}-${end}/${SIZE}`);
+
       xhr.send(sendable);
     }
     
-	this._render();
+	  this._render();
   }
 
   protected _xhrTransport(item: FileItem): any {
