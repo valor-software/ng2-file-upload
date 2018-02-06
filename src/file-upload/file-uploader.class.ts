@@ -309,7 +309,7 @@ export class FileUploader {
 
     var start = 0,
         end = this.options.chunkSize;
-	
+
 	  this.chunkUploadXhr(blob.slice(start, end), item, start, end, blob.size);
   }
 
@@ -369,7 +369,7 @@ export class FileUploader {
       this._onCompleteItem(item, response, xhr.status, headers);
     };
     xhr.onloadend = () => {
-      start = end;
+      start = end + 1;
       end = start + this.options.chunkSize;
 
       if(start < SIZE) {
@@ -412,11 +412,13 @@ export class FileUploader {
       );
     } else {
 
+      xhr.setRequestHeader('Content-Type', `${item.file.type}`);
       xhr.setRequestHeader('Content-Range', `bytes ${start}-${end}/${SIZE}`);
+      xhr.setRequestHeader('Content-Disposition', `attachment; filename="${item.file.name}"`);
 
       xhr.send(sendable);
     }
-    
+
 	  this._render();
   }
 
