@@ -20,6 +20,9 @@ export class FileItem {
   public index: number = void 0;
   public _xhr: XMLHttpRequest;
   public _form: any;
+  public _chunkUploaders: any = [];
+  public _currentChunk: number = 0;
+  public _totalChunks: number = 0;
 
   protected uploader: FileUploader;
   protected some: File;
@@ -31,6 +34,7 @@ export class FileItem {
     this.options = options;
     this.file = new FileLikeObject(some);
     this._file = some;
+
     if (uploader.options) {
       this.method = uploader.options.method || 'POST';
       this.alias = uploader.options.itemAlias || 'file';
@@ -80,6 +84,9 @@ export class FileItem {
   }
 
   public onComplete(response: string, status: number, headers: ParsedResponseHeaders): any {
+    return { response, status, headers };
+  }
+  public onCompleteChunk(response: string, status: number, headers: ParsedResponseHeaders): any {
     return { response, status, headers };
   }
 
@@ -145,6 +152,13 @@ export class FileItem {
     if (this.uploader.options.removeAfterUpload) {
       this.remove();
     }
+  }
+  public _onCompleteChunk(response: string, status: number, headers: ParsedResponseHeaders): void{
+    this._onCompleteChunkCallnext();
+    this.onCompleteChunk(response, status, headers);
+  }
+  public _onCompleteChunkCallnext(): void{
+
   }
 
   public _prepareToUploading(): void {

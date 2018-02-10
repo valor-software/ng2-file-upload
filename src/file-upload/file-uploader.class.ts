@@ -39,6 +39,11 @@ export interface FileUploaderOptions {
   parametersBeforeFiles?: boolean;
   formatDataFunction?: Function;
   formatDataFunctionIsAsync?: boolean;
+  chunkSize?: number;
+  currentChunkParam?: string;
+  totalChunkParam?: string;
+  chunkMethod?: string;
+  
 }
 
 export class FileUploader {
@@ -51,11 +56,18 @@ export class FileUploader {
   public autoUpload: any;
   public authTokenHeader: string;
   public response: EventEmitter<any>;
-
+  public chunkSize: number = null;
+  public currentChunkParam: string = "current_chunk";
+  public totalChunkParam: string = "total_chunks";
+  public chunkMethod: string = "PUT";
   public options: FileUploaderOptions = {
     autoUpload: false,
     isHTML5: true,
     filters: [],
+    chunkSize: null,
+    currentChunkParam: "current_chunk",
+    totalChunkParam: "total_chunks",
+    chunkMethod: "PUT",
     removeAfterUpload: false,
     disableMultipart: false,
     formatDataFunction: (item: FileItem) => item._file,
@@ -75,6 +87,10 @@ export class FileUploader {
     this.authToken = this.options.authToken;
     this.authTokenHeader = this.options.authTokenHeader || 'Authorization';
     this.autoUpload = this.options.autoUpload;
+    this.chunkSize = this.options.chunkSize;
+    this.currentChunkParam = this.options.currentChunkParam;
+    this.totalChunkParam = this.options.totalChunkParam;
+    this.chunkMethod = this.options.chunkMethod;
     this.options.filters.unshift({ name: 'queueLimit', fn: this._queueLimitFilter });
 
     if (this.options.maxFileSize) {
@@ -245,7 +261,9 @@ export class FileUploader {
   public onCancelItem(item: FileItem, response: string, status: number, headers: ParsedResponseHeaders): any {
     return { item, response, status, headers };
   }
-
+  public onCompleteChunk(item: FileItem, response: string, status: number, headers: ParsedResponseHeaders): any {
+    return { item, response, status, headers };
+  }
   public onCompleteItem(item: FileItem, response: string, status: number, headers: ParsedResponseHeaders): any {
     return { item, response, status, headers };
   }
@@ -271,7 +289,12 @@ export class FileUploader {
     item._onError(response, status, headers);
     this.onErrorItem(item, response, status, headers);
   }
-
+  public _onCompleteChunk(item: FileItem, response: string, status: number, headers: ParsedResponseHeaders): void{
+    this.onCompleteChunk(item,response,status,headers);
+    item._onCompleteChunk(response, status, headers);
+    this.progress = this._getTotalProgress();
+    this._render();
+  }
   public _onCompleteItem(item: FileItem, response: string, status: number, headers: ParsedResponseHeaders): void {
     item._onComplete(response, status, headers);
     this.onCompleteItem(item, response, status, headers);
@@ -294,55 +317,37 @@ export class FileUploader {
       return parsedHeaders;
     };
   }
-
-  protected _xhrTransport(item: FileItem): any {
+  protected _xhrAppendEvents(xhr: XMLHttpRequest, item: FileItem): XMLHttpRequest{
     let that = this;
-    let xhr = item._xhr = new XMLHttpRequest();
-    let sendable: any;
-    this._onBeforeUploadItem(item);
-
-    if (typeof item._file.size !== 'number') {
-      throw new TypeError('The file specified is no longer valid');
-    }
-    if (!this.options.disableMultipart) {
-      sendable = new FormData();
-      this._onBuildItemForm(item, sendable);
-
-      const appendFile = () => sendable.append(item.alias, item._file, item.file.name);
-      if (!this.options.parametersBeforeFiles) {
-        appendFile();
-      }
-
-      // For AWS, Additional Parameters must come BEFORE Files
-      if (this.options.additionalParameter !== undefined) {
-        Object.keys(this.options.additionalParameter).forEach((key: string) => {
-          let paramVal = this.options.additionalParameter[ key ];
-          // Allow an additional parameter to include the filename
-          if (typeof paramVal === 'string' && paramVal.indexOf('{{file_name}}') >= 0) {
-            paramVal = paramVal.replace('{{file_name}}', item.file.name);
-          }
-          sendable.append(key, paramVal);
-        });
-      }
-
-      if (this.options.parametersBeforeFiles) {
-        appendFile();
-      }
-    } else {
-      sendable = this.options.formatDataFunction(item);
-    }
-
     xhr.upload.onprogress = (event: any) => {
       let progress = Math.round(event.lengthComputable ? event.loaded * 100 / event.total : 0);
+      if(that.options.chunkSize > 0){
+        progress = Math.round( ((item._currentChunk-1) * 100) / item._totalChunks) + Math.round(progress / item._totalChunks);
+      }
       this._onProgressItem(item, progress);
     };
     xhr.onload = () => {
+      
       let headers = this._parseHeaders(xhr.getAllResponseHeaders());
       let response = this._transformResponse(xhr.response, headers);
       let gist = this._isSuccessCode(xhr.status) ? 'Success' : 'Error';
       let method = '_on' + gist + 'Item';
-      (this as any)[ method ](item, response, xhr.status, headers);
-      this._onCompleteItem(item, response, xhr.status, headers);
+      
+      
+      if(this.options.chunkSize > 0){
+        item._chunkUploaders.pop();
+        if (item._currentChunk >= item._totalChunks) {
+          (this as any)[ method ](item, response, xhr.status, headers);
+          this._onCompleteItem(item, response, xhr.status, headers);  
+        }else{
+          
+          this._onCompleteChunk(item,response,xhr.status,headers);
+        }
+      }else{
+        (this as any)[ method ](item, response, xhr.status, headers);
+        this._onCompleteItem(item, response, xhr.status, headers);  
+      }
+      
     };
     xhr.onerror = () => {
       let headers = this._parseHeaders(xhr.getAllResponseHeaders());
@@ -356,6 +361,7 @@ export class FileUploader {
       this._onCancelItem(item, response, xhr.status, headers);
       this._onCompleteItem(item, response, xhr.status, headers);
     };
+
     xhr.open(item.method, item.url, true);
     xhr.withCredentials = item.withCredentials;
     if (this.options.headers) {
@@ -376,6 +382,98 @@ export class FileUploader {
         that.response.emit(xhr.responseText)
       }
     }
+    return xhr;
+  }
+  
+  protected _buildMultiPartSendable(item: FileItem,start: number = null, end:number = null): FormData{
+    let sendable: FormData;
+    sendable = new FormData();
+    this._onBuildItemForm(item, sendable);
+    let file: any = item._file;
+    if( start && end ){
+      file = file.slice(start,end);   
+    }
+    const appendFile = () => sendable.append(item.alias, file, item.file.name);  
+    if (!this.options.parametersBeforeFiles) {
+      appendFile();
+    }
+
+    // For AWS, Additional Parameters must come BEFORE Files
+    if (this.options.additionalParameter !== undefined) {
+      Object.keys(this.options.additionalParameter).forEach((key: string) => {
+        let paramVal = this.options.additionalParameter[ key ];
+        // Allow an additional parameter to include the filename
+        if (typeof paramVal === 'string' && paramVal.indexOf('{{file_name}}') >= 0) {
+          paramVal = paramVal.replace('{{file_name}}', item.file.name);
+        }
+        sendable.append(key, paramVal);
+      });
+    }
+    if (this.options.chunkSize > 0 && this.options.totalChunkParam){
+      sendable.append(this.options.totalChunkParam,item._totalChunks.toString() );
+    }
+    if (this.options.chunkSize > 0 && this.options.currentChunkParam){
+      sendable.append(this.options.currentChunkParam,item._currentChunk.toString() );
+    }
+
+    if (this.options.parametersBeforeFiles) {
+      appendFile();
+    }
+
+    return sendable;
+  }
+  protected _xhrTransport(item: FileItem): any {
+    let that = this;
+    let xhr = item._xhr = new XMLHttpRequest();
+    let sendable: any;
+    this._onBeforeUploadItem(item);
+
+    if (typeof item._file.size !== 'number') {
+      throw new TypeError('The file specified is no longer valid');
+    }
+     
+    if (!this.options.disableMultipart) {
+      /* CHUNCKED FILE UPLOAD */
+      if (this.options.chunkSize > 0){
+        let chunkSize = this.options.chunkSize;
+        let chunkMethod = this.options.chunkMethod;
+        let NUM_CHUNKS = Math.max(Math.ceil(item._file.size / chunkSize), 1);
+        let CUR_CHUNK = 0;
+        let start = 0;
+        let end = chunkSize;
+
+        item._chunkUploaders = [];
+        item._currentChunk = 0;
+        item._totalChunks = NUM_CHUNKS;
+        
+        item._onCompleteChunkCallnext =  function(): void{
+          item._currentChunk ++;
+          if(item._currentChunk > 1){
+            item.method = chunkMethod;
+          }
+          let sendable = this.uploader._buildMultiPartSendable(item,start,end);
+          let xhr = new XMLHttpRequest();
+          xhr = this.uploader._xhrAppendEvents(xhr,item);
+          
+          item._chunkUploaders.push(xhr);
+          xhr.send(sendable);
+
+          start = end;
+          end = start + chunkSize;
+        }
+        item._onCompleteChunkCallnext();
+        this._render();
+        return;
+      }else{
+        sendable = this._buildMultiPartSendable(item);  
+      }
+      
+    } else {
+      sendable = this.options.formatDataFunction(item);
+    }
+    
+    // Append Evenets
+    xhr = this._xhrAppendEvents(xhr,item);
     if (this.options.formatDataFunctionIsAsync) {
       sendable.then(
         (result: any) => xhr.send(JSON.stringify(result))
