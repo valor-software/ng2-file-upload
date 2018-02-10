@@ -94,14 +94,14 @@ Thanks for understanding!
   If you want to send the files chunked you can just set the chunk paramets on the uploader object
 
   If your chunk request changes the link after the first request you should use this code
-  ```
+  ```txt
   this.uploader.onCompleteChunk = (item,response,status,headers)=>{
         response = JSON.parse(response);
         if(response['id']){
             item.url = YOUR_NEW_URL+response['id']+'/';
         }
     }
-  ```txt
+  ```
 
 ### License
 
