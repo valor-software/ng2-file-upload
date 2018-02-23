@@ -2,7 +2,7 @@ import { EventEmitter } from '@angular/core';
 import { FileLikeObject } from './file-like-object.class';
 import { FileItem } from './file-item.class';
 import { FileType } from './file-type.class';
-
+import { FileChunk } from './file-chunk.class';
 function isFile(value: any): boolean {
   return (File && value instanceof File);
 }
@@ -389,9 +389,12 @@ export class FileUploader {
     let sendable: FormData;
     sendable = new FormData();
     this._onBuildItemForm(item, sendable);
-    let file: any = item._file;
-    if( start && end ){
-      file = file.slice(start,end);   
+    let file: any = null;
+    if(this.options.chunkSize > 0){
+
+      file = item.getNextChunk();
+    }else{
+      file = item._file;
     }
     const appendFile = () => sendable.append(item.alias, file, item.file.name);  
     if (!this.options.parametersBeforeFiles) {
@@ -461,6 +464,8 @@ export class FileUploader {
           start = end;
           end = start + chunkSize;
         }
+        item.createFileChunk(this.options.chunkSize)
+        item.setIsUploading(true)
         item._onCompleteChunkCallnext();
         this._render();
         return;

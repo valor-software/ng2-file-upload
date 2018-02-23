@@ -1,6 +1,6 @@
 import { FileLikeObject } from './file-like-object.class';
 import { FileUploader, ParsedResponseHeaders, FileUploaderOptions } from './file-uploader.class';
-
+import { FileChunk } from './file-chunk.class'
 export class FileItem {
   public file: FileLikeObject;
   public _file: File;
@@ -21,6 +21,7 @@ export class FileItem {
   public _xhr: XMLHttpRequest;
   public _form: any;
   public _chunkUploaders: any = [];
+  public _fileChunks: FileChunk;
   public _currentChunk: number = 0;
   public _totalChunks: number = 0;
 
@@ -50,7 +51,28 @@ export class FileItem {
       this.uploader._onErrorItem(this, '', 0, {});
     }
   }
+  public createFileChunk(chunkSize: number): void{
+    this.fileChunks = new FileChunk(this._file,{byteStepSize:chunkSize});
+    this._currentChunk = this.fileChunks.currentChunk;
+    this._totalChunks = this.fileChunks.totalChunks;
+  }
+  public getNextChunk():any{
+    this.fileChunks.prepareNextChunk()
+    return this.fileChunks.getCurrentRawFileChunk();
+  }
+  public setIsUploading(val:boolean){
+    this.isUploading = val;
+    if(this.fileChunks){
+      this.fileChunks.setUploading(val)
+    }
+  }
 
+  public set fileChunks(val: FileChunk){
+    this._fileChunks = val;
+  }
+  public get fileChunks(): FileChunk{
+    return this._fileChunks;
+  }
   public cancel(): void {
     this.uploader.cancelItem(this);
   }
