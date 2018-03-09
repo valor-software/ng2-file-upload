@@ -4,6 +4,7 @@ import { FileChunk } from './file-chunk.class'
 export class FileItem {
   public file: FileLikeObject;
   public _file: File;
+  public id: any;
   public alias: string;
   public url: string = '/';
   public method: string;
@@ -25,6 +26,8 @@ export class FileItem {
   public _currentChunk: number = 0;
   public _totalChunks: number = 0;
 
+  protected chunkTotalRetries = 10;
+  protected chunkRetries = 0;
   protected uploader: FileUploader;
   protected some: File;
   protected options: FileUploaderOptions;
@@ -56,9 +59,17 @@ export class FileItem {
     this._currentChunk = this.fileChunks.currentChunk;
     this._totalChunks = this.fileChunks.totalChunks;
   }
-  public getNextChunk():any{
-    this.fileChunks.prepareNextChunk()
+  public getCurrentChunkFile():any{
     return this.fileChunks.getCurrentRawFileChunk();
+  }
+  public prepareNextChunk():void{
+    this.fileChunks.prepareNextChunk();
+  }
+  public getCurrentChunk():any{
+    return this.fileChunks.getCurrentChunk()
+  }
+  public getTotalChunks():any{
+    return this.fileChunks.getTotalChunks()
   }
   public setIsUploading(val:boolean){
     this.isUploading = val;
@@ -72,6 +83,12 @@ export class FileItem {
   }
   public get fileChunks(): FileChunk{
     return this._fileChunks;
+  }
+  public getId(): any {
+    return this.id;
+  }
+  public setId(id: any) {
+    this.id = id;
   }
   public cancel(): void {
     this.uploader.cancelItem(this);
@@ -175,14 +192,24 @@ export class FileItem {
       this.remove();
     }
   }
-  public _onCompleteChunk(response: string, status: number, headers: ParsedResponseHeaders): void{
-    this._onCompleteChunkCallnext();
+  public _onCompleteChunk(response: string, status: number, headers: ParsedResponseHeaders): void {
+    this.chunkRetries = 0;
+    this._onCompleteChunkCallNext();
     this.onCompleteChunk(response, status, headers);
   }
-  public _onCompleteChunkCallnext(): void{
-
+  public _onCompleteChunkCallNext(): void{
+    //Let's Retry to send this chunk 4 times;
   }
-
+  public _onErrorChunk(response: string, status: number, headers: ParsedResponseHeaders): void {
+    if (this.chunkRetries > this.chunkTotalRetries) {
+      this.uploader.onErrorItem(this, response, status, headers);
+      this.uploader.onCompleteItem(this, response, status, headers);
+    } else {
+      this.chunkRetries ++;
+      this.fileChunks.retrocedeChunk();
+      this._onCompleteChunkCallNext();
+    }
+  }
   public _prepareToUploading(): void {
     this.index = this.index || ++this.uploader._nextIndex;
     this.isReady = true;
