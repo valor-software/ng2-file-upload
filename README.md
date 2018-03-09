@@ -89,12 +89,12 @@ Please follow this guidelines when reporting bugs and feature requests:
 
 Thanks for understanding!
 
-### Using/Sending Chunk Files Feature
+## Using/Sending Chunk Files Feature
   
   If you want to send the files chunked you can just set the chunk paramets on the uploader object
 
   If your chunk request changes the link after the first request you should use this code
-  ```txt
+  ```typescript
   this.uploader.onCompleteChunk = (item,response,status,headers)=>{
         response = JSON.parse(response);
         if(response['id']){
@@ -102,6 +102,53 @@ Thanks for understanding!
         }
     }
   ```
+
+### Code snippet on how to use the Chunk File Feature on your code
+  ```typescript
+    ...
+    import { FileUploader } from 'ng2-file-upload';
+    ...
+    export class SimpleDemoComponent {
+      ...
+      uploader:FileUploader;
+      ...
+      constructor () {
+        ...
+          this.uploader = new FileUploader({
+            url: URL,
+            disableMultipart : false,
+            isHTML5: true,
+            chunkSize: (1024*1024), // 2MB
+            currentChunkParam: 'current_chunk',
+            totalChunkParam: 'total_chunks',
+            chunkMethod: 'PUT',
+            //authToken = 'JWT '+TOKEN,
+          });
+          this.uploader.onBeforeUploadItem = (item) => {
+              // If you use credentials this might help you with the "Access-Control-Allow-Origin" error
+              item.withCredentials = false;
+          };
+          this.uploader.onCompleteChunk = (item, response, status, headers) => {
+            //Insert the Logic here to start uploading next chunks
+            // Example, setting the ID of the File uploaded and chaning the link for the next request
+            // In my Case the API is using a put method with the link containing the PK of the object
+            response = JSON.parse(response);
+            if (response['id']) {
+                item.setId(response['id']);
+                item.url = this.media_url + item.getId() + '/';
+            }
+          };
+          this.uploader.onErrorItem = (item, response, status, headers) => {
+             // Treat the error on the upload
+             // On the chunk method we try to upload a chunk for 10 times before triggering this error
+          };
+          this.uploader.onRemoveItem = (item) => {
+             // Treat the file removal from the server
+          };
+        ...
+      }
+  ```
+
 
 ### License
 
