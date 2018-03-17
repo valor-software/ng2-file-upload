@@ -18,8 +18,9 @@ export class SimpleDemoComponent {
   constructor (){
     this.uploader = new FileUploader({
       url: URL,
-      disableMultipart: true, // 'DisableMultipart' must be 'true' for formatDataFunction to be called.
-      formatDataFunctionIsAsync: true,
+      disableMultipart: false, // 'DisableMultipart' must be 'true' for formatDataFunction to be called.  
+      uploadFilesInSingleRequest: true,    
+      formatDataFunctionIsAsync: false,
       formatDataFunction: async (item) => {
         return new Promise( (resolve, reject) => {
           resolve({
