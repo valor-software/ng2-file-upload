@@ -39,6 +39,7 @@ export interface FileUploaderOptions {
   parametersBeforeFiles?: boolean;
   formatDataFunction?: Function;
   formatDataFunctionIsAsync?: boolean;
+  uploadFilesInSingleRequest?: boolean;
 }
 
 export class FileUploader {
@@ -59,19 +60,19 @@ export class FileUploader {
     removeAfterUpload: false,
     disableMultipart: false,
     formatDataFunction: (item: FileItem) => item._file,
-    formatDataFunctionIsAsync: false
+    formatDataFunctionIsAsync: false,
+    uploadFilesInSingleRequest : false
   };
 
   protected _failFilterIndex: number;
 
   public constructor(options: FileUploaderOptions) {
     this.setOptions(options);
-    this.response = new EventEmitter<any>();
+    this.response = new EventEmitter<any>();    
   }
 
   public setOptions(options: FileUploaderOptions): void {
     this.options = Object.assign(this.options, options);
-
     this.authToken = this.options.authToken;
     this.authTokenHeader = this.options.authTokenHeader || 'Authorization';
     this.autoUpload = this.options.autoUpload;
@@ -145,16 +146,24 @@ export class FileUploader {
     this.progress = 0;
   }
 
-  public uploadItem(value: FileItem): void {
-    let index = this.getIndexOfItem(value);
-    let item = this.queue[ index ];
+  public uploadItem(value: FileItem): void {    
+    this.uploadItems(new Array<FileItem>(value));
+  }
+
+  public uploadItems(values: FileItem[]): void {
+    values.forEach(element => {
+      let index = this.getIndexOfItem(element);
+      let item = this.queue[ index ];
+      item._prepareToUploading();
+    });
+        
     let transport = this.options.isHTML5 ? '_xhrTransport' : '_iframeTransport';
-    item._prepareToUploading();
+    
     if (this.isUploading) {
       return;
     }
-    this.isUploading = true;
-    (this as any)[ transport ](item);
+    this.isUploading = true;    
+    (this as any)[ transport ](values);
   }
 
   public cancelItem(value: FileItem): void {
@@ -166,13 +175,20 @@ export class FileUploader {
     }
   }
 
-  public uploadAll(): void {
+  public uploadAll(): void {    
     let items = this.getNotUploadedItems().filter((item: FileItem) => !item.isUploading);
     if (!items.length) {
       return;
     }
+
     items.map((item: FileItem) => item._prepareToUploading());
-    items[ 0 ].upload();
+
+    if (this.options.uploadFilesInSingleRequest){
+      this.uploadItems(items);      
+    }
+    else{
+      items[ 0 ].upload();
+    }
   }
 
   public cancelAll(): void {
@@ -275,12 +291,27 @@ export class FileUploader {
   public _onCompleteItem(item: FileItem, response: string, status: number, headers: ParsedResponseHeaders): void {
     item._onComplete(response, status, headers);
     this.onCompleteItem(item, response, status, headers);
-    let nextItem = this.getReadyItems()[ 0 ];
+    
+    if (!this.options.uploadFilesInSingleRequest)
+    {
+      let nextItem = this.getReadyItems()[ 0 ];
+      this.isUploading = false;
+      if (nextItem) {
+        nextItem.upload();
+        return;
+      }
+      this.onCompleteAll();
+      this.progress = this._getTotalProgress();
+      this._render();
+    }    
+  }
+
+  public _onCompleteAllItems(items: FileItem[], response: string, status: number, headers: ParsedResponseHeaders): void {
+    items.forEach(item => {
+      item._onComplete(response, status, headers);
+      this.onCompleteItem(item, response, status, headers);
+    });    
     this.isUploading = false;
-    if (nextItem) {
-      nextItem.upload();
-      return;
-    }
     this.onCompleteAll();
     this.progress = this._getTotalProgress();
     this._render();
@@ -295,22 +326,36 @@ export class FileUploader {
     };
   }
 
-  protected _xhrTransport(item: FileItem): any {
+  protected _xhrTransport(items: FileItem[]): any {  
     let that = this;
-    let xhr = item._xhr = new XMLHttpRequest();
+    let firstItem = items[0];    
+    let xhr = firstItem._xhr = new XMLHttpRequest();
     let sendable: any;
-    this._onBeforeUploadItem(item);
 
-    if (typeof item._file.size !== 'number') {
-      throw new TypeError('The file specified is no longer valid');
-    }
+    items.forEach(item => {
+      this._onBeforeUploadItem(item);  
+    });
+    
+    items.forEach(item => {
+      if (typeof item._file.size !== 'number') {
+        throw new TypeError('The file specified is no longer valid');
+      }
+    });
+
     if (!this.options.disableMultipart) {
       sendable = new FormData();
-      this._onBuildItemForm(item, sendable);
+      items.forEach(item => {
+        this._onBuildItemForm(item, sendable);
+      });
 
-      const appendFile = () => sendable.append(item.alias, item._file, item.file.name);
+      const appendFiles = () => {
+        items.forEach(item => {
+          sendable.append(item.alias, item._file, item.file.name)
+        });        
+      };
+
       if (!this.options.parametersBeforeFiles) {
-        appendFile();
+        appendFiles();
       }
 
       // For AWS, Additional Parameters must come BEFORE Files
@@ -318,53 +363,55 @@ export class FileUploader {
         Object.keys(this.options.additionalParameter).forEach((key: string) => {
           let paramVal = this.options.additionalParameter[ key ];
           // Allow an additional parameter to include the filename
-          if (typeof paramVal === 'string' && paramVal.indexOf('{{file_name}}') >= 0) {
-            paramVal = paramVal.replace('{{file_name}}', item.file.name);
+          if (!this.options.uploadFilesInSingleRequest && typeof paramVal === 'string' && paramVal.indexOf('{{file_name}}') >= 0) {
+            paramVal = paramVal.replace('{{file_name}}', firstItem.file.name);
           }
           sendable.append(key, paramVal);
         });
       }
 
       if (this.options.parametersBeforeFiles) {
-        appendFile();
+        appendFiles();
       }
     } else {
-      sendable = this.options.formatDataFunction(item);
+      sendable = this.options.formatDataFunction(firstItem);
     }
 
-    xhr.upload.onprogress = (event: any) => {
-      let progress = Math.round(event.lengthComputable ? event.loaded * 100 / event.total : 0);
-      this._onProgressItem(item, progress);
-    };
     xhr.onload = () => {
       let headers = this._parseHeaders(xhr.getAllResponseHeaders());
       let response = this._transformResponse(xhr.response, headers);
       let gist = this._isSuccessCode(xhr.status) ? 'Success' : 'Error';
       let method = '_on' + gist + 'Item';
-      (this as any)[ method ](item, response, xhr.status, headers);
-      this._onCompleteItem(item, response, xhr.status, headers);
+      items.forEach(item => {
+        (this as any)[ method ](item, response, xhr.status, headers);        
+      });
+      this._onCompleteAllItems(items, response, xhr.status, headers);      
     };
     xhr.onerror = () => {
       let headers = this._parseHeaders(xhr.getAllResponseHeaders());
       let response = this._transformResponse(xhr.response, headers);
-      this._onErrorItem(item, response, xhr.status, headers);
-      this._onCompleteItem(item, response, xhr.status, headers);
+      items.forEach(item => {
+        this._onErrorItem(firstItem, response, xhr.status, headers);
+      });
+      this._onCompleteAllItems(items, response, xhr.status, headers); 
     };
     xhr.onabort = () => {
       let headers = this._parseHeaders(xhr.getAllResponseHeaders());
       let response = this._transformResponse(xhr.response, headers);
-      this._onCancelItem(item, response, xhr.status, headers);
-      this._onCompleteItem(item, response, xhr.status, headers);
+      items.forEach(item => {
+        this._onCancelItem(firstItem, response, xhr.status, headers);
+      });
+      this._onCompleteAllItems(items, response, xhr.status, headers); 
     };
-    xhr.open(item.method, item.url, true);
-    xhr.withCredentials = item.withCredentials;
+    xhr.open(firstItem.method, firstItem.url, true);
+    xhr.withCredentials = firstItem.withCredentials;
     if (this.options.headers) {
       for (let header of this.options.headers) {
         xhr.setRequestHeader(header.name, header.value);
       }
     }
-    if (item.headers.length) {
-      for (let header of item.headers) {
+    if (firstItem.headers.length) {
+      for (let header of firstItem.headers) {
         xhr.setRequestHeader(header.name, header.value);
       }
     }
