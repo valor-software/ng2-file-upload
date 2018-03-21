@@ -100,6 +100,7 @@ export class FileType {
       'tiff': 'image',
       'cr2': 'image',
       'dwg': 'image',
+      'dwf': 'image',
       'cdr': 'image',
       'ai': 'image',
       'indd': 'image',
