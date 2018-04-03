@@ -63,6 +63,7 @@ describe('Directive: FileSelectDirective', () => {
     expect(options.isHTML5).toBeTruthy();
     expect(options.removeAfterUpload).toBeFalsy();
     expect(options.disableMultipart).toBeFalsy();
+    expect(options.queueMaxSizeLimit).toBeUndefined();
   });
 
   it('can get filters', () => {
