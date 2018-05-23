@@ -28,7 +28,7 @@
   ],
   "files": [
     "../scripts/typings.d.ts",
-    "./ng2-file-upload.ts",
+    "./ng2-chunk-file-upload.ts",
     "./index.ts"
   ],
   "angularCompilerOptions": {

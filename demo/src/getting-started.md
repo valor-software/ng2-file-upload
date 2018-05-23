@@ -6,5 +6,5 @@
 
 Install the components
 ```
-npm install ng2-file-upload --save
+npm install ng2-chunk-file-upload --save
 ```

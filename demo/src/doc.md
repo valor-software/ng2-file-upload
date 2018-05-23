@@ -1,6 +1,6 @@
 ### Usage
 ```typescript
-import { FileSelectDirective, FileDropDirective, FileUploader } from 'ng2-file-upload/ng2-file-upload';
+import { FileSelectDirective, FileDropDirective, FileUploader } from 'ng2-chunk-file-upload/ng2-chunk-file-upload';
 ```
 
 ### Annotations
@@ -18,7 +18,7 @@ import { FileSelectDirective, FileDropDirective, FileUploader } from 'ng2-file-u
 
 ### Properties
 
-  - `uploader` - (`FileUploader`) - uploader object. See using in [demo](https://github.com/valor-software/ng2-file-upload/blob/master/demo/components/file-upload/simple-demo.ts)
+  - `uploader` - (`FileUploader`) - uploader object. See using in [demo](https://github.com/valor-software/ng2-chunk-file-upload/blob/master/demo/components/file-upload/simple-demo.ts)
 
   Parameters supported by this object:
 
@@ -37,11 +37,11 @@ import { FileSelectDirective, FileDropDirective, FileUploader } from 'ng2-file-u
 
 ### Properties
 
-  - `uploader` - (`FileUploader`) - uploader object. See using in [demo](https://github.com/valor-software/ng2-file-upload/blob/master/demo/components/file-upload/simple-demo.ts)
+  - `uploader` - (`FileUploader`) - uploader object. See using in [demo](https://github.com/valor-software/ng2-chunk-file-upload/blob/master/demo/components/file-upload/simple-demo.ts)
 
 ### Events
 
   - `fileOver` - it fires during 'over' and 'out' events for Drop Area; returns `boolean`: `true` if file is over Drop Area, `false` in case of out.
-  See using in [ts demo](https://github.com/valor-software/ng2-file-upload/blob/master/demo/components/file-upload/simple-demo.ts) and
-  [html demo](https://github.com/valor-software/ng2-file-upload/blob/master/demo/components/file-upload/simple-demo.html)
+  See using in [ts demo](https://github.com/valor-software/ng2-chunk-file-upload/blob/master/demo/components/file-upload/simple-demo.ts) and
+  [html demo](https://github.com/valor-software/ng2-chunk-file-upload/blob/master/demo/components/file-upload/simple-demo.html)
   - `onFileDrop` - it fires after a file has been dropped on a Drop Area; you can pass in `$event` to get the list of files that were dropped. i.e. `(onFileDrop)="dropped($event)"`
