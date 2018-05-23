@@ -36,16 +36,16 @@ let gettingStarted = require('html-loader!markdown-loader!../getting-started.md'
 			 is maintained by <a href="https://github.com/valor-software">valor-software</a>.</p>
 		</div>
 	</footer>
-	`
+	`,
 })
 export class AppComponent {
 	public gettingStarted: string = gettingStarted;
 	public ngAfterContentInit(): any {
 		setTimeout(() => {
-		if (typeof PR !== 'undefined') {
-			// google code-prettify
-			PR.prettyPrint();
-		}
+			if (typeof PR !== 'undefined') {
+				// google code-prettify
+				PR.prettyPrint();
+			}
 		}, 150);
 	}
 }
