@@ -1,24 +1,20 @@
 {
   "project": {
-    "name": "ng2-file-upload"
+    "name": "ng2-chunk-file-upload"
   },
   "apps": [
     {
       "root": "demo/src",
       "outDir": "demo/dist",
-      "assets": [
-        "assets"
-      ],
+      "assets": ["assets"],
       "index": "index.html",
       "main": "main.ts",
       "test": "../../scripts/test.ts",
       "tsconfig": "tsconfig.json",
       "prefix": "",
       "mobile": false,
-      "styles": [
-      ],
-      "scripts": [
-      ],
+      "styles": [],
+      "scripts": [],
       "environmentSource": "environments/environment.ts",
       "environments": {
         "dev": "environments/environment.ts",

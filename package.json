@@ -1,8 +1,8 @@
 {
-  "name": "ng2-file-upload-base",
+  "name": "ng2-chunk-file-upload-base",
   "version": "1.3.0",
   "private": true,
-  "description": "Angular file upload directives",
+  "description": "Angular file upload directives with Chunk Upload",
   "scripts": {
     "lite-server": "lite-server -c demo/bs-config.json",
     "demo.serve": "run-s build link demo.build lite-server",
@@ -22,7 +22,7 @@
     "test-coverage": "ng test -sr -cc",
     "version": "npm run flow.changelog && git add -A"
   },
-  "main": "bundles/ng2-file-upload.umd.js",
+  "main": "bundles/ng2-chunk-file-upload.umd.js",
   "module": "index.js",
   "typings": "index.d.ts",
   "keywords": [
@@ -31,18 +31,20 @@
     "angularjs",
     "twitter-bootstrap",
     "file-upload",
-    "angular-file-upload"
+	"angular-file-upload",
+	"chunk-file-upload",
+	"azure-blob-storage"
   ],
-  "author": "Vyacheslav Chub <vyacheslav.chub@valor-software.com>",
+  "author": "Paulo Peres Jr <paulo@myog.io>",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/valor-software/ng2-file-upload.git"
+    "url": "git+ssh://git@github.com/PauloPeres/ng2-chunk-file-upload.git"
   },
   "bugs": {
-    "url": "https://github.com/valor-software/ng2-file-upload/issues"
+    "url": "https://github.com/PauloPeres/ng2-chunk-file-upload/issues"
   },
-  "homepage": "https://github.com/valor-software/ng2-file-upload#readme",
+  "homepage": "https://github.com/PauloPeres/ng2-chunk-file-upload#readme",
   "dependencies": {},
   "peerDependencies": {
     "@angular/common": "^2.3.1 || >=4.0.0",
@@ -135,6 +137,11 @@
       "name": "Oleksandr Telnov",
       "email": "otelnov@gmail.com",
       "url": "https://github.com/otelnov"
+    },
+    {
+      "name": "Paulo Peres Jr",
+      "email": "paulo@myog.io",
+      "url": "https://github.com/PauloPeres/"
     }
   ]
 }
