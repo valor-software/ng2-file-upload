@@ -39,18 +39,22 @@ export interface FileUploaderOptions {
   parametersBeforeFiles?: boolean;
   formatDataFunction?: Function;
   formatDataFunctionIsAsync?: boolean;
+  parallelUploads?: number;
 }
 
 export class FileUploader {
 
   public authToken: string;
-  public isUploading: boolean = false;
   public queue: FileItem[] = [];
   public progress: number = 0;
   public _nextIndex: number = 0;
   public autoUpload: any;
   public authTokenHeader: string;
   public response: EventEmitter<any>;
+
+  public get isUploading(): boolean {
+    return this.queue.some((item: FileItem) => item.isUploading);
+  }
 
   public options: FileUploaderOptions = {
     autoUpload: false,
@@ -89,8 +93,8 @@ export class FileUploader {
       this.options.filters.unshift({ name: 'mimeType', fn: this._mimeTypeFilter });
     }
 
-    for (let i = 0; i < this.queue.length; i++) {
-      this.queue[ i ].url = this.options.url;
+    for (let item of this.queue) {
+      item.url = this.options.url;
     }
   }
 
@@ -150,10 +154,6 @@ export class FileUploader {
     let item = this.queue[ index ];
     let transport = this.options.isHTML5 ? '_xhrTransport' : '_iframeTransport';
     item._prepareToUploading();
-    if (this.isUploading) {
-      return;
-    }
-    this.isUploading = true;
     (this as any)[ transport ](item);
   }
 
@@ -172,7 +172,10 @@ export class FileUploader {
       return;
     }
     items.map((item: FileItem) => item._prepareToUploading());
-    items[ 0 ].upload();
+    let numberUploadsToStart = Math.min(items.length, this.options.parallelUploads || 1);
+    for (let i = 0; i < numberUploadsToStart; ++i) {
+      items[ i ].upload();
+    }
   }
 
   public cancelAll(): void {
@@ -276,7 +279,6 @@ export class FileUploader {
     item._onComplete(response, status, headers);
     this.onCompleteItem(item, response, status, headers);
     let nextItem = this.getReadyItems()[ 0 ];
-    this.isUploading = false;
     if (nextItem) {
       nextItem.upload();
       return;
@@ -373,7 +375,7 @@ export class FileUploader {
     }
     xhr.onreadystatechange = function () {
       if (xhr.readyState == XMLHttpRequest.DONE) {
-        that.response.emit(xhr.responseText)
+        that.response.emit(xhr.responseText);
       }
     }
     if (this.options.formatDataFunctionIsAsync) {
