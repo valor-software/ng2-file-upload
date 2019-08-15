@@ -375,11 +375,11 @@ export class FileUploader {
     if (this.authToken) {
       xhr.setRequestHeader(this.authTokenHeader, this.authToken);
     }
-    xhr.onreadystatechange = function () {
-      if (xhr.readyState == XMLHttpRequest.DONE) {
-        that.response.emit(xhr.responseText)
+    xhr.onreadystatechange = function (): void {
+      if (xhr.readyState === XMLHttpRequest.DONE) {
+        that.response.emit(xhr.responseText);
       }
-    }
+    };
     if (this.options.formatDataFunctionIsAsync) {
       sendable.then(
         (result: any) => xhr.send(JSON.stringify(result))
@@ -424,7 +424,7 @@ export class FileUploader {
     return this.options.queueLimit === undefined || this.queue.length < this.options.queueLimit;
   }
 
-  protected async _isValidFile(file: FileLikeObject, filters: FilterFunction[], options: FileUploaderOptions, queueIndex: number) {
+  protected async _isValidFile(file: FileLikeObject, filters: FilterFunction[], options: FileUploaderOptions, queueIndex: number): Promise<boolean> {
     this._failFilterIndex = -1;
 
     for (const filter of filters) {
