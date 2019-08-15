@@ -18,6 +18,7 @@ after_success:
   - ./node_modules/.bin/codecov
 
 addons:
+  chrome: stable
   firefox: "latest"
   apt:
     sources:
