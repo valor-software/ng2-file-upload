@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "declaration": false,
+    "downlevelIteration": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "noEmitHelpers": false,
@@ -10,11 +11,11 @@
       "webpack"
     ],
     "mapRoot": "./",
-    "module": "es6",
+    "module": "esnext",
     "moduleResolution": "node",
     "outDir": "../temp/out-tsc",
     "sourceMap": true,
-    "target": "es5",
+    "target": "es2015",
     "typeRoots": [
       "../node_modules/@types"
     ]
