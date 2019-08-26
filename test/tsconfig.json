@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "experimentalDecorators": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "target": "es2015",
+    "outDir": "./out-tsc/spec",
+    "types": [
+      "jasmine",
+      "node"
+    ]
+  },
+  "files": [
+    "../scripts/typings.d.ts",
+    "test.ts",
+    "../scripts/polyfills.ts",
+  ],
+  "include": [
+    "../src/**/*.spec.ts",
+    "../demo/src/**/*.spec.ts"
+  ]
+}

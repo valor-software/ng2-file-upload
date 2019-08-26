@@ -5,9 +5,9 @@ let doc = require('html-loader!markdown-loader!../../doc.md');
 let tabDesc:Array<any> = [
   {
     heading: 'Simple',
-    ts: require('!!raw-loader?lang=typescript!./file-upload/simple-demo.ts'),
-    html: require('!!raw-loader?lang=markup!./file-upload/simple-demo.html'),
-    js: require('!!raw-loader?lang=javascript!./file-upload/file-catcher.js')
+    ts: require('!!raw-loader!./file-upload/simple-demo.ts').default,
+    html: require('!!raw-loader!./file-upload/simple-demo.html').default,
+    js: require('!!raw-loader!./file-upload/file-catcher.js').default
   }
 ];
 

@@ -1,7 +1,7 @@
 // Karma configuration file, see link for more information
 // https://karma-runner.github.io/0.13/config/configuration-file.html
 
-const customLaunchers = require('./scripts/sauce-browsers').customLaunchers;
+const customLaunchers = require('./sauce-browsers').customLaunchers;
 
 module.exports = function (config) {
   const configuration = {
@@ -14,7 +14,7 @@ module.exports = function (config) {
       require('@angular-devkit/build-angular/plugins/karma')
     ],
     coverageIstanbulReporter: {
-      dir: require('path').join(__dirname, 'coverage'), reports: [ 'html', 'lcovonly' ],
+      dir: require('path').join(__dirname, '../coverage'), reports: [ 'html', 'lcovonly' ],
       fixWebpackSourcePaths: false
     },
 
