@@ -18,5 +18,14 @@
     "typeRoots": [
       "../node_modules/@types"
     ]
-  }
+  },
+  "files": [
+    "main.ts",
+    "polyfills.ts"
+  ],
+  "include": [
+    "*.d.ts",
+    "../../src/spec/*.spec.ts",
+    "../../scripts/test.ts"
+  ]
 }
