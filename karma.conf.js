@@ -13,26 +13,18 @@ module.exports = function (config) {
       require('karma-coverage-istanbul-reporter'),
       require('@angular-devkit/build-angular/plugins/karma')
     ],
-    files: [
-      {pattern: './scripts/test.ts', watched: false}
-    ],
-    preprocessors: {
-      './scripts/test.ts': ['@angular-devkit/build-angular']
-    },
     coverageIstanbulReporter: {
       dir: require('path').join(__dirname, 'coverage'), reports: [ 'html', 'lcovonly' ],
       fixWebpackSourcePaths: false
     },
-    
-    reporters: config.angularCli && config.angularCli.codeCoverage
-      ? ['dots', 'coverage-istanbul']
-      : ['dots'],
+
+    reporters: ['dots', 'coverage-istanbul'],
     port: 9876,
     colors: true,
     logLevel: config.LOG_INFO,
     autoWatch: true,
     browsers: ['Chrome'],
-    singleRun: false,
+    singleRun: true,
     customLaunchers: {
       Chrome_travis_ci: {
         base: 'Chrome',

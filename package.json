@@ -18,8 +18,8 @@
     "build.watch": "ngm build -p src --watch --skip-bundles",
     "start": "ng serve --aot",
     "pretest": "run-s lint build link",
-    "test": "ng test -sr",
-    "test-coverage": "ng test -sr -cc",
+    "test": "ng test",
+    "test-coverage": "ng test --code-coverage",
     "version": "npm run flow.changelog && git add -A"
   },
   "main": "bundles/ng2-file-upload.umd.js",

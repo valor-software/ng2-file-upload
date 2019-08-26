@@ -65,6 +65,7 @@
             "karmaConfig": "karma.conf.js",
             "scripts": [],
             "styles": [],
+            "tsConfig": "demo/src/tsconfig.json",
             "assets": [
               "demo/src/assets"
             ]
