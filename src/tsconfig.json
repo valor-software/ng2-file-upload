@@ -17,6 +17,13 @@
     "noUnusedParameters": false,
     "lib": ["dom", "es6"]
   },
+  "angularCompilerOptions": {
+    "annotateForClosureCompiler": true,
+    "strictMetadataEmit": true,
+    "skipTemplateCodegen": true,
+    "flatModuleOutFile": "ng2-file-upload.js",
+    "flatModuleId": "ng2-file-upload"
+  },
   "include": [
     "../scripts/typings.d.ts"
   ],
