@@ -5,10 +5,9 @@ node_js:
 sudo: required
 services:
   - xvfb
-  
+
 before_install:
-  - export CHROME_BIN=chromium-browser
-  - export DISPLAY=:99.0
+  - google-chrome-stable --headless --disable-gpu --remote-debugging-port=9222 http://localhost &
 
 script:
   - npm run pretest
