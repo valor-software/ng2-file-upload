@@ -92,7 +92,7 @@
     "karma-remap-istanbul": "0.4.0",
     "karma-sauce-launcher": "1.1.0",
     "lite-server": "2.2.2",
-    "lodash": "4.17.4",
+    "lodash": "4.17.15",
     "markdown-loader": "^0.1.7",
     "marked": "0.3.6",
     "ng2-page-scroll": "4.0.0-beta.2",
