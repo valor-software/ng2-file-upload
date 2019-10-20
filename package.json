@@ -94,7 +94,7 @@
     "lite-server": "2.2.2",
     "lodash": "4.17.4",
     "markdown-loader": "^0.1.7",
-    "marked": "0.3.6",
+    "marked": "0.7.0",
     "ng2-page-scroll": "4.0.0-beta.2",
     "ngm-cli": "0.4.0",
     "ngx-bootstrap": "1.6.6",
