@@ -63,7 +63,7 @@ Easy to use Angular2 directives for files upload ([demo](http://valor-software.g
   1. `url` - URL of File Uploader's route
   2. `authToken` - Auth token that will be applied as 'Authorization' header during file send.
   3. `disableMultipart` - If 'true', disable using a multipart form for file upload and instead stream the file. Some APIs (e.g. Amazon S3) may expect the file to be streamed rather than sent via a form. Defaults to false.
-  4. `itemAlias` - item alias (form name redefenition)
+  4. `itemAlias` - item alias (form name redefinition)
   5. `formatDataFunction` - Function to modify the request body. 'DisableMultipart' must be 'true' for this function to be called.
   6. `formatDataFunctionIsAsync` - Informs if the function sent in 'formatDataFunction' is asynchronous. Defaults to false.
   7. `parametersBeforeFiles` - States if additional parameters should be appended before or after the file. Defaults to false.
@@ -77,7 +77,7 @@ Easy to use Angular2 directives for files upload ([demo](http://valor-software.g
 
 # Troubleshooting
 
-Please follow this guidelines when reporting bugs and feature requests:
+Please follow these guidelines when reporting bugs and feature requests:
 
 1. Use [GitHub Issues](https://github.com/valor-software/ng2-file-upload/issues) board to report bugs and feature requests (not our email address)
 2. Please **always** write steps to reproduce the error. That way we can focus on fixing the bug, not scratching our heads trying to reproduce it.
