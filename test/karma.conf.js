@@ -23,12 +23,20 @@ module.exports = function (config) {
     colors: true,
     logLevel: config.LOG_INFO,
     autoWatch: true,
-    browsers: ['Chrome'],
+    browsers: ['ChromeHeadless'],
+    browserNoActivityTimeout: 20000,
+    browserDisconnectTolerance: 2,
+    browserDisconnectTimeout: 5000,
     singleRun: true,
     customLaunchers: {
       Chrome_travis_ci: {
-        base: 'Chrome',
-        flags: ['--no-sandbox']
+        base: 'ChromeHeadless',
+        flags: [
+          '--headless',
+          '--disable-gpu',
+          '--no-sandbox',
+          '--remote-debugging-port=9222'
+        ]
       }
     },
     mime: { 'text/x-typescript': ['ts','tsx'] },
@@ -59,10 +67,10 @@ module.exports = function (config) {
       },
       public: 'public'
     };
-    configuration.captureTimeout = 0;
+    configuration.captureTimeout = 60000;
     configuration.customLaunchers = customLaunchers();
     configuration.browsers = Object.keys(configuration.customLaunchers);
-    configuration.concurrency = 3;
+    configuration.concurrency = 4;
     configuration.browserDisconnectTolerance = 2;
     configuration.browserNoActivityTimeout = 20000;
     configuration.browserDisconnectTimeout = 5000;
