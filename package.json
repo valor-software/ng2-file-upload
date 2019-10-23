@@ -86,7 +86,7 @@
     "lite-server": "2.2.2",
     "lodash": "4.17.4",
     "markdown-loader": "^5.1.0",
-    "marked": "0.3.6",
+    "marked": "0.3.18",
     "ng-packagr": "^5.5.0",
     "ngx-bootstrap": "1.6.6",
     "npm-run-all": "^4.0.1",
