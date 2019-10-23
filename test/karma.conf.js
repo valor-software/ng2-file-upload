@@ -1,45 +1,42 @@
 // Karma configuration file, see link for more information
 // https://karma-runner.github.io/0.13/config/configuration-file.html
 
-const customLaunchers = require('./scripts/sauce-browsers').customLaunchers;
+const customLaunchers = require('./sauce-browsers').customLaunchers;
 
 module.exports = function (config) {
   const configuration = {
     basePath: '',
-    frameworks: ['jasmine', '@angular/cli'],
+    frameworks: ['jasmine', '@angular-devkit/build-angular'],
     plugins: [
       require('karma-jasmine'),
       require('karma-chrome-launcher'),
       require('karma-coverage-istanbul-reporter'),
-      require('@angular/cli/plugins/karma')
+      require('@angular-devkit/build-angular/plugins/karma')
     ],
-    files: [
-      {pattern: './scripts/test.ts', watched: false}
-    ],
-    preprocessors: {
-      './scripts/test.ts': ['@angular/cli']
-    },
     coverageIstanbulReporter: {
-      reports: [ 'html', 'lcovonly' ],
+      dir: require('path').join(__dirname, '../coverage'), reports: [ 'html', 'lcovonly' ],
       fixWebpackSourcePaths: false
     },
-    angularCli: {
-      config: './angular-cli.json',
-      environment: 'dev'
-    },
-    reporters: config.angularCli && config.angularCli.codeCoverage
-      ? ['dots', 'coverage-istanbul']
-      : ['dots'],
+
+    reporters: ['dots', 'coverage-istanbul'],
     port: 9876,
     colors: true,
     logLevel: config.LOG_INFO,
     autoWatch: true,
-    browsers: ['Chrome'],
-    singleRun: false,
+    browsers: ['ChromeHeadless'],
+    browserNoActivityTimeout: 20000,
+    browserDisconnectTolerance: 2,
+    browserDisconnectTimeout: 5000,
+    singleRun: true,
     customLaunchers: {
       Chrome_travis_ci: {
-        base: 'Chrome',
-        flags: ['--no-sandbox']
+        base: 'ChromeHeadless',
+        flags: [
+          '--headless',
+          '--disable-gpu',
+          '--no-sandbox',
+          '--remote-debugging-port=9222'
+        ]
       }
     },
     mime: { 'text/x-typescript': ['ts','tsx'] },
@@ -70,10 +67,10 @@ module.exports = function (config) {
       },
       public: 'public'
     };
-    configuration.captureTimeout = 0;
+    configuration.captureTimeout = 60000;
     configuration.customLaunchers = customLaunchers();
     configuration.browsers = Object.keys(configuration.customLaunchers);
-    configuration.concurrency = 3;
+    configuration.concurrency = 4;
     configuration.browserDisconnectTolerance = 2;
     configuration.browserNoActivityTimeout = 20000;
     configuration.browserDisconnectTimeout = 5000;

@@ -1,8 +1,9 @@
 {
   "compilerOptions": {
+    "baseUrl": ".",
     "outDir": "../dist",
     "target": "es5",
-    "module": "commonjs",
+    "module": "esnext",
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
@@ -14,24 +15,19 @@
     "stripInternal": true,
     "noUnusedLocals": false,
     "noUnusedParameters": false,
-    "lib": ["dom", "es6"],
-    "types": [
-      "jasmine",
-      "webpack"
-    ],
-    "typeRoots": [
-      "../node_modules/@types"
-    ]
+    "lib": ["dom", "es6"]
   },
-  "exclude": [
-    "node_modules"
-  ],
-  "files": [
-    "../scripts/typings.d.ts",
-    "./ng2-file-upload.ts",
-    "./index.ts"
-  ],
   "angularCompilerOptions": {
-    "genDir": "../temp/factories"
-  }
+    "annotateForClosureCompiler": true,
+    "strictMetadataEmit": true,
+    "skipTemplateCodegen": true,
+    "flatModuleOutFile": "ng2-file-upload.js",
+    "flatModuleId": "ng2-file-upload"
+  },
+  "include": [
+    "../scripts/typings.d.ts"
+  ],
+  "exclude": [
+    "**/*.spec.ts"
+  ]
 }

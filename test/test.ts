@@ -1,4 +1,4 @@
-import '../demo/src/polyfills.ts';
+import '../scripts/polyfills.ts';
 
 import 'zone.js/dist/long-stack-trace-zone';
 import 'zone.js/dist/proxy.js';

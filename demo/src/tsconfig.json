@@ -1,22 +1,25 @@
 {
   "compilerOptions": {
+    "baseUrl": ".",
     "declaration": false,
+    "downlevelIteration": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "noEmitHelpers": false,
     "lib": ["es6", "dom"],
-    "types": [
-      "jasmine",
-      "webpack"
-    ],
     "mapRoot": "./",
-    "module": "es6",
+    "module": "esnext",
     "moduleResolution": "node",
     "outDir": "../temp/out-tsc",
     "sourceMap": true,
-    "target": "es5",
-    "typeRoots": [
-      "../node_modules/@types"
-    ]
-  }
+    "target": "es2015"
+  },
+  "files": [
+    "../../scripts/typings.d.ts",
+    "main.ts",
+    "../../scripts/polyfills.ts"
+  ],
+  "exclude": [
+    "**/*.spec.ts"
+  ]
 }
