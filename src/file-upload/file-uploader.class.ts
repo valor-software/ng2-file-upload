@@ -39,6 +39,7 @@ export interface FileUploaderOptions {
   parametersBeforeFiles?: boolean;
   formatDataFunction?: Function;
   formatDataFunctionIsAsync?: boolean;
+  withCredentials?: boolean;
 }
 
 export class FileUploader {
@@ -51,6 +52,7 @@ export class FileUploader {
   public autoUpload: any;
   public authTokenHeader: string;
   public response: EventEmitter<any>;
+  public withCredentials: boolean = null;
 
   public options: FileUploaderOptions = {
     autoUpload: false,
@@ -75,6 +77,8 @@ export class FileUploader {
     this.authToken = this.options.authToken;
     this.authTokenHeader = this.options.authTokenHeader || 'Authorization';
     this.autoUpload = this.options.autoUpload;
+    this.withCredentials = this.options.withCredentials;
+
     this.options.filters.unshift({ name: 'queueLimit', fn: this._queueLimitFilter });
 
     if (this.options.maxFileSize) {
@@ -357,7 +361,7 @@ export class FileUploader {
       this._onCompleteItem(item, response, xhr.status, headers);
     };
     xhr.open(item.method, item.url, true);
-    xhr.withCredentials = item.withCredentials;
+    xhr.withCredentials = this.withCredentials !== null ? this.withCredentials : item.withCredentials;
     if (this.options.headers) {
       for (let header of this.options.headers) {
         xhr.setRequestHeader(header.name, header.value);
