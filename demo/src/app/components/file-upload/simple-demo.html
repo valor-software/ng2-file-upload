@@ -52,8 +52,8 @@
                 <thead>
                 <tr>
                     <th width="50%">Name</th>
-                    <th>Size</th>
-                    <th>Progress</th>
+                    <th *ngIf="uploader.options.isHTML5">Size</th>
+                    <th *ngIf="uploader.options.isHTML5">Progress</th>
                     <th>Status</th>
                     <th>Actions</th>
                 </tr>
