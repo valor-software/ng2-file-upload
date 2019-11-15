@@ -67,6 +67,7 @@ Easy to use Angular2 directives for files upload ([demo](http://valor-software.g
   5. `formatDataFunction` - Function to modify the request body. 'DisableMultipart' must be 'true' for this function to be called.
   6. `formatDataFunctionIsAsync` - Informs if the function sent in 'formatDataFunction' is asynchronous. Defaults to false.
   7. `parametersBeforeFiles` - States if additional parameters should be appended before or after the file. Defaults to false.
+  8. `queueMaxSizeLimit` - States the maximum allowed size (in bytes) of all files in the queue that are going to be uploaded.
 
 ### Events
 
