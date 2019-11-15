@@ -7,7 +7,7 @@ export class FileLikeObject {
   public size: any;
   public type: string;
   public name: string;
-  public rawFile: string;
+  public rawFile: any;
 
   public constructor(fileOrInput: any) {
     this.rawFile = fileOrInput;
