@@ -61,7 +61,7 @@
     "bootstrap": "3.3.7",
     "chokidar-cli": "1.2.0",
     "classlist-polyfill": "1.0.3",
-    "codecov": "1.0.1",
+    "codecov": "3.7.1",
     "codelyzer": "^5.0.1",
     "conventional-changelog-cli": "1.2.0",
     "conventional-github-releaser": "1.1.3",
