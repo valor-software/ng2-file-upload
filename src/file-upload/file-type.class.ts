@@ -125,6 +125,7 @@ export class FileType {
       'xls': 'xls',
       'xlsx': 'xls',
       'ods': 'xls',
+      'csv': 'xls',
       'mp4': 'video',
       'avi': 'video',
       'wmv': 'video',
