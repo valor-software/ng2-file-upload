@@ -23,7 +23,7 @@ module.exports = function (config) {
     colors: true,
     logLevel: config.LOG_INFO,
     autoWatch: true,
-    browsers: ['ChromeHeadless'],
+    browsers: ['Chrome'],
     browserNoActivityTimeout: 20000,
     browserDisconnectTolerance: 2,
     browserDisconnectTimeout: 5000,

@@ -11,7 +11,7 @@ declare const PR:any;
 // declare const global:any;
 
 declare module jasmine {
-  interface Matchers {
+  interface Matchers<T> {
     toHaveCssClass(expected: any): boolean;
   }
 }

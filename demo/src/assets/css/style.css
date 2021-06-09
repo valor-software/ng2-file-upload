@@ -123,6 +123,14 @@ section {
   background-color: #eee;
 }
 
+simple-demo {
+  max-width: 100%;
+}
+
+simple-demo >.container {
+  max-width: 100%;
+}
+
 @media (min-width: 992px) {
   .bd-pageheader h1, .bd-pageheader p {
     margin-right: 380px;
@@ -151,6 +159,11 @@ section {
   .navbar > .container .navbar-brand, .navbar > .container-fluid .navbar-brand {
     margin-left: -15px;
   }
+
+  simple-demo > .container {
+    max-width: 100%;
+  }
+
 }
 
 @media (max-width: 767px) {
