@@ -91,9 +91,6 @@ describe('Directive: FileSelectDirective', () => {
 
     fileSelectDirective.onChange();
 
-    const expectedArguments = [ directiveElement.nativeElement.files,
-      fileSelectDirective.getOptions(),
-      fileSelectDirective.getFilters() ];
-    expect(fileSelectDirective.uploader.addToQueue).toHaveBeenCalledWith(...expectedArguments);
+    expect(fileSelectDirective.uploader.addToQueue).toHaveBeenCalledWith(directiveElement.nativeElement.files, fileSelectDirective.getOptions(), fileSelectDirective.getFilters());
   });
 });

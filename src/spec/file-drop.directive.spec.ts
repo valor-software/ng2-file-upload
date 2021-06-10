@@ -93,9 +93,8 @@ describe('Directive: FileDropDirective', () => {
     fileDropDirective.onDrop(getFakeEventData());
 
     const uploadedFiles = getFakeEventData().dataTransfer.files;
-    const expectedArguments = [ uploadedFiles, fileDropDirective.getOptions(), fileDropDirective.getFilters() ];
 
-    expect(fileDropDirective.uploader.addToQueue).toHaveBeenCalledWith(...expectedArguments);
+    expect(fileDropDirective.uploader.addToQueue).toHaveBeenCalledWith(uploadedFiles, fileDropDirective.getOptions(), fileDropDirective.getFilters());
     expect(fileOverData).toBeFalsy();
     expect(fileDropData).toEqual(uploadedFiles);
   });
