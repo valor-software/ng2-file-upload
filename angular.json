@@ -13,6 +13,11 @@
           "options": {
             "tsConfig": "src/tsconfig.json",
             "project": "src/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "src/tsconfig.prod.json"
+            }
           }
         }
       }
@@ -29,9 +34,7 @@
             "index": "demo/src/index.html",
             "main": "demo/src/main.ts",
             "tsConfig": "demo/src/tsconfig.json",
-            "assets": [
-              "demo/src/assets"
-            ],
+            "assets": ["demo/src/assets"],
             "styles": [],
             "scripts": []
           },
@@ -91,9 +94,7 @@
               "demo/src/tsconfig.json",
               "test/tsconfig.json"
             ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
+            "exclude": ["**/node_modules/**"]
           }
         }
       }

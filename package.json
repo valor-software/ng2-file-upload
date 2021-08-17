@@ -5,7 +5,7 @@
   "description": "Angular file upload directives",
   "scripts": {
     "lite-server": "lite-server -c demo/bs-config.json",
-    "demo.serve": "run-s build link demo.build lite-server",
+    "demo.serve": "run-s build-prod link demo.build lite-server",
     "demo.gh-pages": "run-s build demo.build demo.deploy",
     "demo.build": "ng build ng2-file-upload-demo --prod",
     "demo.deploy": "gh-pages -d demo/dist",
@@ -15,6 +15,7 @@
     "flow.changelog": "conventional-changelog -i CHANGELOG.md -s -p angular",
     "flow.github-release": "conventional-github-releaser -p angular",
     "build": "ng build ng2-file-upload",
+    "build-prod": "ng build ng2-file-upload --prod",
     "build.watch": "ng build ng2-file-upload --watch",
     "start": "ng serve ng2-file-upload-demo --aot",
     "pretest": "run-s lint build link",
