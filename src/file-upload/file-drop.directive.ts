@@ -4,7 +4,7 @@ import { FileUploader, FileUploaderOptions } from './file-uploader.class';
 
 @Directive({ selector: '[ng2FileDrop]' })
 export class FileDropDirective {
-  @Input() public uploader: FileUploader;
+  @Input() public uploader?: FileUploader;
   @Output() public fileOver: EventEmitter<any> = new EventEmitter();
   @Output() public onFileDrop: EventEmitter<File[]> = new EventEmitter<File[]>();
 
@@ -14,8 +14,8 @@ export class FileDropDirective {
     this.element = element;
   }
 
-  public getOptions(): FileUploaderOptions {
-    return this.uploader.options;
+  public getOptions(): FileUploaderOptions | void {
+    return this.uploader?.options;
   }
 
   public getFilters(): any {
@@ -32,7 +32,9 @@ export class FileDropDirective {
     let options = this.getOptions();
     let filters = this.getFilters();
     this._preventAndStop(event);
-    this.uploader.addToQueue(transfer.files, options, filters);
+    if (options) {
+      this.uploader?.addToQueue(transfer.files, options, filters);
+    }
     this.fileOver.emit(false);
     this.onFileDrop.emit(transfer.files);
   }

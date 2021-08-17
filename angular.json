@@ -10,13 +10,16 @@
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-ng-packagr:build",
+          "outputs": [
+            "./dist/ng2-file-upload"
+          ],
           "options": {
-            "tsConfig": "src/tsconfig.json",
+            "tsConfig": "src/tsconfig.lib.json",
             "project": "src/ng-package.json"
           },
           "configurations": {
             "production": {
-              "tsConfig": "src/tsconfig.prod.json"
+              "tsConfig": "src/tsconfig.lib.prod.json"
             }
           }
         }

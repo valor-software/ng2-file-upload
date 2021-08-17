@@ -16,7 +16,7 @@ export type ParsedResponseHeaders = { [ headerFieldName: string ]: string };
 
 export type FilterFunction = {
   name: string,
-  fn: (item?: FileLikeObject, options?: FileUploaderOptions) => boolean
+  fn: (item: FileLikeObject, options?: FileUploaderOptions) => boolean
 };
 
 export interface FileUploaderOptions {
@@ -43,13 +43,13 @@ export interface FileUploaderOptions {
 
 export class FileUploader {
 
-  public authToken: string;
+  public authToken?: string;
   public isUploading: boolean = false;
   public queue: FileItem[] = [];
   public progress: number = 0;
   public _nextIndex: number = 0;
   public autoUpload: any;
-  public authTokenHeader: string;
+  public authTokenHeader?: string;
   public response: EventEmitter<any>;
 
   public options: FileUploaderOptions = {
@@ -62,7 +62,7 @@ export class FileUploader {
     formatDataFunctionIsAsync: false
   };
 
-  protected _failFilterIndex: number;
+  protected _failFilterIndex?: number;
 
   public constructor(options: FileUploaderOptions) {
     this.setOptions(options);
@@ -75,18 +75,18 @@ export class FileUploader {
     this.authToken = this.options.authToken;
     this.authTokenHeader = this.options.authTokenHeader || 'Authorization';
     this.autoUpload = this.options.autoUpload;
-    this.options.filters.unshift({ name: 'queueLimit', fn: this._queueLimitFilter });
+    this.options.filters?.unshift({ name: 'queueLimit', fn: this._queueLimitFilter });
 
-    if (this.options.maxFileSize) {
+    if (this.options.maxFileSize && this.options.filters) {
       this.options.filters.unshift({ name: 'fileSize', fn: this._fileSizeFilter });
     }
 
     if (this.options.allowedFileType) {
-      this.options.filters.unshift({ name: 'fileType', fn: this._fileTypeFilter });
+      this.options.filters?.unshift({ name: 'fileType', fn: this._fileTypeFilter });
     }
 
     if (this.options.allowedMimeType) {
-      this.options.filters.unshift({ name: 'mimeType', fn: this._mimeTypeFilter });
+      this.options.filters?.unshift({ name: 'mimeType', fn: this._mimeTypeFilter });
     }
 
     for (let i = 0; i < this.queue.length; i++) {
@@ -114,8 +114,10 @@ export class FileUploader {
         this.queue.push(fileItem);
         this._onAfterAddingFile(fileItem);
       } else {
-        let filter = arrayOfFilters[ this._failFilterIndex ];
-        this._onWhenAddingFileFailed(temp, filter, options);
+        if (this._failFilterIndex) {
+          let filter = arrayOfFilters[ this._failFilterIndex ];
+          this._onWhenAddingFileFailed(temp, filter, options);
+        }
       }
     });
     if (this.queue.length !== count) {
@@ -255,7 +257,7 @@ export class FileUploader {
   }
 
   public _mimeTypeFilter(item: FileLikeObject): boolean {
-    return !(this.options.allowedMimeType && this.options.allowedMimeType.indexOf(item.type) === -1);
+    return !(item?.type && this.options.allowedMimeType && this.options.allowedMimeType?.indexOf(item.type) === -1);
   }
 
   public _fileSizeFilter(item: FileLikeObject): boolean {
@@ -307,29 +309,33 @@ export class FileUploader {
     if (!this.options.disableMultipart) {
       sendable = new FormData();
       this._onBuildItemForm(item, sendable);
-
-      const appendFile = () => sendable.append(item.alias, item._file, item.file.name);
-      if (!this.options.parametersBeforeFiles) {
-        appendFile();
+      let appendFile;
+      if (item.alias && item._file && item.file.name) {
+        appendFile = () => sendable.append(item.alias, item._file, item.file.name);
+        if (!this.options.parametersBeforeFiles) {
+          appendFile();
+        }
       }
 
       // For AWS, Additional Parameters must come BEFORE Files
       if (this.options.additionalParameter !== undefined) {
         Object.keys(this.options.additionalParameter).forEach((key: string) => {
-          let paramVal = this.options.additionalParameter[ key ];
+          let paramVal = this.options.additionalParameter?.[ key ];
           // Allow an additional parameter to include the filename
-          if (typeof paramVal === 'string' && paramVal.indexOf('{{file_name}}') >= 0) {
+          if (typeof paramVal === 'string' && paramVal.indexOf('{{file_name}}') >= 0 && item.file?.name) {
             paramVal = paramVal.replace('{{file_name}}', item.file.name);
           }
           sendable.append(key, paramVal);
         });
       }
 
-      if (this.options.parametersBeforeFiles) {
+      if (appendFile && this.options.parametersBeforeFiles) {
         appendFile();
       }
     } else {
-      sendable = this.options.formatDataFunction(item);
+      if (this.options.formatDataFunction) {
+        sendable = this.options.formatDataFunction(item);
+      }
     }
 
     xhr.upload.onprogress = (event: any) => {
@@ -356,7 +362,9 @@ export class FileUploader {
       this._onCancelItem(item, response, xhr.status, headers);
       this._onCompleteItem(item, response, xhr.status, headers);
     };
-    xhr.open(item.method, item.url, true);
+    if (item.method && item.url) {
+      xhr.open(item.method, item.url, true);
+    }
     xhr.withCredentials = item.withCredentials;
     if (this.options.headers) {
       for (let header of this.options.headers) {
@@ -368,7 +376,7 @@ export class FileUploader {
         xhr.setRequestHeader(header.name, header.value);
       }
     }
-    if (this.authToken) {
+    if (this.authToken && this.authTokenHeader) {
       xhr.setRequestHeader(this.authTokenHeader, this.authToken);
     }
     xhr.onreadystatechange = function () {
@@ -397,19 +405,19 @@ export class FileUploader {
     return Math.round(uploaded * ratio + current);
   }
 
-  protected _getFilters(filters: FilterFunction[] | string): FilterFunction[] {
+  protected _getFilters(filters?: FilterFunction[] | string): FilterFunction[] | [] {
     if (!filters) {
-      return this.options.filters;
+      return this.options?.filters || [];
     }
     if (Array.isArray(filters)) {
       return filters;
     }
     if (typeof filters === 'string') {
       let names = filters.match(/[^\s,]+/g);
-      return this.options.filters
-        .filter((filter: any) => names.indexOf(filter.name) !== -1);
+      return this.options?.filters || []
+        .filter((filter: any) => names?.indexOf(filter.name) !== -1);
     }
-    return this.options.filters;
+    return this.options?.filters || [];
   }
 
   protected _render(): any {
@@ -423,7 +431,9 @@ export class FileUploader {
   protected _isValidFile(file: FileLikeObject, filters: FilterFunction[], options: FileUploaderOptions): boolean {
     this._failFilterIndex = -1;
     return !filters.length ? true : filters.every((filter: FilterFunction) => {
-      this._failFilterIndex++;
+      if (typeof this._failFilterIndex === 'number') {
+        this._failFilterIndex++;
+      }
       return filter.fn.call(this, file, options);
     });
   }

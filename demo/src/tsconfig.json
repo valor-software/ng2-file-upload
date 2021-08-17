@@ -21,5 +21,10 @@
   ],
   "exclude": [
     "**/*.spec.ts"
-  ]
+  ],
+  "paths": {
+    "@ng2-file-upload": [
+      "../../dist/ng2-file-upload/index.ts"
+    ]
+  }
 }

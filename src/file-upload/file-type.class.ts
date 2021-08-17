@@ -62,26 +62,26 @@ export class FileType {
 
   public static getMimeClass(file: FileLikeObject): string {
     let mimeClass = 'application';
-    if (this.mime_psd.indexOf(file.type) !== -1) {
+    if (file?.type && this.mime_psd.indexOf(file.type) !== -1) {
       mimeClass = 'image';
-    } else if (file.type.match('image.*')) {
+    } else if (file?.type?.match('image.*')) {
       mimeClass = 'image';
-    } else if (file.type.match('video.*')) {
+    } else if (file?.type?.match('video.*')) {
       mimeClass = 'video';
-    } else if (file.type.match('audio.*')) {
+    } else if (file?.type?.match('audio.*')) {
       mimeClass = 'audio';
-    } else if (file.type === 'application/pdf') {
+    } else if (file?.type === 'application/pdf') {
       mimeClass = 'pdf';
-    } else if (this.mime_compress.indexOf(file.type) !== -1) {
+    } else if (file?.type && this.mime_compress.indexOf(file.type) !== -1) {
       mimeClass = 'compress';
-    } else if (this.mime_doc.indexOf(file.type) !== -1) {
+    } else if (file?.type && this.mime_doc.indexOf(file.type) !== -1) {
       mimeClass = 'doc';
-    } else if (this.mime_xsl.indexOf(file.type) !== -1) {
+    } else if (file?.type && this.mime_xsl.indexOf(file.type) !== -1) {
       mimeClass = 'xls';
-    } else if (this.mime_ppt.indexOf(file.type) !== -1) {
+    } else if (file?.type && this.mime_ppt.indexOf(file.type) !== -1) {
       mimeClass = 'ppt';
     }
-    if (mimeClass === 'application') {
+    if (mimeClass === 'application' && file?.name) {
       mimeClass = this.fileTypeDetection(file.name);
     }
 

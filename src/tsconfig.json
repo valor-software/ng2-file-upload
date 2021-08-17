@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
     "baseUrl": ".",
-    "outDir": "../dist",
-    "target": "es5",
+    "outDir": "../dist/ng2-file-upload",
+    "target": "es2015",
     "module": "esnext",
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
@@ -15,13 +15,17 @@
     "stripInternal": true,
     "noUnusedLocals": false,
     "noUnusedParameters": false,
-    "lib": ["dom", "es6"]
+    "lib": ["dom", "es2018"],
+    "strict": true
   },
   "angularCompilerOptions": {
     "annotateForClosureCompiler": true,
     "strictMetadataEmit": true,
     "skipTemplateCodegen": true,
-    "flatModuleOutFile": "ng2-file-upload.js",
+    "strictInjectionParameters": true,
+    "strictTemplates": false,
+    "fullTemplateTypeCheck": true,
+    "flatModuleOutFile": "ng2-file-upload.d.ts",
     "flatModuleId": "ng2-file-upload"
   },
   "include": [
@@ -29,5 +33,13 @@
   ],
   "exclude": [
     "**/*.spec.ts"
+  ],
+  "references": [
+    {
+      "path": "./tsconfig.lib.json"
+    },
+    {
+      "path": "./tsconfig.lib.prod.json"
+    }
   ]
 }

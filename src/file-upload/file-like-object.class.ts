@@ -5,8 +5,8 @@ function isElement(node: any): boolean {
 export class FileLikeObject {
   public lastModifiedDate: any;
   public size: any;
-  public type: string;
-  public name: string;
+  public type?: string;
+  public name?: string;
   public rawFile: string;
 
   public constructor(fileOrInput: any) {

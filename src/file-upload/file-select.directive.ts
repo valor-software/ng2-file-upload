@@ -1,10 +1,10 @@
 import { Directive, EventEmitter, ElementRef, Input, HostListener, Output } from '@angular/core';
 
-import { FileUploader } from './file-uploader.class';
+import {FileUploader, FileUploaderOptions} from './file-uploader.class';
 
 @Directive({ selector: '[ng2FileSelect]' })
 export class FileSelectDirective {
-  @Input() public uploader: FileUploader;
+  @Input() public uploader?: FileUploader;
   @Output() public onFileSelected: EventEmitter<File[]> = new EventEmitter<File[]>();
 
   protected element: ElementRef;
@@ -13,8 +13,8 @@ export class FileSelectDirective {
     this.element = element;
   }
 
-  public getOptions(): any {
-    return this.uploader.options;
+  public getOptions(): FileUploaderOptions | void {
+    return this.uploader?.options;
   }
 
   public getFilters(): any {
@@ -30,10 +30,11 @@ export class FileSelectDirective {
     let files = this.element.nativeElement.files;
     let options = this.getOptions();
     let filters = this.getFilters();
+    if (options) {
+      this.uploader?.addToQueue(files, options, filters);
+    }
 
-    this.uploader.addToQueue(files, options, filters);
     this.onFileSelected.emit(files);
-
     if (this.isEmptyAfterSelection()) {
       this.element.nativeElement.value = '';
     }

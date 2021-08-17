@@ -4,9 +4,9 @@ import { FileUploader, ParsedResponseHeaders, FileUploaderOptions } from './file
 export class FileItem {
   public file: FileLikeObject;
   public _file: File;
-  public alias: string;
-  public url: string = '/';
-  public method: string;
+  public alias?: string;
+  public url? = '/';
+  public method?: string;
   public headers: any = [];
   public withCredentials: boolean = true;
   public formData: any = [];
@@ -17,8 +17,8 @@ export class FileItem {
   public isCancel: boolean = false;
   public isError: boolean = false;
   public progress: number = 0;
-  public index: number = void 0;
-  public _xhr: XMLHttpRequest;
+  public index?: number;
+  public _xhr?: XMLHttpRequest;
   public _form: any;
 
   protected uploader: FileUploader;
@@ -111,7 +111,7 @@ export class FileItem {
     this.isCancel = false;
     this.isError = false;
     this.progress = 100;
-    this.index = void 0;
+    this.index = undefined;
     this.onSuccess(response, status, headers);
   }
 
@@ -123,7 +123,7 @@ export class FileItem {
     this.isCancel = false;
     this.isError = true;
     this.progress = 0;
-    this.index = void 0;
+    this.index = undefined;
     this.onError(response, status, headers);
   }
 
@@ -135,7 +135,7 @@ export class FileItem {
     this.isCancel = true;
     this.isError = false;
     this.progress = 0;
-    this.index = void 0;
+    this.index = undefined;
     this.onCancel(response, status, headers);
   }
 
