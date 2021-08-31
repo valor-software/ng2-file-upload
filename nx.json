@@ -1,0 +1,38 @@
+{
+  "npmScope": "ng2-file-upload-demo",
+  "implicitDependencies": {
+    "angular.json": "*",
+    "package.json": "*",
+    "tsconfig.json": "*",
+    "tslint.json": "*",
+    ".eslintrc.json": "*",
+    "nx.json": "*"
+  },
+  "projects": {
+    "ng2-file-upload": {
+      "tags": [
+        "lib"
+      ]
+    },
+    "ng2-file-upload-demo": {
+      "tags": [],
+      "implicitDependencies": [
+        "ng2-file-upload"
+      ]
+
+    }
+  },
+  "tasksRunnerOptions": {
+    "default": {
+      "runner": "@nrwl/workspace/tasks-runners/default",
+      "options": {
+        "cacheableOperations": [
+          "build",
+          "lint",
+          "test",
+          "e2e"
+        ]
+      }
+    }
+  }
+}
