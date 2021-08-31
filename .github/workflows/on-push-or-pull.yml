@@ -96,18 +96,18 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: actions/cache@v2
-      with:
-        path: ${{ env.CACHE_DIST_PATH }}
-        key: dist-${{ github.run_id }}
-        - uses: FirebaseExtended/action-hosting-deploy@v0
-          continue-on-error: true
-          id: firebase_hosting_preview
-          with:
-            repoToken: '${{ secrets.GITHUB_TOKEN }}'
-            firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_NGX_BOOTSTRAP_DEMO }}'
-            projectId: ngx-bootstrap-demo
-            channelId: ${{ env.FIREBASE_CHANNEL }}
-            expires: 7d
+        with:
+          path: ${{ env.CACHE_DIST_PATH }}
+          key: dist-${{ github.run_id }}
+      - uses: FirebaseExtended/action-hosting-deploy@v0
+        continue-on-error: true
+        id: firebase_hosting_preview
+        with:
+          repoToken: '${{ secrets.GITHUB_TOKEN }}'
+          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_NGX_BOOTSTRAP_DEMO }}'
+          projectId: ngx-bootstrap-demo
+          channelId: ${{ env.FIREBASE_CHANNEL }}
+          expires: 7d
 
 #      - uses: actions/checkout@v2
 #      - uses: FirebaseExtended/action-hosting-deploy@v0
