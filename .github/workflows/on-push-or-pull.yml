@@ -104,8 +104,8 @@ jobs:
         id: firebase_hosting_preview
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
-          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_NGX_BOOTSTRAP_DEMO }}'
-          projectId: ngx-bootstrap-demo
+          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_NGX_FILE_UPLOAD }}'
+          projectId: ngx-file-upload
           channelId: ${{ env.FIREBASE_CHANNEL }}
           expires: 7d
 
