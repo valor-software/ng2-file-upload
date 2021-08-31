@@ -12,7 +12,6 @@ env:
 #  NX_CLOUD_AUTH_TOKEN: ${{ secrets.NX_CLOUD_AUTH_TOKEN }}
   MOZ_HEALESS: 1
   SAUCE_USERNAME_PR: valorkinpr
-#  SAUCE_ACCESS_KEY_PR: e0a97bd3-4b74-4408-89bf-cce1b44a8bf1
 #  FIREBASE_CHANNEL: ${{ fromJSON('["", "live"]')[!github.base_ref] }}
 
   CACHE_NODE_MODULES_PATH: |
