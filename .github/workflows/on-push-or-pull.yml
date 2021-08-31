@@ -74,7 +74,6 @@ jobs:
           path: ${{ env.CACHE_DIST_PATH }}
           key: dist-${{ github.run_id }}
       - run: npm run test-coverage
-      - run: npx codecov ./coverage/
         continue-on-error: true
 
   # run linting
