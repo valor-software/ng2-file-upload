@@ -303,8 +303,8 @@ export class FileUploader {
   }
 
   protected _xhrTransport(item: FileItem): any {
-    // eslint-disable-next-line @typescript-eslint/no-this-alias
     // tslint:disable-next-line:no-this-assignment
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
     const that = this;
     const xhr = item._xhr = new XMLHttpRequest();
     let sendable: any;
@@ -316,8 +316,7 @@ export class FileUploader {
     if (!this.options.disableMultipart) {
       sendable = new FormData();
       this._onBuildItemForm(item, sendable);
-      let appendFile;
-      appendFile = () => sendable.append(item.alias, item._file, item.file.name);
+      const appendFile = () => sendable.append(item.alias, item._file, item.file.name);
       if (!this.options.parametersBeforeFiles) {
         appendFile();
       }
