@@ -9,10 +9,10 @@ on:
 env:
   NX_BRANCH: ${{ github.event.number }}
   NX_RUN_GROUP: ${{ github.run_id }}
-#  NX_CLOUD_AUTH_TOKEN: ${{ secrets.NX_CLOUD_AUTH_TOKEN }}
+  NX_CLOUD_AUTH_TOKEN: ${{ secrets.NX_CLOUD_AUTH_TOKEN }}
   MOZ_HEALESS: 1
   SAUCE_USERNAME_PR: valorkinpr
-#  FIREBASE_CHANNEL: ${{ fromJSON('["", "live"]')[!github.base_ref] }}
+  FIREBASE_CHANNEL: ${{ fromJSON('["", "live"]')[!github.base_ref] }}
 
   CACHE_NODE_MODULES_PATH: |
     ~/.npm
@@ -26,7 +26,10 @@ jobs:
   one_run:
     runs-on: ubuntu-latest
     steps:
-      - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
+      - name: Cancel Previous Runs
+          uses: styfle/cancel-workflow-action@0.9.0
+          with:
+            access_token: ${{ secrets.GITHUB_TOKEN }}
 
   # install dependencies
   install:
