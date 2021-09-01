@@ -207,10 +207,6 @@ export class FileUploader {
       .sort((item1: any, item2: any) => item1.index - item2.index);
   }
 
-  destroy(): void {
-    return undefined;
-  }
-
   onAfterAddingAll(fileItems: any): any {
     return { fileItems };
   }
@@ -295,7 +291,7 @@ export class FileUploader {
   protected _headersGetter(parsedHeaders: ParsedResponseHeaders): any {
     return (name: any): any => {
       if (name) {
-        return parsedHeaders[ name.toLowerCase() ] || void 0;
+        return parsedHeaders[ name.toLowerCase() ] || undefined;
       }
 
       return parsedHeaders;
