@@ -1,31 +1,26 @@
-function isElement(node: any): boolean {
-  return !!(node && (node.nodeName || node.prop && node.attr && node.find));
-}
-
 export class FileLikeObject {
-  public lastModifiedDate: any;
-  public size: any;
-  public type?: string;
-  public name?: string;
-  public rawFile: string;
+  lastModifiedDate: any;
+  size: any;
+  type?: string;
+  name?: string;
+  rawFile: HTMLInputElement | File;
 
-  public constructor(fileOrInput: any) {
+  constructor(fileOrInput: HTMLInputElement | File) {
     this.rawFile = fileOrInput;
-    const isInput = isElement(fileOrInput);
-    const fakePathOrObject = isInput ? fileOrInput.value : fileOrInput;
+    const fakePathOrObject =  fileOrInput instanceof HTMLInputElement ? fileOrInput.value : fileOrInput;
     const postfix = typeof fakePathOrObject === 'string' ? 'FakePath' : 'Object';
-    const method = '_createFrom' + postfix;
+    const method = `_createFrom${postfix}`;
     (this as any)[ method ](fakePathOrObject);
   }
 
-  public _createFromFakePath(path: string): void {
+  _createFromFakePath(path: string): void {
     this.lastModifiedDate = void 0;
     this.size = void 0;
-    this.type = 'like/' + path.slice(path.lastIndexOf('.') + 1).toLowerCase();
+    this.type = `like/${path.slice(path.lastIndexOf('.') + 1).toLowerCase()}`;
     this.name = path.slice(path.lastIndexOf('/') + path.lastIndexOf('\\') + 2);
   }
 
-  public _createFromObject(object: { size: number, type: string, name: string }): void {
+  _createFromObject(object: { size: number, type: string, name: string }): void {
     this.size = object.size;
     this.type = object.type;
     this.name = object.name;

@@ -12,12 +12,12 @@ export interface Headers {
   value: string;
 }
 
-export type ParsedResponseHeaders = { [ headerFieldName: string ]: string };
+export interface ParsedResponseHeaders { [ headerFieldName: string ]: string }
 
-export type FilterFunction = {
-  name: string,
-  fn: (item: FileLikeObject, options?: FileUploaderOptions) => boolean
-};
+export interface FilterFunction {
+  name: string;
+  fn(item: FileLikeObject, options?: FileUploaderOptions): boolean;
+}
 
 export interface FileUploaderOptions {
   allowedMimeType?: string[];
@@ -31,7 +31,7 @@ export interface FileUploaderOptions {
   maxFileSize?: number;
   queueLimit?: number;
   removeAfterUpload?: boolean;
-  url?: string;
+  url: string;
   disableMultipart?: boolean;
   itemAlias?: string;
   authTokenHeader?: string;
@@ -44,33 +44,34 @@ export interface FileUploaderOptions {
 
 export class FileUploader {
 
-  public authToken?: string;
-  public isUploading = false;
-  public queue: FileItem[] = [];
-  public progress = 0;
-  public _nextIndex = 0;
-  public autoUpload: any;
-  public authTokenHeader?: string;
-  public response: EventEmitter<any>;
+  authToken?: string;
+  isUploading = false;
+  queue: FileItem[] = [];
+  progress = 0;
+  _nextIndex = 0;
+  autoUpload: any;
+  authTokenHeader?: string;
+  response: EventEmitter<any>;
 
-  public options: FileUploaderOptions = {
+  options: FileUploaderOptions = {
     autoUpload: false,
     isHTML5: true,
     filters: [],
     removeAfterUpload: false,
     disableMultipart: false,
     formatDataFunction: (item: FileItem) => item._file,
-    formatDataFunctionIsAsync: false
+    formatDataFunctionIsAsync: false,
+    url: ''
   };
 
   protected _failFilterIndex?: number;
 
-  public constructor(options: FileUploaderOptions) {
+  constructor(options: FileUploaderOptions) {
     this.setOptions(options);
-    this.response = new EventEmitter<any>();
+    this.response = new EventEmitter<string>();
   }
 
-  public setOptions(options: FileUploaderOptions): void {
+  setOptions(options: FileUploaderOptions): void {
     this.options = Object.assign(this.options, options);
 
     this.authToken = this.options.authToken;
@@ -78,8 +79,8 @@ export class FileUploader {
     this.autoUpload = this.options.autoUpload;
     this.options.filters?.unshift({ name: 'queueLimit', fn: this._queueLimitFilter });
 
-    if (this.options.maxFileSize && this.options.filters) {
-      this.options.filters.unshift({ name: 'fileSize', fn: this._fileSizeFilter });
+    if (this.options.maxFileSize) {
+      this.options.filters?.unshift({ name: 'fileSize', fn: this._fileSizeFilter });
     }
 
     if (this.options.allowedFileType) {
@@ -95,7 +96,8 @@ export class FileUploader {
     }
   }
 
-  public addToQueue(files: File[], options?: FileUploaderOptions, filters?: FilterFunction[] | string): void {
+  addToQueue(files: File[], _options?: FileUploaderOptions, filters?: [] | string): void {
+    let options = _options;
     const list: File[] = [];
     for (const file of files) {
       list.push(file);
@@ -131,7 +133,7 @@ export class FileUploader {
     }
   }
 
-  public removeFromQueue(value: FileItem): void {
+  removeFromQueue(value: FileItem): void {
     const index = this.getIndexOfItem(value);
     const item = this.queue[ index ];
     if (item.isUploading) {
@@ -141,14 +143,14 @@ export class FileUploader {
     this.progress = this._getTotalProgress();
   }
 
-  public clearQueue(): void {
+  clearQueue(): void {
     while (this.queue.length) {
       this.queue[ 0 ].remove();
     }
     this.progress = 0;
   }
 
-  public uploadItem(value: FileItem): void {
+  uploadItem(value: FileItem): void {
     const index = this.getIndexOfItem(value);
     const item = this.queue[ index ];
     const transport = this.options.isHTML5 ? '_xhrTransport' : '_iframeTransport';
@@ -160,7 +162,7 @@ export class FileUploader {
     (this as any)[ transport ](item);
   }
 
-  public cancelItem(value: FileItem): void {
+  cancelItem(value: FileItem): void {
     const index = this.getIndexOfItem(value);
     const item = this.queue[ index ];
     const prop = this.options.isHTML5 ? item._xhr : item._form;
@@ -169,7 +171,7 @@ export class FileUploader {
     }
   }
 
-  public uploadAll(): void {
+  uploadAll(): void {
     const items = this.getNotUploadedItems().filter((item: FileItem) => !item.isUploading);
     if (!items.length) {
       return;
@@ -178,110 +180,111 @@ export class FileUploader {
     items[ 0 ].upload();
   }
 
-  public cancelAll(): void {
+  cancelAll(): void {
     const items = this.getNotUploadedItems();
     items.map((item: FileItem) => item.cancel());
   }
 
-  public isFile(value: any): boolean {
+  isFile(value: any): boolean {
     return isFile(value);
   }
 
-  public isFileLikeObject(value: any): boolean {
+  isFileLikeObject(value: any): boolean {
     return value instanceof FileLikeObject;
   }
 
-  public getIndexOfItem(value: any): number {
+  getIndexOfItem(value: any): number {
     return typeof value === 'number' ? value : this.queue.indexOf(value);
   }
 
-  public getNotUploadedItems(): any[] {
+  getNotUploadedItems(): any[] {
     return this.queue.filter((item: FileItem) => !item.isUploaded);
   }
 
-  public getReadyItems(): any[] {
+  getReadyItems(): any[] {
     return this.queue
       .filter((item: FileItem) => (item.isReady && !item.isUploading))
       .sort((item1: any, item2: any) => item1.index - item2.index);
   }
 
-  public destroy(): void {
-    return void 0;
+  destroy(): void {
+    return undefined;
   }
 
-  public onAfterAddingAll(fileItems: any): any {
+  onAfterAddingAll(fileItems: any): any {
     return { fileItems };
   }
 
-  public onBuildItemForm(fileItem: FileItem, form: any): any {
+  onBuildItemForm(fileItem: FileItem, form: any): any {
     return { fileItem, form };
   }
 
-  public onAfterAddingFile(fileItem: FileItem): any {
+  onAfterAddingFile(fileItem: FileItem): any {
     return { fileItem };
   }
 
-  public onWhenAddingFileFailed(item: FileLikeObject, filter: any, options: any): any {
+  onWhenAddingFileFailed(item: FileLikeObject, filter: any, options: any): any {
     return { item, filter, options };
   }
 
-  public onBeforeUploadItem(fileItem: FileItem): any {
+  onBeforeUploadItem(fileItem: FileItem): any {
     return { fileItem };
   }
 
-  public onProgressItem(fileItem: FileItem, progress: any): any {
+  onProgressItem(fileItem: FileItem, progress: any): any {
     return { fileItem, progress };
   }
 
-  public onProgressAll(progress: any): any {
+  onProgressAll(progress: any): any {
     return { progress };
   }
 
-  public onSuccessItem(item: FileItem, response: string, status: number, headers: ParsedResponseHeaders): any {
+  onSuccessItem(item: FileItem, response: string, status: number, headers: ParsedResponseHeaders): any {
     return { item, response, status, headers };
   }
 
-  public onErrorItem(item: FileItem, response: string, status: number, headers: ParsedResponseHeaders): any {
+  onErrorItem(item: FileItem, response: string, status: number, headers: ParsedResponseHeaders): any {
     return { item, response, status, headers };
   }
 
-  public onCancelItem(item: FileItem, response: string, status: number, headers: ParsedResponseHeaders): any {
+  onCancelItem(item: FileItem, response: string, status: number, headers: ParsedResponseHeaders): any {
     return { item, response, status, headers };
   }
 
-  public onCompleteItem(item: FileItem, response: string, status: number, headers: ParsedResponseHeaders): any {
+  onCompleteItem(item: FileItem, response: string, status: number, headers: ParsedResponseHeaders): any {
     return { item, response, status, headers };
   }
 
-  public onCompleteAll(): any {
+  onCompleteAll(): any {
     return void 0;
   }
 
-  public _mimeTypeFilter(item: FileLikeObject): boolean {
+  _mimeTypeFilter(item: FileLikeObject): boolean {
     return !(item?.type && this.options.allowedMimeType && this.options.allowedMimeType?.indexOf(item.type) === -1);
   }
 
-  public _fileSizeFilter(item: FileLikeObject): boolean {
+  _fileSizeFilter(item: FileLikeObject): boolean {
     return !(this.options.maxFileSize && item.size > this.options.maxFileSize);
   }
 
-  public _fileTypeFilter(item: FileLikeObject): boolean {
+  _fileTypeFilter(item: FileLikeObject): boolean {
     return !(this.options.allowedFileType &&
       this.options.allowedFileType.indexOf(FileType.getMimeClass(item)) === -1);
   }
 
-  public _onErrorItem(item: FileItem, response: string, status: number, headers: ParsedResponseHeaders): void {
+  _onErrorItem(item: FileItem, response: string, status: number, headers: ParsedResponseHeaders): void {
     item._onError(response, status, headers);
     this.onErrorItem(item, response, status, headers);
   }
 
-  public _onCompleteItem(item: FileItem, response: string, status: number, headers: ParsedResponseHeaders): void {
+  _onCompleteItem(item: FileItem, response: string, status: number, headers: ParsedResponseHeaders): void {
     item._onComplete(response, status, headers);
     this.onCompleteItem(item, response, status, headers);
     const nextItem = this.getReadyItems()[ 0 ];
     this.isUploading = false;
     if (nextItem) {
       nextItem.upload();
+
       return;
     }
     this.onCompleteAll();
@@ -294,12 +297,14 @@ export class FileUploader {
       if (name) {
         return parsedHeaders[ name.toLowerCase() ] || void 0;
       }
+
       return parsedHeaders;
     };
   }
 
   protected _xhrTransport(item: FileItem): any {
     // eslint-disable-next-line @typescript-eslint/no-this-alias
+    // tslint:disable-next-line:no-this-assignment
     const that = this;
     const xhr = item._xhr = new XMLHttpRequest();
     let sendable: any;
@@ -312,11 +317,9 @@ export class FileUploader {
       sendable = new FormData();
       this._onBuildItemForm(item, sendable);
       let appendFile;
-      if (item.alias && item._file && item.file.name) {
-        appendFile = () => sendable.append(item.alias, item._file, item.file.name);
-        if (!this.options.parametersBeforeFiles) {
-          appendFile();
-        }
+      appendFile = () => sendable.append(item.alias, item._file, item.file.name);
+      if (!this.options.parametersBeforeFiles) {
+        appendFile();
       }
 
       // For AWS, Additional Parameters must come BEFORE Files
@@ -348,7 +351,7 @@ export class FileUploader {
       const headers = this._parseHeaders(xhr.getAllResponseHeaders());
       const response = this._transformResponse(xhr.response, headers);
       const gist = this._isSuccessCode(xhr.status) ? 'Success' : 'Error';
-      const method = '_on' + gist + 'Item';
+      const method = `_on${gist}Item`;
       (this as any)[ method ](item, response, xhr.status, headers);
       this._onCompleteItem(item, response, xhr.status, headers);
     };
@@ -416,9 +419,11 @@ export class FileUploader {
     }
     if (typeof filters === 'string') {
       const names = filters.match(/[^\s,]+/g);
+
       return this.options?.filters || []
         .filter((filter: any) => names?.indexOf(filter.name) !== -1);
     }
+
     return this.options?.filters || [];
   }
 
@@ -432,10 +437,12 @@ export class FileUploader {
 
   protected _isValidFile(file: FileLikeObject, filters: FilterFunction[], options: FileUploaderOptions): boolean {
     this._failFilterIndex = -1;
+
     return !filters.length ? true : filters.every((filter: FilterFunction) => {
-      if (typeof this._failFilterIndex === 'number') {
+      if (this._failFilterIndex) {
         this._failFilterIndex++;
       }
+
       return filter.fn.call(this, file, options);
     });
   }
@@ -464,6 +471,7 @@ export class FileUploader {
         parsed[ key ] = parsed[ key ] ? parsed[ key ] + ', ' + val : val;
       }
     });
+
     return parsed;
   }
 

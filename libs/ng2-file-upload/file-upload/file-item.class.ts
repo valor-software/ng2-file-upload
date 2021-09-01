@@ -2,30 +2,30 @@ import { FileLikeObject } from './file-like-object.class';
 import { FileUploader, ParsedResponseHeaders, FileUploaderOptions } from './file-uploader.class';
 
 export class FileItem {
-  public file: FileLikeObject;
-  public _file: File;
-  public alias?: string;
-  public url? = '/';
-  public method?: string;
-  public headers: any = [];
-  public withCredentials = true;
-  public formData: any = [];
-  public isReady = false;
-  public isUploading = false;
-  public isUploaded = false;
-  public isSuccess = false;
-  public isCancel = false;
-  public isError = false;
-  public progress = 0;
-  public index?: number;
-  public _xhr?: XMLHttpRequest;
-  public _form: any;
+   file: FileLikeObject;
+   _file: File;
+   alias?: string;
+   url = '/';
+   method?: string;
+   headers: any = [];
+   withCredentials = true;
+   formData: any = [];
+   isReady = false;
+   isUploading = false;
+   isUploaded = false;
+   isSuccess = false;
+   isCancel = false;
+   isError = false;
+   progress = 0;
+   index?: number;
+   _xhr?: XMLHttpRequest;
+   _form: any;
 
   protected uploader: FileUploader;
   protected some: File;
   protected options: FileUploaderOptions;
 
-  public constructor(uploader: FileUploader, some: File, options: FileUploaderOptions) {
+   constructor(uploader: FileUploader, some: File, options: FileUploaderOptions) {
     this.uploader = uploader;
     this.some = some;
     this.options = options;
@@ -38,7 +38,7 @@ export class FileItem {
     this.url = uploader.options.url;
   }
 
-  public upload(): void {
+   upload(): void {
     try {
       this.uploader.uploadItem(this);
     } catch (e) {
@@ -47,43 +47,43 @@ export class FileItem {
     }
   }
 
-  public cancel(): void {
+   cancel(): void {
     this.uploader.cancelItem(this);
   }
 
-  public remove(): void {
+   remove(): void {
     this.uploader.removeFromQueue(this);
   }
 
-  public onBeforeUpload(): void {
+   onBeforeUpload(): void {
     return void 0;
   }
 
-  public onBuildForm(form: any): any {
+   onBuildForm(form: any): any {
     return { form };
   }
 
-  public onProgress(progress: number): any {
+   onProgress(progress: number): any {
     return { progress };
   }
 
-  public onSuccess(response: string, status: number, headers: ParsedResponseHeaders): any {
+   onSuccess(response: string, status: number, headers: ParsedResponseHeaders): any {
     return { response, status, headers };
   }
 
-  public onError(response: string, status: number, headers: ParsedResponseHeaders): any {
+   onError(response: string, status: number, headers: ParsedResponseHeaders): any {
     return { response, status, headers };
   }
 
-  public onCancel(response: string, status: number, headers: ParsedResponseHeaders): any {
+   onCancel(response: string, status: number, headers: ParsedResponseHeaders): any {
     return { response, status, headers };
   }
 
-  public onComplete(response: string, status: number, headers: ParsedResponseHeaders): any {
+   onComplete(response: string, status: number, headers: ParsedResponseHeaders): any {
     return { response, status, headers };
   }
 
-  public _onBeforeUpload(): void {
+   _onBeforeUpload(): void {
     this.isReady = true;
     this.isUploading = true;
     this.isUploaded = false;
@@ -94,16 +94,16 @@ export class FileItem {
     this.onBeforeUpload();
   }
 
-  public _onBuildForm(form: any): void {
+   _onBuildForm(form: any): void {
     this.onBuildForm(form);
   }
 
-  public _onProgress(progress: number): void {
+   _onProgress(progress: number): void {
     this.progress = progress;
     this.onProgress(progress);
   }
 
-  public _onSuccess(response: string, status: number, headers: ParsedResponseHeaders): void {
+   _onSuccess(response: string, status: number, headers: ParsedResponseHeaders): void {
     this.isReady = false;
     this.isUploading = false;
     this.isUploaded = true;
@@ -115,7 +115,7 @@ export class FileItem {
     this.onSuccess(response, status, headers);
   }
 
-  public _onError(response: string, status: number, headers: ParsedResponseHeaders): void {
+   _onError(response: string, status: number, headers: ParsedResponseHeaders): void {
     this.isReady = false;
     this.isUploading = false;
     this.isUploaded = true;
@@ -127,7 +127,7 @@ export class FileItem {
     this.onError(response, status, headers);
   }
 
-  public _onCancel(response: string, status: number, headers: ParsedResponseHeaders): void {
+   _onCancel(response: string, status: number, headers: ParsedResponseHeaders): void {
     this.isReady = false;
     this.isUploading = false;
     this.isUploaded = false;
@@ -139,7 +139,7 @@ export class FileItem {
     this.onCancel(response, status, headers);
   }
 
-  public _onComplete(response: string, status: number, headers: ParsedResponseHeaders): void {
+   _onComplete(response: string, status: number, headers: ParsedResponseHeaders): void {
     this.onComplete(response, status, headers);
 
     if (this.uploader.options.removeAfterUpload) {
@@ -147,7 +147,7 @@ export class FileItem {
     }
   }
 
-  public _prepareToUploading(): void {
+   _prepareToUploading(): void {
     this.index = this.index || ++this.uploader._nextIndex;
     this.isReady = true;
   }

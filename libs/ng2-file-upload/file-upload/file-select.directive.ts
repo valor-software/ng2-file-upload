@@ -1,39 +1,37 @@
 import { Directive, EventEmitter, ElementRef, Input, HostListener, Output } from '@angular/core';
 
-import {FileUploader, FileUploaderOptions} from './file-uploader.class';
+import { FileUploader, FileUploaderOptions } from './file-uploader.class';
 
 @Directive({ selector: '[ng2FileSelect]' })
 export class FileSelectDirective {
-  @Input() public uploader?: FileUploader;
+  @Input() uploader?: FileUploader;
   // eslint-disable-next-line @angular-eslint/no-output-on-prefix
-  @Output() public onFileSelected: EventEmitter<File[]> = new EventEmitter<File[]>();
+  @Output() onFileSelected: EventEmitter<File[]> = new EventEmitter<File[]>();
 
   protected element: ElementRef;
 
-  public constructor(element: ElementRef) {
+  constructor(element: ElementRef) {
     this.element = element;
   }
 
-  public getOptions(): FileUploaderOptions | void {
+  getOptions(): FileUploaderOptions | undefined {
     return this.uploader?.options;
   }
 
-  public getFilters(): any {
-    return {};
+  getFilters(): string {
+    return '';
   }
 
-  public isEmptyAfterSelection(): boolean {
+  isEmptyAfterSelection(): boolean {
     return !!this.element.nativeElement.attributes.multiple;
   }
 
   @HostListener('change')
-  public onChange(): any {
+  onChange(): void {
     const files = this.element.nativeElement.files;
     const options = this.getOptions();
     const filters = this.getFilters();
-    if (options) {
-      this.uploader?.addToQueue(files, options, filters);
-    }
+    this.uploader?.addToQueue(files, options, filters);
 
     this.onFileSelected.emit(files);
     if (this.isEmptyAfterSelection()) {

@@ -4,27 +4,27 @@ import { FileUploader, FileUploaderOptions } from './file-uploader.class';
 
 @Directive({ selector: '[ng2FileDrop]' })
 export class FileDropDirective {
-  @Input() public uploader?: FileUploader;
-  @Output() public fileOver: EventEmitter<any> = new EventEmitter();
+  @Input()  uploader?: FileUploader;
+  @Output()  fileOver: EventEmitter<any> = new EventEmitter();
   // eslint-disable-next-line @angular-eslint/no-output-on-prefix
-  @Output() public onFileDrop: EventEmitter<File[]> = new EventEmitter<File[]>();
+  @Output()  onFileDrop: EventEmitter<File[]> = new EventEmitter<File[]>();
 
   protected element: ElementRef;
 
-  public constructor(element: ElementRef) {
+  constructor(element: ElementRef) {
     this.element = element;
   }
 
-  public getOptions(): FileUploaderOptions | void {
+  getOptions(): FileUploaderOptions | void {
     return this.uploader?.options;
   }
 
-  public getFilters(): any {
-    return {};
+  getFilters(): string {
+    return '';
   }
 
   @HostListener('drop', [ '$event' ])
-  public onDrop(event: any): void {
+  onDrop(event: MouseEvent): void {
     const transfer = this._getTransfer(event);
     if (!transfer) {
       return;
@@ -41,7 +41,7 @@ export class FileDropDirective {
   }
 
   @HostListener('dragover', [ '$event' ])
-  public onDragOver(event: any): void {
+  onDragOver(event: MouseEvent): void {
     const transfer = this._getTransfer(event);
     if (!this._haveFiles(transfer.types)) {
       return;
@@ -53,7 +53,7 @@ export class FileDropDirective {
   }
 
   @HostListener('dragleave', [ '$event' ])
-  public onDragLeave(event: any): any {
+  onDragLeave(event: MouseEvent): void {
     if ((this as any).element) {
       if (event.currentTarget === (this as any).element[ 0 ]) {
         return;
@@ -68,12 +68,12 @@ export class FileDropDirective {
     return event.dataTransfer ? event.dataTransfer : event.originalEvent.dataTransfer; // jQuery fix;
   }
 
-  protected _preventAndStop(event: any): any {
+  protected _preventAndStop(event: MouseEvent): void {
     event.preventDefault();
     event.stopPropagation();
   }
 
-  protected _haveFiles(types: any): any {
+  protected _haveFiles(types: any): boolean {
     if (!types) {
       return false;
     }

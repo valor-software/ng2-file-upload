@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const doc = require('html-loader!markdown-loader!../../doc.md');
 
-const tabDesc:Array<any> = [
+const tabDesc: Array<any> = [
   {
     heading: 'Simple',
     // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -19,12 +19,12 @@ const tabDesc:Array<any> = [
   templateUrl: './file-upload-section.html'
 })
 export class FileUploadSectionComponent {
-  public name = 'File Upload';
-  public currentHeading = 'Simple';
-  public doc = doc;
-  public tabs:any = tabDesc;
+  name = 'File Upload';
+  currentHeading = 'Simple';
+  doc = doc;
+  tabs: any = tabDesc;
 
-  public select(e:any):void {
+  select(e: any): void {
     if (e.heading) {
       this.currentHeading = e.heading;
     }
