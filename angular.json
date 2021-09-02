@@ -48,8 +48,10 @@
           ],
           "options": {
             "commands": [
+              "ts-node ./scripts/set-version.ts",
               "conventional-changelog -i CHANGELOG.md -s -p angular",
-              "git add -A"
+              "git add -A",
+              "git commit -am \"chore(changelog): update [skip ci] \""
             ],
             "parallel": false
           },
