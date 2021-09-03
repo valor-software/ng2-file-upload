@@ -2,39 +2,89 @@
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
   "version": 1,
   "newProjectRoot": "projects",
+  "defaultProject": "ng2-file-upload-demo",
   "projects": {
     "ng2-file-upload": {
-      "root": ".",
-      "sourceRoot": "src",
+      "root": "libs/ng2-file-upload",
+      "sourceRoot": "libs/ng2-file-upload/src",
       "projectType": "library",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-ng-packagr:build",
+          "builder": "@nrwl/angular:package",
+          "outputs": [
+            "dist/libs/ng2-file-upload"
+          ],
           "options": {
-            "tsConfig": "src/tsconfig.json",
-            "project": "src/ng-package.json"
+            "tsConfig": "libs/ng2-file-upload/tsconfig.lib.json",
+            "project": "libs/ng2-file-upload/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "libs/ng2-file-upload/tsconfig.lib.prod.json"
+            }
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/ng2-file-upload/**/*.ts"
+            ]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": [
+            "coverage/libs/ng2-file-upload"
+          ],
+          "options": {
+            "jestConfig": "libs/ng2-file-upload/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "version": {
+          "builder": "@nrwl/workspace:run-commands",
+          "outputs": [
+          ],
+          "options": {
+            "commands": [
+              "ts-node ./scripts/set-version.ts",
+              "conventional-changelog -i CHANGELOG.md -s -p angular",
+              "git add -A",
+              "git commit -am \"chore(changelog): update [skip ci] \""
+            ],
+            "parallel": false
+          },
+          "configurations": {
+            "production": {}
           }
         }
       }
     },
     "ng2-file-upload-demo": {
-      "root": "demo",
-      "sourceRoot": "demo/src",
+      "root": "apps/demo",
+      "sourceRoot": "apps/demo/src",
       "projectType": "application",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "demo/dist",
-            "index": "demo/src/index.html",
-            "main": "demo/src/main.ts",
-            "tsConfig": "demo/src/tsconfig.json",
+            "outputPath": "dist/apps/demo",
+            "index": "apps/demo/src/index.html",
+            "main": "apps/demo/src/main.ts",
+            "tsConfig": "apps/demo/tsconfig.json",
             "assets": [
-              "demo/src/assets"
+              "apps/demo/src/assets"
             ],
             "styles": [],
             "scripts": []
           },
+          "dependsOn": [
+            {
+              "target": "build",
+              "projects": "dependencies"
+            }
+          ],
           "configurations": {
             "production": {
               "optimization": true,
@@ -48,8 +98,8 @@
               "buildOptimizer": true,
               "fileReplacements": [
                 {
-                  "replace": "demo/src/environments/environment.ts",
-                  "with": "demo/src/environments/environment.prod.ts"
+                  "replace": "apps/demo/src/environments/environment.ts",
+                  "with": "apps/demo/src/environments/environment.prod.ts"
                 }
               ]
             }
@@ -65,34 +115,12 @@
               "browserTarget": "ng2-file-upload-demo:build:production"
             }
           }
-        }
-      }
-    },
-    "ng2-file-upload-test": {
-      "root": ".",
-      "sourceRoot": "test",
-      "projectType": "library",
-      "architect": {
-        "test": {
-          "builder": "@angular-devkit/build-angular:karma",
-          "options": {
-            "main": "test/test.ts",
-            "karmaConfig": "test/karma.conf.js",
-            "scripts": [],
-            "styles": [],
-            "tsConfig": "test/tsconfig.json"
-          }
         },
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@nrwl/linter:eslint",
           "options": {
-            "tsConfig": [
-              "src/tsconfig.json",
-              "demo/src/tsconfig.json",
-              "test/tsconfig.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
+            "lintFilePatterns": [
+              "apps/demo/**/*.ts"
             ]
           }
         }

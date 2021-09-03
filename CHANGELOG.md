@@ -1,3 +1,40 @@
+# [1.3.0](https://github.com/valor-software/ng2-file-upload/compare/v1.2.0...v1.3.0) (2021-08-31)
+
+
+### Bug Fixes
+
+* **ci:** fix xvfb service issue ([33ac156](https://github.com/valor-software/ng2-file-upload/commit/33ac156208bfcf57851210f037719107e1ca9eb9))
+* **style:** delete extra rule ([b5917b9](https://github.com/valor-software/ng2-file-upload/commit/b5917b9fa77e63c4c1b06598abc817b8033730c3))
+* **typo:** fix grammatical mistake in readme ([#1119](https://github.com/valor-software/ng2-file-upload/issues/1119)) ([8171bc8](https://github.com/valor-software/ng2-file-upload/commit/8171bc831b69692d04b650be19ff82f04ff56662))
+
+
+### Features
+
+* **bump:** added strict mode, doesn't build in dist, should be resolved ([69cd64d](https://github.com/valor-software/ng2-file-upload/commit/69cd64dc287c9bdd1c35af1062e27ce32a47e977))
+* **core:** added nx ([de738f7](https://github.com/valor-software/ng2-file-upload/commit/de738f7c63d7f37e07019bc596c02e9f4320f563))
+* **package:** relaxed peer dependencies to allow ng v4  ([#713](https://github.com/valor-software/ng2-file-upload/issues/713)) ([7704e0e](https://github.com/valor-software/ng2-file-upload/commit/7704e0e970276ebcd8bfefe34bf153f82108a11e))
+* **upgrade:** updated up to angular 11 tests are failed ([ce9dc20](https://github.com/valor-software/ng2-file-upload/commit/ce9dc20056cc6c7cd58e502af05d7d97043c8f3a))
+
+
+
+# [1.3.0](https://github.com/valor-software/ng2-file-upload/compare/v1.2.0...v1.3.0) (2021-08-31)
+
+
+### Bug Fixes
+
+* **ci:** fix xvfb service issue ([33ac156](https://github.com/valor-software/ng2-file-upload/commit/33ac156208bfcf57851210f037719107e1ca9eb9))
+* **style:** delete extra rule ([b5917b9](https://github.com/valor-software/ng2-file-upload/commit/b5917b9fa77e63c4c1b06598abc817b8033730c3))
+* **typo:** fix grammatical mistake in readme ([#1119](https://github.com/valor-software/ng2-file-upload/issues/1119)) ([8171bc8](https://github.com/valor-software/ng2-file-upload/commit/8171bc831b69692d04b650be19ff82f04ff56662))
+
+
+### Features
+
+* **bump:** added strict mode, doesn't build in dist, should be resolved ([69cd64d](https://github.com/valor-software/ng2-file-upload/commit/69cd64dc287c9bdd1c35af1062e27ce32a47e977))
+* **package:** relaxed peer dependencies to allow ng v4  ([#713](https://github.com/valor-software/ng2-file-upload/issues/713)) ([7704e0e](https://github.com/valor-software/ng2-file-upload/commit/7704e0e970276ebcd8bfefe34bf153f82108a11e))
+* **upgrade:** updated up to angular 11 tests are failed ([ce9dc20](https://github.com/valor-software/ng2-file-upload/commit/ce9dc20056cc6c7cd58e502af05d7d97043c8f3a))
+
+
+
 <a name="1.3.0"></a>
 # [1.3.0](https://github.com/valor-software/ng2-file-upload/compare/v1.2.0...v1.3.0) (2017-11-25)
 

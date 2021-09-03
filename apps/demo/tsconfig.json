@@ -1,0 +1,20 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "files": [
+        "./src/main.ts",
+        "../../scripts/polyfills.ts"
+  ],
+  "include": ["./src/typings.d.ts"],
+  "references": [
+    {
+      "path": "./tsconfig.app.json"
+    },
+    {
+      "path": "./tsconfig.spec.json"
+    },
+    {
+      "path": "./tsconfig.editor.json"
+    }
+  ],
+  "exclude": ["**/*.spec.ts"]
+}
