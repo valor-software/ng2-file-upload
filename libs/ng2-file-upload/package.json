@@ -1,6 +1,6 @@
 {
   "name": "ng2-file-upload",
-  "version": "2.0.0-0",
+  "version": "2.0.0-1",
   "description": "Angular file uploader",
   "author": "Dmitriy Shekhovtsov <valorkin@gmail.com>",
   "license": "MIT",
