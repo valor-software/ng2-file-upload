@@ -12,12 +12,12 @@ const gettingStarted = require('html-loader!markdown-loader!../getting-started.m
       <a class="btn btn-primary" href="https://github.com/valor-software/ng2-file-upload">View on GitHub</a>
       <div class="row d-flex" style="padding-top: 15px">
         <div class="col-lg-1 block_links">
-          <a href="https://npmjs.org/ngx-bootstrap" style="display: flex">
+          <a href="https://npmjs.org/ng2-file-upload" style="display: flex">
             <img src="https://img.shields.io/npm/v/ng2-file-upload/latest.svg" alt="npm latest version" >
           </a>
         </div>
         <div class="col-lg-1 block_links">
-          <a href="https://npmjs.org/ngx-bootstrap" style="display: flex">
+          <a href="https://npmjs.org/ng2-file-upload" style="display: flex">
             <img src="https://img.shields.io/npm/v/ng2-file-upload/next.svg" alt="npm next version" >
           </a>
         </div>
