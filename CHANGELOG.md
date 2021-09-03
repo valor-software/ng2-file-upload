@@ -1,3 +1,18 @@
+# [2.0.0-0](https://github.com/valor-software/ng2-file-upload/compare/v1.2.0...v2.0.0-0) (2021-09-03)
+
+
+### Bug Fixes
+
+* **ci:** fix xvfb service issue ([33ac156](https://github.com/valor-software/ng2-file-upload/commit/33ac156208bfcf57851210f037719107e1ca9eb9))
+* **typo:** fix grammatical mistake in readme ([#1119](https://github.com/valor-software/ng2-file-upload/issues/1119)) ([8171bc8](https://github.com/valor-software/ng2-file-upload/commit/8171bc831b69692d04b650be19ff82f04ff56662))
+
+
+### Features
+
+* **package:** relaxed peer dependencies to allow ng v4  ([#713](https://github.com/valor-software/ng2-file-upload/issues/713)) ([7704e0e](https://github.com/valor-software/ng2-file-upload/commit/7704e0e970276ebcd8bfefe34bf153f82108a11e))
+
+
+
 # [1.3.0](https://github.com/valor-software/ng2-file-upload/compare/v1.2.0...v1.3.0) (2021-08-31)
 
 
