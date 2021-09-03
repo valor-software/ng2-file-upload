@@ -131,6 +131,24 @@ simple-demo >.container {
   max-width: 100%;
 }
 
+.block_links {
+  display: flex;
+  align-items: center;
+  width: auto;
+  padding: 0 0 0 15px;
+  margin-bottom: 10px;
+}
+
+.block_links:first-child {
+  padding-left: 15px;
+}
+
+.d-flex {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+
 @media (min-width: 992px) {
   .bd-pageheader h1, .bd-pageheader p {
     margin-right: 380px;
