@@ -6,7 +6,7 @@
   "projects": {
     "ng2-file-upload": {
       "root": "libs/ng2-file-upload",
-      "sourceRoot": "libs/ng2-file-upload/src",
+      "sourceRoot": "libs/ng2-file-upload/",
       "projectType": "library",
       "architect": {
         "build": {
@@ -127,7 +127,6 @@
       }
     }
   },
-  "defaultProject": "ng2-file-upload-demo",
   "schematics": {
     "@schematics/angular:component": {
       "prefix": "",

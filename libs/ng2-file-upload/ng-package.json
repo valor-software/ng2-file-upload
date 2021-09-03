@@ -1,6 +1,6 @@
 {
   "$schema": "../../node_modules/ng-packagr/ng-package.schema.json",
-  "dest": "../../dist/libs/ng2-file-upload",
+  "dest": "../../dist/libs/ng2-file-upload/",
   "lib": {
     "entryFile": "index.ts"
   }
