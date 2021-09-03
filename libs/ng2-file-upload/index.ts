@@ -1,4 +1,3 @@
-
 export * from  './file-upload/file-drop.directive';
 export * from  './file-upload/file-uploader.class';
 export * from './file-upload/file-item.class';
