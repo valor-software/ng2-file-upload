@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { FileUploader } from 'ng2-file-upload';
 
 // const URL = '/api/';
-const URL = 'https://evening-anchorage-3159.herokuapp.com/api/';
+const URL = 'https://www.googleapis.com/upload/drive/v3/files?uploadType=resumable';
 
 @Component({
   selector: 'simple-demo',
