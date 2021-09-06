@@ -53,7 +53,6 @@ section {
 
 .navbar-brand {
   color: #777;
-  /*float: left;*/
   height: 50px;
   padding: 15px 15px;
   font-size: 18px;
@@ -183,10 +182,6 @@ section {
   }
 
   table td::before {
-    /*
-    * aria-label has no advantage, it won't be read inside a table
-    content: attr(aria-label);
-    */
     content: attr(data-label);
     font-weight: bold;
     text-transform: uppercase;

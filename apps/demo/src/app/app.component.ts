@@ -14,7 +14,6 @@ const gettingStarted = require('html-loader!markdown-loader!../getting-started.m
           <a class="btn btn-light w-auto" href="https://github.com/valor-software/ng2-file-upload">View on GitHub</a>
         </p>
       </div>
-
       <div class="row" style="padding-top: 15px">
         <div class="d-flex flex-wrap">
           <a href="https://npmjs.org/ng2-file-upload" class="me-2 d-flex mb-2">
@@ -26,13 +25,6 @@ const gettingStarted = require('html-loader!markdown-loader!../getting-started.m
           <iframe src="https://ghbtns.com/github-btn.html?user=valor-software&repo=ng2-file-upload&type=star&count=true" frameborder="0" scrolling="0" width="100px" height="20px" class="me-2 mb-2"></iframe>
           <iframe src="https://ghbtns.com/github-btn.html?user=valor-software&repo=ng2-file-upload&type=fork&count=true" frameborder="0" scrolling="0" width="100px" height="20px" class="mb-2"></iframe>
         </div>
-
-<!--        <div class="col-lg-1 block_links">-->
-<!--          <iframe src="https://ghbtns.com/github-btn.html?user=valor-software&repo=ng2-file-upload&type=star&count=true" frameborder="0" scrolling="0" width="100px" height="20px"></iframe>-->
-<!--        </div>-->
-<!--        <div class="col-lg-1 block_links">-->
-<!--          <iframe src="https://ghbtns.com/github-btn.html?user=valor-software&repo=ng2-file-upload&type=fork&count=true" frameborder="0" scrolling="0" width="100px" height="20px"></iframe>-->
-<!--        </div>-->
       </div>
     </div>
   </main>
