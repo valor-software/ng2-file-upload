@@ -1,3 +1,12 @@
+# [2.0.0-3](https://github.com/valor-software/ng2-file-upload/compare/v2.0.0-2...v2.0.0-3) (2021-09-07)
+
+
+### Features
+
+* **demo:** updated up to bootstrap 5 ([#1186](https://github.com/valor-software/ng2-file-upload/issues/1186)) ([02a1b2a](https://github.com/valor-software/ng2-file-upload/commit/02a1b2a53c331e2088ea05d2202be6eb2b1d051f))
+
+
+
 # [2.0.0-2](https://github.com/valor-software/ng2-file-upload/compare/v2.0.0-1...v2.0.0-2) (2021-09-03)
 
 
