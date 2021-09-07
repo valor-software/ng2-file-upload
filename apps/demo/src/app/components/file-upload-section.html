@@ -2,39 +2,42 @@
   <div class="row">
     <tabset>
       <tab *ngFor="let desc of tabs" heading="{{desc.heading}}" (select)="select($event)">
-        <div class="card card-block panel panel-default panel-body">
+        <div class="card card-block p-3 border-top-0">
 
           <simple-demo></simple-demo>
 
           <br>
-
-          <div class="row" style="margin: 0px;">
-            <tabset>
-              <tab heading="Markup">
-                <div class="card card-block panel panel-default panel-body">
-                  <pre class="prettyprint linenums lang-html">{{desc.html}}</pre>
-                </div>
-              </tab>
-              <tab heading="TypeScript">
-                <div class="card card-block panel panel-default panel-body">
-                  <pre class="prettyprint linenums lang-js">{{desc.ts}}</pre>
-                  <pre class="language-typescript"><code class="language-typescript" ng-non-bindable [innerHTML]="desc.ts"></code></pre>
-                </div>
-              </tab>
-              <tab heading="Backend Demo">
-                <div class="card card-block panel panel-default panel-body">
-                  <pre class="prettyprint linenums lang-js">{{desc.js}}</pre>
-                </div>
-              </tab>
-            </tabset>
+          <div class="container p-0">
+            <div class="row" style="margin: 0px;">
+              <tabset class="p-0">
+                <tab heading="Markup">
+                  <div class="card card-block p-3 border-top-0">
+                    <pre class="prettyprint linenums lang-html">{{desc.html}}</pre>
+                  </div>
+                </tab>
+                <tab heading="TypeScript">
+                  <div class="card card-block p-3 border-top-0">
+                    <pre class="prettyprint linenums lang-js">{{desc.ts}}</pre>
+                    <pre class="language-typescript"><code class="language-typescript" ng-non-bindable [innerHTML]="desc.ts"></code></pre>
+                  </div>
+                </tab>
+                <tab heading="Backend Demo">
+                  <div class="card card-block p-3 border-top-0">
+                    <pre class="prettyprint linenums lang-js">{{desc.js}}</pre>
+                  </div>
+                </tab>
+              </tabset>
+            </div>
           </div>
         </div>
       </tab>
     </tabset>
   </div>
 
-  <div class="row">
-    <h2>API</h2>
-    <div class="card card-block panel panel-default panel-body" [innerHTML]="doc"></div>
+  <div class="container">
+    <div class="row mt-3">
+      <h2>API</h2>
+      <div class="card card-block p-3" [innerHTML]="doc"></div>
+    </div>
   </div>
 </section>

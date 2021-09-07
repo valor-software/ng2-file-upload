@@ -14,16 +14,21 @@
   font-size: 36px;
 }
 
+td {
+  vertical-align: middle;
+}
+
+a, .nav-tabs a.nav-link  {
+  text-decoration: none;
+  color: #6f5499;
+}
+
 .btn-group-lg > .btn, .btn-lg {
   font-size: 18px;
 }
 
 section {
   padding-top: 30px;
-}
-
-.bd-pageheader {
-  margin-top: 51px;
 }
 
 .page-header {
@@ -37,43 +42,24 @@ section {
 }
 
 .navbar {
-  padding: 0;
+  padding: 15px;
+  background-color: #f8f8f8;
+  border-color: #e7e7e7;
 }
 
 .navbar-nav .nav-item {
   margin-left: 0 !important;
 }
 
-.nav > li > a {
-  position: relative;
-  display: block;
-  padding: 10px 15px;
-}
-
-.nav .navbar-brand {
-  float: left;
-  height: 50px;
-  padding: 15px 15px;
-  font-size: 18px;
-  line-height: 20px;
-  margin-right: 0 !important;
-}
-
 .navbar-brand {
   color: #777;
-  float: left;
   height: 50px;
   padding: 15px 15px;
   font-size: 18px;
   line-height: 20px;
 }
 
-.navbar-toggler {
-  margin-top: 8px;
-  margin-right: 15px;
-}
-
-.navbar-default .navbar-nav > li > a:focus, .navbar-default .navbar-nav > li > a:hover {
+.navbar-nav > li > a:focus, .navbar-default .navbar-nav > li > a:hover {
   color: #333;
   background-color: transparent;
 }
@@ -113,41 +99,9 @@ section {
   margin: 10px 0;
 }
 
-.scrollable-menu .nav-link {
-  color: #337ab7;
-  font-size: 14px;
+.card {
+  border-radius: 0 0 .25rem .25rem;
 }
-
-.scrollable-menu .nav-link:hover {
-  color: #23527c;
-  background-color: #eee;
-}
-
-simple-demo {
-  max-width: 100%;
-}
-
-simple-demo >.container {
-  max-width: 100%;
-}
-
-.block_links {
-  display: flex;
-  align-items: center;
-  width: auto;
-  padding: 0 0 0 15px;
-  margin-bottom: 10px;
-}
-
-.block_links:first-child {
-  padding-left: 15px;
-}
-
-.d-flex {
-  display: flex;
-  flex-wrap: wrap;
-}
-
 
 @media (min-width: 992px) {
   .bd-pageheader h1, .bd-pageheader p {
@@ -193,6 +147,53 @@ simple-demo >.container {
     padding: 0;
     margin: 0;
   }
+
+  table {
+    border: 0;
+  }
+
+  table caption {
+    font-size: 1.3em;
+  }
+
+  table thead {
+    border: none;
+    clip: rect(0 0 0 0);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
+  }
+
+  table tr {
+    border-bottom: 3px solid #ddd;
+    display: block;
+    margin-bottom: .625em;
+  }
+
+  table td {
+    border-bottom: 1px solid #ddd;
+    font-size: .8em;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  table td::before {
+    content: attr(data-label);
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+
+  table td:last-child {
+    border-bottom: 0;
+  }
+
+  td[data-label="Progress"] .progress {
+    width: 75%;
+  }
 }
 
 @media (max-width: 400px) {
@@ -210,13 +211,6 @@ simple-demo >.container {
     *
     * iOS Resolution Quick Reference: http://www.iosres.com/
     */
-
-.scrollable-menu {
-  height: 90vh !important;
-  width: 100vw;
-  overflow-x: hidden;
-  padding: 0 0 20px;
-}
 
 /**
  * iPad with portrait orientation.
@@ -246,29 +240,22 @@ simple-demo >.container {
   }
 }
 
-.navbar-default .navbar-toggle .icon-bar {
-  background-color: #888;
-}
-
-.navbar-toggle:focus {
-  outline: 0
-}
-
-.navbar-toggle .icon-bar {
-  display: block;
-  width: 22px;
-  height: 2px;
-  border-radius: 1px
-}
-
-.navbar-toggle .icon-bar + .icon-bar {
-  margin-top: 4px
-}
-
 pre {
   white-space: pre-wrap;       /* CSS 3 */
   white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
   white-space: -pre-wrap;      /* Opera 4-6 */
   white-space: -o-pre-wrap;    /* Opera 7 */
   word-wrap: break-word;       /* Internet Explorer 5.5+ */
+  line-height: 1.42857143;
+  color: #333;
+  background-color: #f5f5f5;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 15px;
 }
+
+pre.prettyprint {
+  margin-bottom: 0;
+}
+
+
