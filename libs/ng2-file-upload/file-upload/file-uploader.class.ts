@@ -318,7 +318,7 @@ export class FileUploader {
       }
 
       // For AWS, Additional Parameters must come BEFORE Files
-      if (this.options.additionalParameter !== undefined) {
+      if (this.options.additionalParameter) {
         Object.keys(this.options.additionalParameter).forEach((key: string) => {
           let paramVal = this.options.additionalParameter?.[ key ];
           // Allow an additional parameter to include the filename
