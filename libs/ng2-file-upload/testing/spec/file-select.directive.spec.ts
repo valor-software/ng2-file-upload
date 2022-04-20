@@ -72,7 +72,7 @@ describe('Directive: FileSelectDirective', () => {
     const filters = fileSelectDirective.getFilters();
 
     // TODO: Update test once implemented
-    expect(filters).toEqual({});
+    expect(filters).toEqual('');
   });
 
   it('can check if element is empty', () => {
@@ -82,18 +82,22 @@ describe('Directive: FileSelectDirective', () => {
   });
 
   it('can listed on change event', () => {
-    spyOn(fileSelectDirective, 'onChange');
+    //@ts-ignore
+    const change = jest.spyOn(fileSelectDirective, 'onChange');
 
     directiveElement.triggerEventHandler('change', {});
 
-    expect(fileSelectDirective.onChange).toHaveBeenCalled();
+    expect(change).toHaveBeenCalled();
   });
 
   it('handles change event', () => {
-    spyOn(fileSelectDirective.uploader, 'addToQueue');
-
+    let addToQueue;
+    if (fileSelectDirective.uploader?.addToQueue) {
+      //@ts-ignore
+      addToQueue = jest.spyOn(fileSelectDirective.uploader, 'addToQueue');
+    }
     fileSelectDirective.onChange();
 
-    expect(fileSelectDirective.uploader.addToQueue).toHaveBeenCalledWith(directiveElement.nativeElement.files, fileSelectDirective.getOptions(), fileSelectDirective.getFilters());
+    expect(addToQueue).toHaveBeenCalledWith(directiveElement.nativeElement.files, fileSelectDirective.getOptions(), fileSelectDirective.getFilters());
   });
 });

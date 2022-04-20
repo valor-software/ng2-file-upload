@@ -5,22 +5,16 @@ module.exports = {
   globals: {
     'ts-jest': {
       tsconfig: '<rootDir>/tsconfig.spec.json',
-      astTransformers: {
-        before: [
-          'jest-preset-angular/build/InlineFilesTransformer',
-          'jest-preset-angular/build/StripStylesTransformer',
-        ]
-      }
+
     }
   },
-  transform: {
-    '^.+\\.[tj]sx?$':  'ts-jest'
-  },
-  moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
   coverageDirectory: '../../coverage/libs/ng2-file-upload',
   snapshotSerializers: [
-    'jest-preset-angular/build/AngularNoNgAttributesSnapshotSerializer.js',
-    'jest-preset-angular/build/AngularSnapshotSerializer.js',
-    'jest-preset-angular/build/HTMLCommentSerializer.js',
-  ]
+    'jest-preset-angular/build/serializers/no-ng-attributes',
+    'jest-preset-angular/build/serializers/ng-snapshot',
+    'jest-preset-angular/build/serializers/html-comment'
+  ],
+  transform: { '^.+.(ts|mjs|js|html)$': 'jest-preset-angular' },
+  transformIgnorePatterns: ['node_modules/(?!.*.mjs$)'],
+  moduleFileExtensions: ['mjs', 'ts', 'js', 'html']
 };

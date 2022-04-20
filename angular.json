@@ -2,7 +2,6 @@
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
   "version": 1,
   "newProjectRoot": "projects",
-  "defaultProject": "ng2-file-upload-demo",
   "projects": {
     "ng2-file-upload": {
       "root": "libs/ng2-file-upload",
@@ -30,7 +29,10 @@
             "lintFilePatterns": [
               "libs/ng2-file-upload/**/*.ts"
             ]
-          }
+          },
+          "outputs": [
+            "{options.outputFile}"
+          ]
         },
         "test": {
           "builder": "@nrwl/jest:jest",
@@ -44,8 +46,7 @@
         },
         "version": {
           "builder": "@nrwl/workspace:run-commands",
-          "outputs": [
-          ],
+          "outputs": [],
           "options": {
             "commands": [
               "ts-node ./scripts/set-version.ts",
@@ -59,7 +60,10 @@
             "production": {}
           }
         }
-      }
+      },
+      "tags": [
+        "lib"
+      ]
     },
     "ng2-file-upload-demo": {
       "root": "apps/demo",
@@ -90,7 +94,6 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
               "aot": true,
               "extractLicenses": true,
@@ -122,18 +125,16 @@
             "lintFilePatterns": [
               "apps/demo/**/*.ts"
             ]
-          }
+          },
+          "outputs": [
+            "{options.outputFile}"
+          ]
         }
-      }
-    }
-  },
-  "schematics": {
-    "@schematics/angular:component": {
-      "prefix": "",
-      "styleext": "css"
-    },
-    "@schematics/angular:directive": {
-      "prefix": ""
+      },
+      "tags": [],
+      "implicitDependencies": [
+        "ng2-file-upload"
+      ]
     }
   }
 }
