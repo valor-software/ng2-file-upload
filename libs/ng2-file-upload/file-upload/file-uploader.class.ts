@@ -117,7 +117,7 @@ export class FileUploader {
         this.queue.push(fileItem);
         this._onAfterAddingFile(fileItem);
       } else {
-        if (this._failFilterIndex) {
+        if (typeof this._failFilterIndex === 'number' && this._failFilterIndex >= 0) {
           const filter = arrayOfFilters[ this._failFilterIndex ];
           this._onWhenAddingFileFailed(temp, filter, options);
         }
@@ -434,7 +434,7 @@ export class FileUploader {
     this._failFilterIndex = -1;
 
     return !filters.length ? true : filters.every((filter: FilterFunction) => {
-      if (this._failFilterIndex) {
+      if (typeof this._failFilterIndex === 'number') {
         this._failFilterIndex++;
       }
 
