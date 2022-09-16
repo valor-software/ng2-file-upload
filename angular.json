@@ -123,7 +123,7 @@
           },
           "configurations": {
             "production": {
-              "browserTarget": "ng2-file-upload-demo:build:production"
+              "browserTarget": "ng2-file-upload-demo:build"
             }
           }
         },
