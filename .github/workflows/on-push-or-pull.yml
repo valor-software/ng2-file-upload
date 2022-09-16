@@ -60,7 +60,7 @@ jobs:
           path: ${{ env.CACHE_DIST_PATH }}
           key: dist-${{ github.run_id }}
       - run: npx ng build --prod
-             npx nx run ng2-file-upload:build:production
+             npx nx run ng2-file-upload:build
 
   # run unit tests
   unit_tests_with_coverage:
