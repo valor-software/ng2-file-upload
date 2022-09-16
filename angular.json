@@ -40,7 +40,7 @@
             "coverage/libs/ng2-file-upload"
           ],
           "options": {
-            "jestConfig": "libs/ng2-file-upload/jest.config.js",
+            "jestConfig": "libs/ng2-file-upload/jest.config.ts",
             "passWithNoTests": true
           }
         },

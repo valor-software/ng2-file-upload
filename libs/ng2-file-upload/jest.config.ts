@@ -1,4 +1,5 @@
-module.exports = {
+/* eslint-disable */
+export default {
   displayName: 'ng2-file-upload',
   preset: '../../jest.preset.js',
   setupFilesAfterEnv: ['<rootDir>/testing/test-setup.ts'],
