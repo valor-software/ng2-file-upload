@@ -76,7 +76,6 @@ describe('Directive: FileDropDirective', () => {
   });
 
   it('handles drop event', () => {
-    //@ts-ignore
     const drop = jest.spyOn(fileDropDirective, 'onDrop');
     directiveElement.triggerEventHandler('drop', getFakeEventData());
 
@@ -86,7 +85,6 @@ describe('Directive: FileDropDirective', () => {
   it('adds file to upload', () => {
     let addToQueue;
     if (fileDropDirective.uploader?.addToQueue) {
-      //@ts-ignore
       addToQueue = jest.spyOn(fileDropDirective.uploader, 'addToQueue');
     }
 
@@ -106,7 +104,6 @@ describe('Directive: FileDropDirective', () => {
   });
 
   it('handles dragover event', () => {
-    //@ts-ignore
     jest.spyOn(fileDropDirective, 'onDragOver');
 
     directiveElement.triggerEventHandler('dragover', getFakeEventData());
@@ -124,7 +121,6 @@ describe('Directive: FileDropDirective', () => {
   });
 
   it('handles dragleave event', () => {
-    //@ts-ignore
     jest.spyOn(fileDropDirective, 'onDragLeave');
 
     directiveElement.triggerEventHandler('dragleave', getFakeEventData());

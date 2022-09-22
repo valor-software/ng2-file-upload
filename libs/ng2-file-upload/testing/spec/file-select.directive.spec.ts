@@ -82,7 +82,6 @@ describe('Directive: FileSelectDirective', () => {
   });
 
   it('can listed on change event', () => {
-    //@ts-ignore
     const change = jest.spyOn(fileSelectDirective, 'onChange');
 
     directiveElement.triggerEventHandler('change', {});
@@ -93,7 +92,6 @@ describe('Directive: FileSelectDirective', () => {
   it('handles change event', () => {
     let addToQueue;
     if (fileSelectDirective.uploader?.addToQueue) {
-      //@ts-ignore
       addToQueue = jest.spyOn(fileSelectDirective.uploader, 'addToQueue');
     }
     fileSelectDirective.onChange();
