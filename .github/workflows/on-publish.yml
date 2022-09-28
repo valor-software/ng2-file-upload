@@ -50,7 +50,7 @@ jobs:
           path: |
             dist
           key: dist-${{ github.run_id }}
-      - run: npx ng build --prod
+      - run: npx nx run ng2-file-upload-demo:build
 
   # update release notes in github
   update_release_draft:
