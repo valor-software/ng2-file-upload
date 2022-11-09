@@ -52,7 +52,7 @@
     "@angular/forms": "14.2.2",
     "@angular/platform-browser": "14.2.2",
     "@angular/platform-browser-dynamic": "14.2.2",
-    "@nrwl/angular": "14.7.5",
+    "@nrwl/angular": "14.8.6",
     "@nrwl/cli": "14.7.5",
     "@nrwl/eslint-plugin-nx": "14.7.5",
     "@nrwl/jest": "14.7.5",
