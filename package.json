@@ -39,7 +39,7 @@
   "homepage": "https://github.com/valor-software/ng2-file-upload#readme",
   "peerDependencies": {},
   "devDependencies": {
-    "@angular-devkit/build-angular": "14.2.3",
+    "@angular-devkit/build-angular": "14.2.10",
     "@angular-eslint/eslint-plugin": "14.0.4",
     "@angular-eslint/eslint-plugin-template": "14.0.4",
     "@angular-eslint/template-parser": "14.0.4",
@@ -52,7 +52,7 @@
     "@angular/forms": "14.2.2",
     "@angular/platform-browser": "14.2.2",
     "@angular/platform-browser-dynamic": "14.2.2",
-    "@nrwl/angular": "14.7.5",
+    "@nrwl/angular": "14.8.6",
     "@nrwl/cli": "14.7.5",
     "@nrwl/eslint-plugin-nx": "14.7.5",
     "@nrwl/jest": "14.7.5",
