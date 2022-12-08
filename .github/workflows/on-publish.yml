@@ -26,8 +26,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: one_run
     steps:
-      - uses: actions/checkout@v2.3.4
-      - uses: actions/cache@v2.1.4
+      - uses: actions/checkout@v3
+      - uses: actions/cache@v3
         id: cache
         with:
           path: node_modules
@@ -40,25 +40,27 @@ jobs:
     needs: install
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2.3.4
-      - uses: actions/cache@v2.1.4
+      - uses: actions/checkout@v3
+      - uses: actions/cache@v3
         with:
           path: node_modules
           key: node_modules-${{ hashFiles('**/package-lock.json') }}
-      - uses: actions/cache@v2.1.4
+      - uses: actions/cache@v3
         with:
           path: |
             dist
           key: dist-${{ github.run_id }}
-      - run: npx nx run ng2-file-upload-demo:build
+      - run: |
+          npx nx run ng2-file-upload:build
+          npx nx run ng2-file-upload-demo:build
 
   # update release notes in github
   update_release_draft:
     needs: install
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2.3.4
-      - uses: actions/cache@v2.1.4
+      - uses: actions/checkout@v3
+      - uses: actions/cache@v3
         with:
           path: node_modules
           key: node_modules-${{ hashFiles('**/package-lock.json') }}
@@ -69,17 +71,17 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
-      - uses: actions/checkout@v2.3.4
-      - uses: actions/checkout@v2.3.4
+      - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
         with:
           ref: 'gh-pages'
           path: 'gh-pages'
 
-      - uses: actions/cache@v2.1.4
+      - uses: actions/cache@v3
         with:
           path: node_modules
           key: node_modules-${{ hashFiles('**/package-lock.json') }}
-      - uses: actions/cache@v2.1.4
+      - uses: actions/cache@v3
         with:
           path: |
             dist
@@ -104,12 +106,12 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
-      - uses: actions/checkout@v2.3.4
-      - uses: actions/cache@v2.1.4
+      - uses: actions/checkout@v3
+      - uses: actions/cache@v3
         with:
           path: node_modules
           key: node_modules-${{ hashFiles('**/package-lock.json') }}
-      - uses: actions/cache@v2.1.4
+      - uses: actions/cache@v3
         with:
           path: |
             dist
