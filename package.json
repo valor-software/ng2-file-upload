@@ -1,6 +1,6 @@
 {
   "name": "ng2-file-upload-base",
-  "version": "3.0.0",
+  "version": "2.0.0-3",
   "private": true,
   "description": "Angular file upload directives",
   "scripts": {
@@ -8,7 +8,7 @@
     "start": "ng serve",
     "demo.build": "ng build",
     "demo.build-prod": "ng build",
-    "build": "nx run ng2-file-upload:build --prod",
+    "build": "nx run ng2-file-upload:build",
     "build-prod": "nx run ng2-file-upload:build",
     "lint": "nx run-many --target=lint --all",
     "test": "nx run-many --target=test --all",
