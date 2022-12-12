@@ -1,3 +1,20 @@
+# [3.0.0](https://github.com/valor-software/ng2-file-upload/compare/v2.0.0-3...v3.0.0) (2022-12-12)
+
+
+### Bug Fixes
+
+* **chore:** fixed build in yml file ([fc21870](https://github.com/valor-software/ng2-file-upload/commit/fc21870c827166da05307a6fe5f4fdd3808454eb))
+* **chore:** updated publish yml file ([4ee0638](https://github.com/valor-software/ng2-file-upload/commit/4ee06384dd8ddf4097606c542d4c6326e6ee1433))
+* **ci:** fixed release yml file ([6f5ac1c](https://github.com/valor-software/ng2-file-upload/commit/6f5ac1cb94a86540a5a44dd884ae9c4af8e40d00))
+
+
+### Features
+
+* **core:** updated version up to angular 14 and nx 14 ([#1205](https://github.com/valor-software/ng2-file-upload/issues/1205)) ([ad01e31](https://github.com/valor-software/ng2-file-upload/commit/ad01e31cf8258eeaaa3b18625bb0e46992972c1a))
+* **package:** Added support for Angular 13. fixes [#1193](https://github.com/valor-software/ng2-file-upload/issues/1193) ([#1201](https://github.com/valor-software/ng2-file-upload/issues/1201)) ([6608960](https://github.com/valor-software/ng2-file-upload/commit/6608960cecd9f800aae27d8d4f4a21c418a3828a))
+
+
+
 # [3.0.0]()
 
 Updated the library and test project to Angular 13
