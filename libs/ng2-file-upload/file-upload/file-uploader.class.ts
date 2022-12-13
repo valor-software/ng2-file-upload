@@ -31,7 +31,7 @@ export interface FileUploaderOptions {
   maxFileSize?: number;
   queueLimit?: number;
   removeAfterUpload?: boolean;
-  url: string;
+  url?: string;
   disableMultipart?: boolean;
   itemAlias?: string;
   authTokenHeader?: string;
