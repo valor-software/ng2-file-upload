@@ -1,10 +1,12 @@
 {
   "extends": "../../tsconfig.base.json",
   "files": [
-        "./src/main.ts",
-        "../../scripts/polyfills.ts"
+    "./src/main.ts",
+    "../../scripts/polyfills.ts"
   ],
-  "include": ["./src/typings.d.ts"],
+  "include": [
+    "./src/typings.d.ts"
+  ],
   "references": [
     {
       "path": "./tsconfig.app.json"
@@ -16,5 +18,10 @@
       "path": "./tsconfig.editor.json"
     }
   ],
-  "exclude": ["**/*.spec.ts"]
+  "exclude": [
+    "**/*.spec.ts"
+  ],
+  "compilerOptions": {
+    "target": "es2020"
+  }
 }

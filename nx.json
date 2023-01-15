@@ -8,31 +8,32 @@
     ".eslintrc.json": "*",
     "nx.json": "*"
   },
-  "projects": {
-    "ng2-file-upload": {
-      "tags": [
-        "lib"
-      ]
-    },
-    "ng2-file-upload-demo": {
-      "tags": [],
-      "implicitDependencies": [
-        "ng2-file-upload"
-      ]
-
-    }
-  },
   "tasksRunnerOptions": {
     "default": {
-      "runner": "@nrwl/workspace/tasks-runners/default",
+      "runner": "nx/tasks-runners/default",
       "options": {
         "cacheableOperations": [
           "build",
           "lint",
           "test",
           "e2e"
-        ]
+        ],
+        "parallel": 1
       }
     }
-  }
+  },
+  "affected": {
+    "defaultBase": "master"
+  },
+  "defaultProject": "ng2-file-upload-demo",
+  "generators": {
+    "@schematics/angular:component": {
+      "prefix": "",
+      "styleext": "css"
+    },
+    "@schematics/angular:directive": {
+      "prefix": ""
+    }
+  },
+  "$schema": "./node_modules/nx/schemas/nx-schema.json"
 }

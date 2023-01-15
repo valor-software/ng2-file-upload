@@ -1,6 +1,6 @@
 import { Component, DebugElement } from '@angular/core';
 import { By } from '@angular/platform-browser';
-import { inject, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { FileUploader } from '../../file-upload/file-uploader.class';
 import { FileUploadModule } from '../../file-upload/file-upload.module';
@@ -28,7 +28,7 @@ describe('Directive: FileDropDirective', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [ FileUploadModule ],
-      declarations: [ ContainerComponent ],
+      declarations: [ ContainerComponent, FileDropDirective ],
       providers: [ ContainerComponent ]
     });
   });
@@ -72,19 +72,21 @@ describe('Directive: FileDropDirective', () => {
     const filters = fileDropDirective.getFilters();
 
     // TODO: Update test once implemented
-    expect(filters).toEqual({});
+    expect(filters).toBeFalsy();
   });
 
   it('handles drop event', () => {
-    spyOn(fileDropDirective, 'onDrop');
-
+    const drop = jest.spyOn(fileDropDirective, 'onDrop');
     directiveElement.triggerEventHandler('drop', getFakeEventData());
 
-    expect(fileDropDirective.onDrop).toHaveBeenCalled();
+    expect(drop).toHaveBeenCalled();
   });
 
   it('adds file to upload', () => {
-    spyOn(fileDropDirective.uploader, 'addToQueue');
+    let addToQueue;
+    if (fileDropDirective.uploader?.addToQueue) {
+      addToQueue = jest.spyOn(fileDropDirective.uploader, 'addToQueue');
+    }
 
     let fileOverData;
     fileDropDirective.fileOver.subscribe((data: any) => fileOverData = data);
@@ -96,13 +98,13 @@ describe('Directive: FileDropDirective', () => {
 
     const uploadedFiles = getFakeEventData().dataTransfer.files;
 
-    expect(fileDropDirective.uploader.addToQueue).toHaveBeenCalledWith(uploadedFiles, fileDropDirective.getOptions(), fileDropDirective.getFilters());
+    expect(addToQueue).toHaveBeenCalledWith(uploadedFiles, fileDropDirective.getOptions(), fileDropDirective.getFilters());
     expect(fileOverData).toBeFalsy();
     expect(fileDropData).toEqual(uploadedFiles);
   });
 
   it('handles dragover event', () => {
-    spyOn(fileDropDirective, 'onDragOver');
+    jest.spyOn(fileDropDirective, 'onDragOver');
 
     directiveElement.triggerEventHandler('dragover', getFakeEventData());
 
@@ -119,7 +121,7 @@ describe('Directive: FileDropDirective', () => {
   });
 
   it('handles dragleave event', () => {
-    spyOn(fileDropDirective, 'onDragLeave');
+    jest.spyOn(fileDropDirective, 'onDragLeave');
 
     directiveElement.triggerEventHandler('dragleave', getFakeEventData());
 

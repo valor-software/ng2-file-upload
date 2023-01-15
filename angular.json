@@ -2,7 +2,6 @@
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
   "version": 1,
   "newProjectRoot": "projects",
-  "defaultProject": "ng2-file-upload-demo",
   "projects": {
     "ng2-file-upload": {
       "root": "libs/ng2-file-upload",
@@ -30,7 +29,10 @@
             "lintFilePatterns": [
               "libs/ng2-file-upload/**/*.ts"
             ]
-          }
+          },
+          "outputs": [
+            "{options.outputFile}"
+          ]
         },
         "test": {
           "builder": "@nrwl/jest:jest",
@@ -38,14 +40,13 @@
             "coverage/libs/ng2-file-upload"
           ],
           "options": {
-            "jestConfig": "libs/ng2-file-upload/jest.config.js",
+            "jestConfig": "libs/ng2-file-upload/jest.config.ts",
             "passWithNoTests": true
           }
         },
         "version": {
           "builder": "@nrwl/workspace:run-commands",
-          "outputs": [
-          ],
+          "outputs": [],
           "options": {
             "commands": [
               "ts-node ./scripts/set-version.ts",
@@ -59,7 +60,10 @@
             "production": {}
           }
         }
-      }
+      },
+      "tags": [
+        "lib"
+      ]
     },
     "ng2-file-upload-demo": {
       "root": "apps/demo",
@@ -110,16 +114,16 @@
               ]
             }
           },
-          "defaultConfiguration": ""
+          "defaultConfiguration": "production"
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "ng2-file-upload-demo:build"
+            "browserTarget": "ng2-file-upload-demo:build:production"
           },
           "configurations": {
             "production": {
-              "browserTarget": "ng2-file-upload-demo:build:production"
+              "browserTarget": "ng2-file-upload-demo:build"
             }
           }
         },
@@ -129,18 +133,16 @@
             "lintFilePatterns": [
               "apps/demo/**/*.ts"
             ]
-          }
+          },
+          "outputs": [
+            "{options.outputFile}"
+          ]
         }
-      }
-    }
-  },
-  "schematics": {
-    "@schematics/angular:component": {
-      "prefix": "",
-      "styleext": "css"
-    },
-    "@schematics/angular:directive": {
-      "prefix": ""
+      },
+      "tags": [],
+      "implicitDependencies": [
+        "ng2-file-upload"
+      ]
     }
   }
 }
