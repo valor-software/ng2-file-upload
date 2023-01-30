@@ -1,17 +1,17 @@
 {
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
-  "version": 1,
+  "version": 2,
   "newProjectRoot": "projects",
   "projects": {
     "ng2-file-upload": {
       "root": "libs/ng2-file-upload",
       "sourceRoot": "libs/ng2-file-upload/",
       "projectType": "library",
-      "architect": {
+      "targets": {
         "build": {
-          "builder": "@nrwl/angular:package",
+          "executor": "@nrwl/angular:package",
           "outputs": [
-            "dist/libs/ng2-file-upload"
+            "{workspaceRoot}/dist/libs/ng2-file-upload"
           ],
           "options": {
             "tsConfig": "libs/ng2-file-upload/tsconfig.lib.json",
@@ -24,7 +24,7 @@
           }
         },
         "lint": {
-          "builder": "@nrwl/linter:eslint",
+          "executor": "@nrwl/linter:eslint",
           "options": {
             "lintFilePatterns": [
               "libs/ng2-file-upload/**/*.ts"
@@ -35,9 +35,9 @@
           ]
         },
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "executor": "@nrwl/jest:jest",
           "outputs": [
-            "coverage/libs/ng2-file-upload"
+            "{workspaceRoot}/coverage/libs/ng2-file-upload"
           ],
           "options": {
             "jestConfig": "libs/ng2-file-upload/jest.config.ts",
@@ -45,7 +45,7 @@
           }
         },
         "version": {
-          "builder": "@nrwl/workspace:run-commands",
+          "executor": "nx:run-commands",
           "outputs": [],
           "options": {
             "commands": [
@@ -69,9 +69,9 @@
       "root": "apps/demo",
       "sourceRoot": "apps/demo/src",
       "projectType": "application",
-      "architect": {
+      "targets": {
         "build": {
-          "builder": "@angular-devkit/build-angular:browser",
+          "executor": "@angular-devkit/build-angular:browser",
           "options": {
             "outputPath": "dist/apps/demo",
             "index": "apps/demo/src/index.html",
@@ -117,7 +117,7 @@
           "defaultConfiguration": "production"
         },
         "serve": {
-          "builder": "@angular-devkit/build-angular:dev-server",
+          "executor": "@angular-devkit/build-angular:dev-server",
           "options": {
             "browserTarget": "ng2-file-upload-demo:build:production"
           },
@@ -128,7 +128,7 @@
           }
         },
         "lint": {
-          "builder": "@nrwl/linter:eslint",
+          "executor": "@nrwl/linter:eslint",
           "options": {
             "lintFilePatterns": [
               "apps/demo/**/*.ts"
