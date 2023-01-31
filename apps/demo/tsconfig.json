@@ -22,6 +22,7 @@
     "**/*.spec.ts"
   ],
   "compilerOptions": {
-    "target": "es2020"
+    "target": "ES2022",
+    "useDefineForClassFields": false
   }
 }

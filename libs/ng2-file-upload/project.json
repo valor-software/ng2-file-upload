@@ -1,0 +1,63 @@
+{
+  "name": "ng2-file-upload",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/ng2-file-upload/",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/angular:package",
+      "outputs": [
+        "{workspaceRoot}/dist/libs/ng2-file-upload"
+      ],
+      "options": {
+        "tsConfig": "libs/ng2-file-upload/tsconfig.lib.json",
+        "project": "libs/ng2-file-upload/ng-package.json"
+      },
+      "configurations": {
+        "production": {
+          "tsConfig": "libs/ng2-file-upload/tsconfig.lib.prod.json"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": [
+          "libs/ng2-file-upload/**/*.ts"
+        ]
+      },
+      "outputs": [
+        "{options.outputFile}"
+      ]
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": [
+        "{workspaceRoot}/coverage/libs/ng2-file-upload"
+      ],
+      "options": {
+        "jestConfig": "libs/ng2-file-upload/jest.config.ts",
+        "passWithNoTests": true
+      }
+    },
+    "version": {
+      "executor": "nx:run-commands",
+      "outputs": [],
+      "options": {
+        "commands": [
+          "ts-node ./scripts/set-version.ts",
+          "conventional-changelog -i CHANGELOG.md -s -p angular",
+          "git add -A",
+          "git commit -am \"chore(changelog): update [skip ci] \""
+        ],
+        "parallel": false
+      },
+      "configurations": {
+        "production": {}
+      }
+    }
+  },
+  "tags": [
+    "lib"
+  ]
+}
