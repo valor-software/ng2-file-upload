@@ -80,7 +80,7 @@
     "jest-createspyobj": "2.0.0",
     "jest-environment-jsdom": "28.1.1",
     "jest-preset-angular": "12.2.3",
-    "markdown-loader": "^6.0.0",
+    "markdown-loader": "^8.0.0",
     "ng-packagr": "15.1.1",
     "ngx-bootstrap": "10.2.1",
     "npm-run-all": "^4.1.5",
