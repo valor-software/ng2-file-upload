@@ -47,8 +47,7 @@
         "commands": [
           "ts-node ./scripts/set-version.ts",
           "conventional-changelog -i CHANGELOG.md -s -p angular",
-          "git add -A",
-          "git commit -am \"chore(changelog): update [skip ci] \""
+          "git add -A"
         ],
         "parallel": false
       },
