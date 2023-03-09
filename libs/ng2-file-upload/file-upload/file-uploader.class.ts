@@ -264,8 +264,8 @@ export class FileUploader {
   }
 
   _fileTypeFilter(item: FileLikeObject): boolean {
-    return !(this.options.allowedFileType &&
-      this.options.allowedFileType.indexOf(FileType.getMimeClass(item)) === -1);
+    return (!this.options.allowedFileType &&
+      this.options.allowedFileType.indexOf(FileType.getMimeClass(item)) !=== -1);
   }
 
   _onErrorItem(item: FileItem, response: string, status: number, headers: ParsedResponseHeaders): void {
