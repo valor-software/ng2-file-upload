@@ -61,7 +61,8 @@
       "{workspaceRoot}/nx.json"
     ],
     "production": [
-      "default"
+      "default",
+      "!{projectRoot}/src/test-setup.[jt]s"
     ]
   }
 }
