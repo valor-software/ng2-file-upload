@@ -1,3 +1,12 @@
+# [5.0.0](https://github.com/valor-software/ng2-file-upload/compare/v4.0.0...v5.0.0) (2023-07-21)
+
+
+### Features
+
+* add angular 16 support([#1258](https://github.com/valor-software/ng2-file-upload/issues/1258)) ([1fe752d](https://github.com/valor-software/ng2-file-upload/commit/1fe752d9f0665568dee3340c47f7e0964635ab6a))
+
+
+
 # [3.0.0](https://github.com/valor-software/ng2-file-upload/compare/v2.0.0-3...v3.0.0) (2022-12-12)
 
 

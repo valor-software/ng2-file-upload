@@ -1,6 +1,6 @@
 {
   "name": "ng2-file-upload-demo",
-  "version": "3.0.0",
+  "version": "5.0.0",
   "private": true,
   "description": "Angular file upload directives",
   "scripts": {
