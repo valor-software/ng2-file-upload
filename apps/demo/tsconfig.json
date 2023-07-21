@@ -2,7 +2,7 @@
   "extends": "../../tsconfig.base.json",
   "files": [
     "./src/main.ts",
-    "../../scripts/polyfills.ts"
+    "./src/polyfills.ts"
   ],
   "include": [
     "./src/typings.d.ts"
