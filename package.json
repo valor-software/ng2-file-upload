@@ -35,7 +35,6 @@
     "url": "https://github.com/valor-software/ng2-file-upload/issues"
   },
   "homepage": "https://github.com/valor-software/ng2-file-upload#readme",
-  "peerDependencies": {},
   "devDependencies": {
     "@angular-devkit/build-angular": "16.1.4",
     "@angular-devkit/core": "16.1.4",
@@ -52,6 +51,7 @@
     "@angular/forms": "16.1.5",
     "@angular/platform-browser": "16.1.5",
     "@angular/platform-browser-dynamic": "16.1.5",
+    "@nx/angular": "16.5.2",
     "@nx/eslint-plugin": "16.5.2",
     "@nx/jest": "16.5.2",
     "@nx/linter": "16.5.2",
@@ -83,6 +83,7 @@
     "ng-packagr": "16.1.0",
     "ngx-bootstrap": "11.0.2",
     "npm-run-all": "^4.1.5",
+    "nx-cloud": "^16.1.1",
     "postcss": "^8.3.9",
     "postcss-import": "14.1.0",
     "postcss-preset-env": "7.5.0",
@@ -94,8 +95,7 @@
     "ts-jest": "29.1.1",
     "ts-node": "10.9.1",
     "typescript": "5.1.6",
-    "zone.js": "0.13.1",
-    "@nx/angular": "16.5.2"
+    "zone.js": "0.13.1"
   },
   "contributors": [
     {
