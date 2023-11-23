@@ -53,16 +53,16 @@
     "serve": {
       "executor": "@angular-devkit/build-angular:dev-server",
       "options": {
-        "browserTarget": "ng2-file-upload-demo:build:production"
+        "buildTarget": "ng2-file-upload-demo:build:production"
       },
       "configurations": {
         "production": {
-          "browserTarget": "ng2-file-upload-demo:build"
+          "buildTarget": "ng2-file-upload-demo:build"
         }
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
+      "executor": "@nx/eslint:lint",
       "options": {
         "lintFilePatterns": [
           "apps/demo/**/*.ts"

@@ -37,3 +37,5 @@ src/**/*.js
 src/**/*.map
 scripts/**/*.js
 scripts/**/*.map
+
+.nx/cache
