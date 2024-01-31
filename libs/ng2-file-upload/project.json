@@ -11,7 +11,8 @@
       ],
       "options": {
         "tsConfig": "libs/ng2-file-upload/tsconfig.lib.json",
-        "project": "libs/ng2-file-upload/ng-package.json"
+        "project": "libs/ng2-file-upload/ng-package.json",
+        "updateBuildableProjectDepsInPackageJson": true
       },
       "configurations": {
         "production": {
@@ -20,7 +21,7 @@
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
+      "executor": "@nx/eslint:lint",
       "options": {
         "lintFilePatterns": [
           "libs/ng2-file-upload/**/*.ts"
@@ -36,8 +37,7 @@
         "{workspaceRoot}/coverage/libs/ng2-file-upload"
       ],
       "options": {
-        "jestConfig": "libs/ng2-file-upload/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "libs/ng2-file-upload/jest.config.ts"
       }
     },
     "version": {
