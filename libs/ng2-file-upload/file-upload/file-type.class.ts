@@ -115,6 +115,7 @@ export class FileType {
       '3dm': 'image',
       mp3: 'audio',
       wav: 'audio',
+      csv: 'xls',
       wma: 'audio',
       mod: 'audio',
       m4a: 'audio',
