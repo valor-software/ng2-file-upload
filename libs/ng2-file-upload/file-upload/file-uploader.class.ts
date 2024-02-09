@@ -30,6 +30,7 @@ export interface FileUploaderOptions {
   authToken?: string;
   maxFileSize?: number;
   queueLimit?: number;
+  queueMaxSizeLimit? : number;
   removeAfterUpload?: boolean;
   url: string;
   disableMultipart?: boolean;
@@ -78,6 +79,10 @@ export class FileUploader {
     this.authTokenHeader = this.options.authTokenHeader || 'Authorization';
     this.autoUpload = this.options.autoUpload;
     this.options.filters?.unshift({ name: 'queueLimit', fn: this._queueLimitFilter });
+
+    if (this.options.queueMaxSizeLimit) {
+      this.options.filters?.unshift({ name: 'queueMaxSizeLimit', fn: this._queueMaxSizeLimitFilter });
+    }
 
     if (this.options.maxFileSize) {
       this.options.filters?.unshift({ name: 'fileSize', fn: this._fileSizeFilter });
@@ -428,6 +433,17 @@ export class FileUploader {
 
   protected _queueLimitFilter(): boolean {
     return this.options.queueLimit === undefined || this.queue.length < this.options.queueLimit;
+  }
+
+  protected _queueMaxSizeLimitFilter(item: FileLikeObject): boolean {    
+    let queueFileSize = 0;    
+    let queueNotProcessedItems = this.queue.filter(queuedItem => !(queuedItem.isSuccess || queuedItem.isCancel || queuedItem.isError));
+    if(queueNotProcessedItems.length>0)
+    {
+      // total size of all queued items that are going to be uploaded
+      queueFileSize = queueNotProcessedItems.map(queuedItem => queuedItem.file.size).reduce((fileSizeA,fileSizeB)=> fileSizeA + fileSizeB);
+    }
+    return this.options.queueMaxSizeLimit === undefined || (queueFileSize + item.size) < this.options.queueMaxSizeLimit;
   }
 
   protected _isValidFile(file: FileLikeObject, filters: FilterFunction[], options: FileUploaderOptions): boolean {
