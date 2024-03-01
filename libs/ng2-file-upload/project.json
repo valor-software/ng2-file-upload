@@ -1,0 +1,62 @@
+{
+  "name": "ng2-file-upload",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/ng2-file-upload/",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/angular:package",
+      "outputs": [
+        "{workspaceRoot}/dist/libs/ng2-file-upload"
+      ],
+      "options": {
+        "tsConfig": "libs/ng2-file-upload/tsconfig.lib.json",
+        "project": "libs/ng2-file-upload/ng-package.json",
+        "updateBuildableProjectDepsInPackageJson": true
+      },
+      "configurations": {
+        "production": {
+          "tsConfig": "libs/ng2-file-upload/tsconfig.lib.prod.json"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "options": {
+        "lintFilePatterns": [
+          "libs/ng2-file-upload/**/*.ts"
+        ]
+      },
+      "outputs": [
+        "{options.outputFile}"
+      ]
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": [
+        "{workspaceRoot}/coverage/libs/ng2-file-upload"
+      ],
+      "options": {
+        "jestConfig": "libs/ng2-file-upload/jest.config.ts"
+      }
+    },
+    "version": {
+      "executor": "nx:run-commands",
+      "outputs": [],
+      "options": {
+        "commands": [
+          "ts-node ./scripts/set-version.ts",
+          "conventional-changelog -i CHANGELOG.md -s -p angular",
+          "git add -A"
+        ],
+        "parallel": false
+      },
+      "configurations": {
+        "production": {}
+      }
+    }
+  },
+  "tags": [
+    "lib"
+  ]
+}
