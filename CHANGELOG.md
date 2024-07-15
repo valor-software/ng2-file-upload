@@ -5,6 +5,7 @@
 
 * **dependencies:** updated ngx-bootstrap and bootstrap ([bce773c](https://github.com/valor-software/ng2-file-upload/commit/bce773c2e3f2447caaa87d6992ff3e2f65d7c56c))
 * **lint:** updated lint ([09d97db](https://github.com/valor-software/ng2-file-upload/commit/09d97dbb4a1267e9253ad1a0c8742f5256b7cdce))
+* Added angular 18 support
 
 
 
