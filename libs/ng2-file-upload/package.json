@@ -6,8 +6,6 @@
   "license": "MIT",
   "peerDependencies": {
     "@angular/core": "^18.0.0",
-    "@angular/platform-browser": "^18.0.0",
-    "jest-preset-angular": "14.1.0",
     "@angular/common": "^18.0.0"
   },
   "sideEffects": false,
