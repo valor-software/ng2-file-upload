@@ -49,7 +49,10 @@
         "@typescript-eslint/semi": [
           "error"
         ],
-        "@typescript-eslint/ban-ts-comment": "off"
+        "@typescript-eslint/ban-ts-comment": "off",
+        "@angular-eslint/prefer-standalone": [
+          "off"
+        ]
       }
     },
     {

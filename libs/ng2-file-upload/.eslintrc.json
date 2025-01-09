@@ -28,7 +28,7 @@
       ],
       "rules": {
         "@angular-eslint/prefer-standalone": [
-          "allow"
+          "off"
         ]
       }
     },
