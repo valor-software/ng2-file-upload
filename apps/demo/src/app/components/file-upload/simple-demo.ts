@@ -6,7 +6,8 @@ const URL = 'https://evening-anchorage-3159.herokuapp.com/api/';
 
 @Component({
   selector: 'simple-demo',
-  templateUrl: './simple-demo.html'
+  templateUrl: './simple-demo.html',
+  standalone: false
 })
 export class SimpleDemoComponent {
 

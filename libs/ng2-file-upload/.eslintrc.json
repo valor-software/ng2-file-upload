@@ -26,7 +26,11 @@
         "plugin:@nx/angular",
         "plugin:@angular-eslint/template/process-inline-templates"
       ],
-      "rules": {}
+      "rules": {
+        "@angular-eslint/prefer-standalone": [
+          "allow"
+        ]
+      }
     },
     {
       "files": [

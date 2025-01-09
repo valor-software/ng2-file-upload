@@ -16,7 +16,8 @@ const tabDesc: Array<any> = [
 
 @Component({
   selector: 'file-upload-section',
-  templateUrl: './file-upload-section.html'
+  templateUrl: './file-upload-section.html',
+  standalone: false
 })
 export class FileUploadSectionComponent {
   name = 'File Upload';
