@@ -6,12 +6,12 @@ import { FileSelectDirective, FileDropDirective, FileUploader } from 'ng2-file-u
 ### Annotations
 ```typescript
 // class FileSelectDirective
-@Directive({ selector: '[ng2FileSelect]' })
+@Directive({ selector: '[ng2FileSelect]', standalone: false })
 ```
 
 ```typescript
 // class FileDropDirective
-@Directive({ selector: '[ng2FileDrop]' })
+@Directive({ selector: '[ng2FileDrop]', standalone: false })
 ```
 
 ## FileSelect API

@@ -40,7 +40,8 @@ const gettingStarted = require('html-loader!markdown-loader!../getting-started.m
       <p class="text-muted text-center"><a href="https://github.com/valor-software/ng2-file-upload">ng2-file-upload</a> is maintained by <a href="https://github.com/valor-software">valor-software</a>.</p>
     </div>
   </footer>
-  `
+  `,
+  standalone: false
 })
 export class AppComponent {
   public gettingStarted:string = gettingStarted;

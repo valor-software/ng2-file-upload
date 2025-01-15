@@ -2,7 +2,7 @@ import { Directive, EventEmitter, ElementRef, Input, HostListener, Output } from
 
 import { FileUploader, FileUploaderOptions } from './file-uploader.class';
 
-@Directive({ selector: '[ng2FileSelect]' })
+@Directive({ selector: '[ng2FileSelect]', standalone: false })
 export class FileSelectDirective {
   @Input() uploader?: FileUploader;
   // eslint-disable-next-line @angular-eslint/no-output-on-prefix
