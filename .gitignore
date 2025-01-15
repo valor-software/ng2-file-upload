@@ -38,5 +38,5 @@ src/**/*.map
 scripts/**/*.js
 scripts/**/*.map
 
-.nx/cache
+.nx/
 .yarn
