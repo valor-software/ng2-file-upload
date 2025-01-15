@@ -1,3 +1,18 @@
+## [7.0.1](https://github.com/valor-software/ng2-file-upload/compare/v7.0.0...v7.0.1) (2025-01-15)
+
+
+* Added angular 19 support
+
+
+## [7.0.1](https://github.com/valor-software/ng2-file-upload/compare/v7.0.0...v7.0.1) (2024-07-17)
+
+
+### Bug Fixes
+
+* **dependencies:** removed excessive parts from peerDependencies ([3a7d086](https://github.com/valor-software/ng2-file-upload/commit/3a7d086927e1ad1e95ee94d4ad7b09fa3834cfc1))
+
+
+
 # [7.0.0](https://github.com/valor-software/ng2-file-upload/compare/v6.0.0...v7.0.0) (2024-07-15)
 
 

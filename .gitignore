@@ -40,3 +40,4 @@ scripts/**/*.map
 
 .nx/
 .yarn
+.nx/
