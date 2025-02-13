@@ -17,7 +17,7 @@ describe('FileUploader: onWhenAddingFileFailed', () => {
         const uploader = new FileUploader({ url: '', maxFileSize: filterFileSize });
         const onWhenAddingFileFailed = jest.spyOn(uploader, 'onWhenAddingFileFailed');
 
-        uploader.addToQueue([file]);
+        uploader.addToQueue([file] as unknown as FileList);
 
         expect(filterFileSize).toBeGreaterThan(file.size);
         expect(onWhenAddingFileFailed).toBeCalledTimes(0);
@@ -28,7 +28,7 @@ describe('FileUploader: onWhenAddingFileFailed', () => {
         const uploader = new FileUploader({ url: '', maxFileSize: filterFileSize });
         const onWhenAddingFileFailed = jest.spyOn(uploader, 'onWhenAddingFileFailed');
 
-        uploader.addToQueue([file]);
+        uploader.addToQueue([file] as unknown as FileList);
 
         expect(filterFileSize).toBeLessThan(file.size);
         expect(onWhenAddingFileFailed).toBeCalledTimes(1);
@@ -40,7 +40,7 @@ describe('FileUploader: onWhenAddingFileFailed', () => {
         const onWhenAddingFileFailed = jest.spyOn(uploader, 'onWhenAddingFileFailed');
         const files = [file, file];
 
-        uploader.addToQueue([file, file]);
+        uploader.addToQueue([file, file] as unknown as FileList);
 
         expect(files.length).toBeLessThanOrEqual(queueLimit);
         expect(onWhenAddingFileFailed).toBeCalledTimes(0);
@@ -52,7 +52,7 @@ describe('FileUploader: onWhenAddingFileFailed', () => {
         const onWhenAddingFileFailed = jest.spyOn(uploader, 'onWhenAddingFileFailed');
         const files = [file, file];
 
-        uploader.addToQueue([file, file]);
+        uploader.addToQueue([file, file] as unknown as FileList);
 
         expect(files.length).toBeGreaterThan(queueLimit);
         expect(onWhenAddingFileFailed).toBeCalledTimes(1);
@@ -62,7 +62,7 @@ describe('FileUploader: onWhenAddingFileFailed', () => {
         const uploader = new FileUploader({ url: '', allowedFileType: ["image"] });
         const onWhenAddingFileFailed = jest.spyOn(uploader, 'onWhenAddingFileFailed');
 
-        uploader.addToQueue([file]);
+        uploader.addToQueue([file] as unknown as FileList);
 
         expect(onWhenAddingFileFailed).toBeCalledTimes(0);
     });
@@ -71,7 +71,7 @@ describe('FileUploader: onWhenAddingFileFailed', () => {
         const uploader = new FileUploader({ url: '', allowedFileType: ["doc"] });
         const onWhenAddingFileFailed = jest.spyOn(uploader, 'onWhenAddingFileFailed');
 
-        uploader.addToQueue([file]);
+        uploader.addToQueue([file] as unknown as FileList);
 
         expect(onWhenAddingFileFailed).toBeCalledTimes(1);
     });
@@ -81,7 +81,7 @@ describe('FileUploader: onWhenAddingFileFailed', () => {
         const uploader = new FileUploader({ url: '', allowedMimeType: [filterMimeType] });
         const onWhenAddingFileFailed = jest.spyOn(uploader, 'onWhenAddingFileFailed');
 
-        uploader.addToQueue([file]);
+        uploader.addToQueue([file] as unknown as FileList);
 
         expect(file.type).toBe(filterMimeType);
         expect(onWhenAddingFileFailed).toBeCalledTimes(0);
@@ -92,7 +92,7 @@ describe('FileUploader: onWhenAddingFileFailed', () => {
         const uploader = new FileUploader({ url: '', allowedMimeType: [filterMimeType] });
         const onWhenAddingFileFailed = jest.spyOn(uploader, 'onWhenAddingFileFailed');
 
-        uploader.addToQueue([file]);
+        uploader.addToQueue([file] as unknown as FileList);
 
         expect(file.type).not.toBe(filterMimeType);
         expect(onWhenAddingFileFailed).toBeCalledTimes(1);
@@ -103,7 +103,7 @@ describe('FileUploader: onWhenAddingFileFailed', () => {
         const uploader = new FileUploader({ url: '', filters: [positiveFilter] });
         const onWhenAddingFileFailed = jest.spyOn(uploader, 'onWhenAddingFileFailed');
 
-        uploader.addToQueue([file]);
+        uploader.addToQueue([file] as unknown as FileList);
 
         expect(positiveFilter.fn(new FileLikeObject(file))).toBe(true);
         expect(onWhenAddingFileFailed).toBeCalledTimes(0);
@@ -114,7 +114,7 @@ describe('FileUploader: onWhenAddingFileFailed', () => {
         const uploader = new FileUploader({ url: '', filters: [negativeFilter] });
         const onWhenAddingFileFailed = jest.spyOn(uploader, 'onWhenAddingFileFailed');
 
-        uploader.addToQueue([file]);
+        uploader.addToQueue([file] as unknown as FileList);
 
         expect(negativeFilter.fn(new FileLikeObject(file))).toBe(false);
         expect(onWhenAddingFileFailed).toBeCalledTimes(1);
@@ -134,7 +134,7 @@ describe('FileUploader: onWhenAddingFileFailed', () => {
         const onWhenAddingFileFailed = jest.spyOn(uploader, 'onWhenAddingFileFailed');
         const files = [file, file];
 
-        uploader.addToQueue(files);
+        uploader.addToQueue(files as unknown as FileList);
 
         expect(onWhenAddingFileFailed).toBeCalledTimes(files.length);
     });

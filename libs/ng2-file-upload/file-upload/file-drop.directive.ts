@@ -7,7 +7,7 @@ export class FileDropDirective {
   @Input()  uploader?: FileUploader;
   @Output()  fileOver: EventEmitter<any> = new EventEmitter();
   // eslint-disable-next-line @angular-eslint/no-output-on-prefix
-  @Output()  onFileDrop: EventEmitter<File[]> = new EventEmitter<File[]>();
+  @Output()  onFileDrop: EventEmitter<FileList> = new EventEmitter<FileList>();
 
   protected element: ElementRef;
 
@@ -64,7 +64,7 @@ export class FileDropDirective {
     this.fileOver.emit(false);
   }
 
-  protected _getTransfer(event: any): any {
+  protected _getTransfer(event: any): DataTransfer {
     return event.dataTransfer ? event.dataTransfer : event.originalEvent.dataTransfer; // jQuery fix;
   }
 
