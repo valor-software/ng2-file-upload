@@ -63,7 +63,8 @@
         "production": {
           "buildTarget": "ng2-file-upload-demo:build"
         }
-      }
+      },
+      "continuous": true
     },
     "lint": {
       "executor": "@nx/eslint:lint",
