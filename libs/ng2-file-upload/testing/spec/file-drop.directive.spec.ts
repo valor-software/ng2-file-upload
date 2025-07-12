@@ -12,7 +12,7 @@ import { FileDropDirective } from '../../file-upload/file-drop.directive';
                     ng2FileDrop
                     [uploader]="uploader"
              ></div>`,
-  standalone: false
+  imports: [FileUploadModule],
 })
 export class ContainerComponent {
   public get url(): string { return 'localhost:3000'; }
@@ -25,14 +25,6 @@ describe('Directive: FileDropDirective', () => {
   let hostComponent: ContainerComponent;
   let directiveElement: DebugElement;
   let fileDropDirective: FileDropDirective;
-
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      imports: [FileUploadModule],
-      declarations: [ContainerComponent, FileDropDirective],
-      providers: [ContainerComponent]
-    });
-  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ContainerComponent);

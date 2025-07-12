@@ -5,8 +5,7 @@
   "author": "Dmitriy Shekhovtsov <valorkin@gmail.com>",
   "license": "MIT",
   "peerDependencies": {
-    "@angular/core": "^19.0.0",
-    "@angular/common": "^19.0.0"
+    "@angular/core": "^19.0.0"
   },
   "sideEffects": false,
   "publishConfig": {

@@ -12,7 +12,7 @@ import { FileUploader } from '../../file-upload/file-uploader.class';
                     ng2FileSelect
                     [uploader]="uploader"
              />`,
-  standalone: false
+  imports: [FileUploadModule],
 })
 export class ContainerComponent {
   public get url(): string { return 'localhost:3000'; }
@@ -24,14 +24,6 @@ describe('Directive: FileSelectDirective', () => {
   let hostComponent: ContainerComponent;
   let directiveElement: DebugElement;
   let fileSelectDirective: FileSelectDirective;
-
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      imports: [FileUploadModule],
-      declarations: [ContainerComponent],
-      providers: [ContainerComponent]
-    });
-  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ContainerComponent);

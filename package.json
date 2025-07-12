@@ -4,6 +4,7 @@
   "private": true,
   "description": "Angular file upload directives",
   "scripts": {
+    "nx": "nx",
     "start": "npx nx run ng2-file-upload-demo:serve",
     "demo.build": "ng build",
     "demo.build-prod": "ng build",

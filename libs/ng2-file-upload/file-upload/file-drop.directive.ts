@@ -2,7 +2,9 @@ import { Directive, ElementRef, HostListener, inject, input, output } from '@ang
 
 import { FileUploader, FileUploaderOptions } from './file-uploader.class';
 
-@Directive({ selector: '[ng2FileDrop]', standalone: false })
+@Directive({
+  selector: '[ng2FileDrop]',
+})
 export class FileDropDirective {
   readonly uploader = input<FileUploader>();
   readonly fileOver = output<any>();
