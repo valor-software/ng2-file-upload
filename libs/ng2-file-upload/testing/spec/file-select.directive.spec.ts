@@ -11,7 +11,8 @@ import { FileUploader } from '../../file-upload/file-uploader.class';
   template: `<input type="file"
                     ng2FileSelect
                     [uploader]="uploader"
-             />`
+             />`,
+  standalone: false
 })
 export class ContainerComponent {
   public get url(): string { return 'localhost:3000'; }
@@ -26,9 +27,9 @@ describe('Directive: FileSelectDirective', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ FileUploadModule ],
-      declarations: [ ContainerComponent ],
-      providers: [ ContainerComponent ]
+      imports: [FileUploadModule],
+      declarations: [ContainerComponent],
+      providers: [ContainerComponent]
     });
   });
 
@@ -49,7 +50,7 @@ describe('Directive: FileSelectDirective', () => {
   });
 
   it('can set file uploader', () => {
-    expect(fileSelectDirective.uploader).toBe(hostComponent.uploader);
+    expect(fileSelectDirective.uploader()).toBe(hostComponent.uploader);
   });
 
   it('can get uploader options', () => {
@@ -91,8 +92,9 @@ describe('Directive: FileSelectDirective', () => {
 
   it('handles change event', () => {
     let addToQueue;
-    if (fileSelectDirective.uploader?.addToQueue) {
-      addToQueue = jest.spyOn(fileSelectDirective.uploader, 'addToQueue');
+    const uploader = fileSelectDirective.uploader();
+    if (uploader?.addToQueue) {
+      addToQueue = jest.spyOn(uploader, 'addToQueue');
     }
     fileSelectDirective.onChange();
 

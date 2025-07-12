@@ -11,7 +11,8 @@ import { FileDropDirective } from '../../file-upload/file-drop.directive';
   template: `<div type="file"
                     ng2FileDrop
                     [uploader]="uploader"
-             ></div>`
+             ></div>`,
+  standalone: false
 })
 export class ContainerComponent {
   public get url(): string { return 'localhost:3000'; }
@@ -27,9 +28,9 @@ describe('Directive: FileDropDirective', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ FileUploadModule ],
-      declarations: [ ContainerComponent, FileDropDirective ],
-      providers: [ ContainerComponent ]
+      imports: [FileUploadModule],
+      declarations: [ContainerComponent, FileDropDirective],
+      providers: [ContainerComponent]
     });
   });
 
@@ -50,7 +51,7 @@ describe('Directive: FileDropDirective', () => {
   });
 
   it('can set file uploader', () => {
-    expect(fileDropDirective.uploader).toBe(hostComponent.uploader);
+    expect(fileDropDirective.uploader()).toBe(hostComponent.uploader);
   });
 
   it('can get uploader options', () => {
@@ -84,8 +85,9 @@ describe('Directive: FileDropDirective', () => {
 
   it('adds file to upload', () => {
     let addToQueue;
-    if (fileDropDirective.uploader?.addToQueue) {
-      addToQueue = jest.spyOn(fileDropDirective.uploader, 'addToQueue');
+    const uploader = fileDropDirective.uploader();
+    if (uploader?.addToQueue) {
+      addToQueue = jest.spyOn(uploader, 'addToQueue');
     }
 
     let fileOverData;
@@ -141,8 +143,8 @@ describe('Directive: FileDropDirective', () => {
 function getFakeEventData(): any {
   return {
     dataTransfer: {
-      files: [ 'foo.bar' ],
-      types: [ 'Files' ]
+      files: ['foo.bar'],
+      types: ['Files']
     },
     preventDefault: () => undefined,
     stopPropagation: () => undefined
