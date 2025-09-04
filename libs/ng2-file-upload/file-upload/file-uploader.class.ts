@@ -37,7 +37,7 @@ export interface FileUploaderOptions {
   authTokenHeader?: string;
   additionalParameter?: { [ key: string ]: any };
   parametersBeforeFiles?: boolean;
-  // eslint-disable-next-line @typescript-eslint/ban-types
+  // eslint-disable-next-line
   formatDataFunction?: Function;
   formatDataFunctionIsAsync?: boolean;
 }

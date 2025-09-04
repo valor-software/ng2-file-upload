@@ -47,11 +47,11 @@
         "project": "./tsconfig.*?.json"
       },
       "rules": {
-        "semi": "off",
-        "@typescript-eslint/no-explicit-any": "off",
-        "@typescript-eslint/semi": [
-          "error"
+        "semi": [
+          "error",
+          "always"
         ],
+        "@typescript-eslint/no-explicit-any": "off",
         "@typescript-eslint/ban-ts-comment": "off",
         "@angular-eslint/prefer-standalone": [
           "off"

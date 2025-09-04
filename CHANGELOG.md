@@ -1,4 +1,9 @@
-## [8.0.0](https://github.com/valor-software/ng2-file-upload/compare/v7.0.0...v7.0.1) (2025-01-15)
+## [9.0.0](https://github.com/valor-software/ng2-file-upload/compare/v8.0.0...v9.0.0) (2025-09-04)
+
+
+* Added angular 19 support
+
+## [8.0.0](https://github.com/valor-software/ng2-file-upload/compare/v7.0.1...v8.0.0) (2025-01-15)
 
 
 * Added angular 19 support
