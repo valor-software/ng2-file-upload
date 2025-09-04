@@ -1,4 +1,4 @@
-import { Directive, EventEmitter, ElementRef, Input, HostListener, Output } from '@angular/core';
+import { Directive, EventEmitter, ElementRef, Input, HostListener, Output, inject } from '@angular/core';
 
 import { FileUploader, FileUploaderOptions } from './file-uploader.class';
 
@@ -8,11 +8,7 @@ export class FileSelectDirective {
   // eslint-disable-next-line @angular-eslint/no-output-on-prefix
   @Output() onFileSelected: EventEmitter<File[]> = new EventEmitter<File[]>();
 
-  protected element: ElementRef;
-
-  constructor(element: ElementRef) {
-    this.element = element;
-  }
+  protected element: ElementRef= inject(ElementRef);
 
   getOptions(): FileUploaderOptions | undefined {
     return this.uploader?.options;
