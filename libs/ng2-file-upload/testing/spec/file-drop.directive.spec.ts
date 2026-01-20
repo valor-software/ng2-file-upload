@@ -11,7 +11,8 @@ import { FileDropDirective } from '../../file-upload/file-drop.directive';
   template: `<div type="file"
                     ng2FileDrop
                     [uploader]="uploader"
-             ></div>`
+             ></div>`,
+  standalone: false,
 })
 export class ContainerComponent {
   public get url(): string { return 'localhost:3000'; }
