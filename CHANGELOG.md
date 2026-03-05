@@ -1,3 +1,8 @@
+## [10.0.0](https://github.com/valor-software/ng2-file-upload/compare/v9.0.0...v10.0.0) (2026-03-05)
+
+
+* Added angular 21 support
+
 ## [9.0.0](https://github.com/valor-software/ng2-file-upload/compare/v8.0.0...v9.0.0) (2025-09-04)
 
 
