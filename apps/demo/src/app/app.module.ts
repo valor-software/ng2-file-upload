@@ -13,7 +13,8 @@ import { SimpleDemoComponent } from './components/file-upload/simple-demo';
 @NgModule({
   imports: [BrowserModule, CommonModule, FileUploadModule, TabsModule.forRoot(), FormsModule],
   declarations: [AppComponent, FileUploadSectionComponent, SimpleDemoComponent],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  providers: []
 })
 export class AppModule {
 }

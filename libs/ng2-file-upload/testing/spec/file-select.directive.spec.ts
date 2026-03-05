@@ -11,7 +11,8 @@ import { FileUploader } from '../../file-upload/file-uploader.class';
   template: `<input type="file"
                     ng2FileSelect
                     [uploader]="uploader"
-             />`
+             />`,
+  standalone: false,
 })
 export class ContainerComponent {
   public get url(): string { return 'localhost:3000'; }
