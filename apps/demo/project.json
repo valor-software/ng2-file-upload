@@ -10,6 +10,13 @@
   "targets": {
     "build": {
       "executor": "@angular-devkit/build-angular:browser",
+      "dependsOn": [
+        {
+          "target": "build",
+          "dependencies": true
+        }
+      ],
+      "defaultConfiguration": "production",
       "options": {
         "outputPath": "dist/apps/demo",
         "index": "apps/demo/src/index.html",
@@ -28,12 +35,6 @@
         "optimization": false,
         "namedChunks": true
       },
-      "dependsOn": [
-        {
-          "target": "build",
-          "dependencies": true
-        }
-      ],
       "configurations": {
         "production": {
           "optimization": true,
@@ -51,11 +52,11 @@
             }
           ]
         }
-      },
-      "defaultConfiguration": "production"
+      }
     },
     "serve": {
       "executor": "@angular-devkit/build-angular:dev-server",
+      "continuous": true,
       "options": {
         "buildTarget": "ng2-file-upload-demo:build:production"
       },
@@ -63,19 +64,18 @@
         "production": {
           "buildTarget": "ng2-file-upload-demo:build"
         }
-      },
-      "continuous": true
+      }
     },
     "lint": {
       "executor": "@nx/eslint:lint",
+      "outputs": [
+        "{options.outputFile}"
+      ],
       "options": {
         "lintFilePatterns": [
           "apps/demo/**/*.ts"
         ]
-      },
-      "outputs": [
-        "{options.outputFile}"
-      ]
+      }
     }
   }
 }

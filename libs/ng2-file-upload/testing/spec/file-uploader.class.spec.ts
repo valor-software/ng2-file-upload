@@ -20,7 +20,7 @@ describe('FileUploader: onWhenAddingFileFailed', () => {
         uploader.addToQueue([file]);
 
         expect(filterFileSize).toBeGreaterThan(file.size);
-        expect(onWhenAddingFileFailed).toBeCalledTimes(0);
+        expect(onWhenAddingFileFailed).toHaveBeenCalledTimes(0);
     });
 
     it('fires when the file size is greater than specified by the maxFileSize filter', () => {
@@ -31,7 +31,7 @@ describe('FileUploader: onWhenAddingFileFailed', () => {
         uploader.addToQueue([file]);
 
         expect(filterFileSize).toBeLessThan(file.size);
-        expect(onWhenAddingFileFailed).toBeCalledTimes(1);
+        expect(onWhenAddingFileFailed).toHaveBeenCalledTimes(1);
     });
 
     it('does not fire when the queue size is less than or equal to the specified by queueLimit filter', () => {
@@ -43,7 +43,7 @@ describe('FileUploader: onWhenAddingFileFailed', () => {
         uploader.addToQueue([file, file]);
 
         expect(files.length).toBeLessThanOrEqual(queueLimit);
-        expect(onWhenAddingFileFailed).toBeCalledTimes(0);
+        expect(onWhenAddingFileFailed).toHaveBeenCalledTimes(0);
     });
 
     it('fires when the queue size is greater than the specified by queueLimit filter', () => {
@@ -55,7 +55,7 @@ describe('FileUploader: onWhenAddingFileFailed', () => {
         uploader.addToQueue([file, file]);
 
         expect(files.length).toBeGreaterThan(queueLimit);
-        expect(onWhenAddingFileFailed).toBeCalledTimes(1);
+        expect(onWhenAddingFileFailed).toHaveBeenCalledTimes(1);
     });
 
     it('does not fire when file type matches expected by allowedFileType filter', () => {
@@ -64,7 +64,7 @@ describe('FileUploader: onWhenAddingFileFailed', () => {
 
         uploader.addToQueue([file]);
 
-        expect(onWhenAddingFileFailed).toBeCalledTimes(0);
+        expect(onWhenAddingFileFailed).toHaveBeenCalledTimes(0);
     });
 
     it('fires when file type does not match expected by allowedFileType filter', () => {
@@ -73,7 +73,7 @@ describe('FileUploader: onWhenAddingFileFailed', () => {
 
         uploader.addToQueue([file]);
 
-        expect(onWhenAddingFileFailed).toBeCalledTimes(1);
+        expect(onWhenAddingFileFailed).toHaveBeenCalledTimes(1);
     });
 
     it('does not fire when file mime type matches expected by allowedMimeType filter', () => {
@@ -84,7 +84,7 @@ describe('FileUploader: onWhenAddingFileFailed', () => {
         uploader.addToQueue([file]);
 
         expect(file.type).toBe(filterMimeType);
-        expect(onWhenAddingFileFailed).toBeCalledTimes(0);
+        expect(onWhenAddingFileFailed).toHaveBeenCalledTimes(0);
     });
 
     it('fires when file mime type does not match expected by allowedMimeType filter', () => {
@@ -95,7 +95,7 @@ describe('FileUploader: onWhenAddingFileFailed', () => {
         uploader.addToQueue([file]);
 
         expect(file.type).not.toBe(filterMimeType);
-        expect(onWhenAddingFileFailed).toBeCalledTimes(1);
+        expect(onWhenAddingFileFailed).toHaveBeenCalledTimes(1);
     });
 
     it('does not fire when a file matches the specified custom filter', () => {
@@ -106,7 +106,7 @@ describe('FileUploader: onWhenAddingFileFailed', () => {
         uploader.addToQueue([file]);
 
         expect(positiveFilter.fn(new FileLikeObject(file))).toBe(true);
-        expect(onWhenAddingFileFailed).toBeCalledTimes(0);
+        expect(onWhenAddingFileFailed).toHaveBeenCalledTimes(0);
     });
 
     it('fires when a file does not match the specified custom filter', () => {
@@ -117,7 +117,7 @@ describe('FileUploader: onWhenAddingFileFailed', () => {
         uploader.addToQueue([file]);
 
         expect(negativeFilter.fn(new FileLikeObject(file))).toBe(false);
-        expect(onWhenAddingFileFailed).toBeCalledTimes(1);
+        expect(onWhenAddingFileFailed).toHaveBeenCalledTimes(1);
     });
 
     it('fires only once per file for multiple not matched filters', () => {
@@ -136,6 +136,6 @@ describe('FileUploader: onWhenAddingFileFailed', () => {
 
         uploader.addToQueue(files);
 
-        expect(onWhenAddingFileFailed).toBeCalledTimes(files.length);
+        expect(onWhenAddingFileFailed).toHaveBeenCalledTimes(files.length);
     });
 });

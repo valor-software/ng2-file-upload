@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const gettingStarted = require('html-loader!markdown-loader!../getting-started.md');
 
@@ -41,6 +41,7 @@ const gettingStarted = require('html-loader!markdown-loader!../getting-started.m
     </div>
   </footer>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class AppComponent {

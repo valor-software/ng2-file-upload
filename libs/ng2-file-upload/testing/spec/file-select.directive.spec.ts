@@ -1,5 +1,5 @@
 import { TestBed, ComponentFixture } from '@angular/core/testing';
-import { Component, DebugElement } from '@angular/core';
+import { Component, DebugElement, ChangeDetectionStrategy } from '@angular/core';
 import { By } from '@angular/platform-browser';
 
 import { FileUploadModule } from '../../file-upload/file-upload.module';
@@ -12,6 +12,7 @@ import { FileUploader } from '../../file-upload/file-uploader.class';
                     ng2FileSelect
                     [uploader]="uploader"
              />`,
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class ContainerComponent {
