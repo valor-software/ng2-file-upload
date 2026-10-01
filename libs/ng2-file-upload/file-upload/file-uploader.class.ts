@@ -42,7 +42,7 @@ export interface FileUploaderOptions {
   formatDataFunctionIsAsync?: boolean;
 }
 
-export class BaseFileUploader {
+export class FileUploader {
 
   authToken?: string;
   isUploading = false;
@@ -352,6 +352,7 @@ export class BaseFileUploader {
   protected _buildFormData(item: FileItem, file: Blob, extraParameters: { [ key: string ]: string } = {}): FormData {
     const sendable = new FormData();
     this._onBuildItemForm(item, sendable);
+    Object.keys(extraParameters).forEach((key: string) => sendable.append(key, extraParameters[ key ]));
     const appendFile = () => sendable.append(item.alias as string, file, item.file.name);
     if (!this.options.parametersBeforeFiles) {
       appendFile();
@@ -368,7 +369,6 @@ export class BaseFileUploader {
         sendable.append(key, paramVal);
       });
     }
-    Object.keys(extraParameters).forEach((key: string) => sendable.append(key, extraParameters[ key ]));
 
     if (appendFile && this.options.parametersBeforeFiles) {
       appendFile();
@@ -521,7 +521,4 @@ export class BaseFileUploader {
     item._onCancel(response, status, headers);
     this.onCancelItem(item, response, status, headers);
   }
-}
-
-export class FileUploader extends BaseFileUploader {
 }

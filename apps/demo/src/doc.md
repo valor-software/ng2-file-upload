@@ -48,7 +48,7 @@ import { FileSelectDirective, FileDropDirective, FileUploader } from 'ng2-file-u
 
 ## Chunked uploads
 
-  Use `ChunkedFileUploader` instead of `FileUploader` to send large files in several requests. It works with the same directives, options and callbacks; without `chunkSize` it behaves exactly like `FileUploader`.
+  Use `ChunkedFileUploader` (a `FileUploader` subclass) instead of `FileUploader` to send large files in several requests. It works with the same directives, options and callbacks; without `chunkSize` it behaves exactly like `FileUploader`.
 
   ```typescript
   uploader = new ChunkedFileUploader({ url: URL, chunkSize: 2 * 1024 * 1024 });
@@ -56,7 +56,7 @@ import { FileSelectDirective, FileDropDirective, FileUploader } from 'ng2-file-u
 
   Additional options:
 
-  1. `chunkSize` - Bytes per request. Multipart requests send the chunk as the file field plus `chunkIndex` and `totalChunks` fields; with `disableMultipart` the raw chunk is sent with a `Content-Range` header (`formatDataFunction` is not used).
+  1. `chunkSize` - Bytes per request. Multipart requests send the chunk as the file field, preceded by `chunkIndex` and `totalChunks` fields; with `disableMultipart` the raw chunk is sent with a `Content-Range` header (`formatDataFunction` is not used).
   2. `chunkIndexParam` / `totalChunksParam` - Names of those form fields. Default to `chunkIndex` and `totalChunks`.
 
   Additional callbacks and methods:
@@ -77,6 +77,8 @@ import { FileSelectDirective, FileDropDirective, FileUploader } from 'ng2-file-u
   };
   ```
 
+  Each attempt reports the item again (`onErrorItem`, `onCompleteItem`, and `onCompleteAll` when the queue is empty) and restarts its progress.
+
   - `getChunk(item)` - the chunk being sent, or the last one sent.
 
-  `onBuildItemForm` and the `response` emitter fire once per chunk; the other item callbacks once per file. `item.cancel()` stops the remaining chunks; it has no effect once the last chunk is sent, and an item whose chunk failed stays failed. If a chunk callback throws, the item fails with status 0.
+  `onBuildItemForm` and the `response` emitter fire once per chunk; the other item callbacks once per file. `item.cancel()` stops the remaining chunks; it has no effect once the last chunk has completed, and an item whose chunk failed stays failed. If a chunk callback throws, the item fails with status 0 and the error is rethrown; resuming then resends that chunk.

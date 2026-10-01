@@ -1,65 +1,7 @@
 import { ChunkedFileUploader, ChunkedFileUploaderOptions } from '../../file-upload/chunked-file-uploader.class';
 import { FileItem } from '../../file-upload/file-item.class';
 import { FileUploader } from '../../file-upload/file-uploader.class';
-
-class FakeXhr {
-  static instances: FakeXhr[] = [];
-  upload: any = {};
-  status = 0;
-  response = '';
-  responseText = '';
-  readyState = 0;
-  withCredentials = false;
-  method?: string;
-  url?: string;
-  body: any;
-  requestHeaders: { [ name: string ]: string } = {};
-  sent = false;
-  aborted = false;
-  onload?: () => void;
-  onerror?: () => void;
-  onabort?: () => void;
-  onreadystatechange?: () => void;
-
-  constructor() {
-    FakeXhr.instances.push(this);
-  }
-
-  open(method: string, url: string): void {
-    this.method = method;
-    this.url = url;
-  }
-
-  setRequestHeader(name: string, value: string): void {
-    this.requestHeaders[ name ] = value;
-  }
-
-  send(body: any): void {
-    this.body = body;
-    this.sent = true;
-  }
-
-  abort(): void {
-    if (!this.sent || this.readyState === 4) {
-      return;
-    }
-    this.aborted = true;
-    this.onabort?.();
-  }
-
-  getAllResponseHeaders(): string {
-    return '';
-  }
-
-  respond(status: number, response = ''): void {
-    this.status = status;
-    this.response = response;
-    this.responseText = response;
-    this.readyState = 4;
-    this.onload?.();
-    this.onreadystatechange?.();
-  }
-}
+import { FakeXhr, installFakeXhr, last, sent } from './fake-xhr';
 
 const KB = 1024;
 
@@ -70,37 +12,16 @@ function createUploader(options: Partial<ChunkedFileUploaderOptions>, file = new
   return uploader;
 }
 
-function sent(): FakeXhr[] {
-  return FakeXhr.instances.filter(xhr => xhr.sent);
-}
-
-function last(): FakeXhr {
-  const requests = sent();
-
-  return requests[ requests.length - 1 ];
-}
 
 function form(xhr: FakeXhr = last()): FormData {
   return xhr.body as FormData;
 }
 
 describe('ChunkedFileUploader', () => {
-  const originalXhr = (globalThis as any).XMLHttpRequest;
+  installFakeXhr();
 
-  beforeEach(() => {
-    FakeXhr.instances = [];
-    (globalThis as any).XMLHttpRequest = FakeXhr;
-    (FakeXhr as any).DONE = 4;
-  });
-
-  afterEach(() => {
-    (globalThis as any).XMLHttpRequest = originalXhr;
-  });
-
-  it('can be passed where a FileUploader is expected', () => {
-    const uploader: FileUploader = new ChunkedFileUploader({ url: '/upload', chunkSize: 4 * KB });
-
-    expect(uploader.options.url).toBe('/upload');
+  it('is a FileUploader', () => {
+    expect(new ChunkedFileUploader({ url: '/upload' })).toBeInstanceOf(FileUploader);
   });
 
   it('uploads the whole file in one request without chunkSize', () => {
@@ -165,17 +86,21 @@ describe('ChunkedFileUploader', () => {
     expect(form().get('total_chunks')).toBe('3');
   });
 
-  it('sends additional parameters with every chunk, before the file when asked', () => {
-    const uploader = createUploader({
-      chunkSize: 4 * KB,
-      parametersBeforeFiles: true,
-      additionalParameter: { name: '{{file_name}}' }
-    });
+  it('puts the chunk fields before the file', () => {
+    const uploader = createUploader({ chunkSize: 4 * KB, additionalParameter: { name: '{{file_name}}' } });
 
     uploader.uploadAll();
 
-    expect([ ...form().keys() ]).toEqual([ 'name', 'chunkIndex', 'totalChunks', 'file' ]);
+    expect([ ...form().keys() ]).toEqual([ 'chunkIndex', 'totalChunks', 'file', 'name' ]);
     expect(form().get('name')).toBe('file.bin');
+  });
+
+  it('keeps parametersBeforeFiles for additional parameters', () => {
+    const uploader = createUploader({ chunkSize: 4 * KB, parametersBeforeFiles: true, additionalParameter: { name: 'x' } });
+
+    uploader.uploadAll();
+
+    expect([ ...form().keys() ]).toEqual([ 'chunkIndex', 'totalChunks', 'name', 'file' ]);
   });
 
   it('keeps the file MIME type on chunks', () => {
@@ -324,7 +249,10 @@ describe('ChunkedFileUploader', () => {
   });
 
   describe('callbacks that throw', () => {
-    it('fail the item instead of stalling the queue', () => {
+    beforeEach(() => jest.useFakeTimers());
+    afterEach(() => jest.useRealTimers());
+
+    it('fail the item instead of stalling the queue, then rethrow', () => {
       const uploader = createUploader({ chunkSize: 4 * KB });
       const item = uploader.queue[ 0 ];
       const error = jest.spyOn(uploader, 'onErrorItem');
@@ -337,6 +265,7 @@ describe('ChunkedFileUploader', () => {
       expect(error).toHaveBeenCalledTimes(1);
       expect(item.isError).toBe(true);
       expect(uploader.isUploading).toBe(false);
+      expect(() => jest.runOnlyPendingTimers()).toThrow(SyntaxError);
     });
 
     it('fail the item when onBeforeUploadChunk throws on a later chunk', () => {
@@ -352,6 +281,7 @@ describe('ChunkedFileUploader', () => {
 
       expect(uploader.queue[ 0 ].isError).toBe(true);
       expect(uploader.isUploading).toBe(false);
+      expect(() => jest.runOnlyPendingTimers()).toThrow('hook failed');
     });
 
     it('report the item once when onErrorChunk throws', () => {
@@ -366,6 +296,28 @@ describe('ChunkedFileUploader', () => {
 
       expect(error).toHaveBeenCalledTimes(1);
       expect(uploader.isUploading).toBe(false);
+      expect(() => jest.runOnlyPendingTimers()).toThrow('hook failed');
+    });
+
+    it('do not report an already finished item again', () => {
+      const uploader = createUploader({ chunkSize: 4 * KB });
+      const item = uploader.queue[ 0 ];
+      const error = jest.spyOn(uploader, 'onErrorItem');
+      uploader.onBeforeUploadChunk = (fileItem, chunk) => {
+        if (chunk.index === 1) {
+          fileItem.cancel();
+        }
+      };
+      uploader.onCompleteItem = () => {
+        throw new Error('app failed');
+      };
+
+      uploader.uploadAll();
+      last().respond(200);
+
+      expect(error).not.toHaveBeenCalled();
+      expect(item.isCancel).toBe(true);
+      expect(() => jest.runOnlyPendingTimers()).toThrow('app failed');
     });
   });
 

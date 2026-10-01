@@ -1,5 +1,5 @@
 import { FileItem } from './file-item.class';
-import { BaseFileUploader, FileUploaderOptions, ParsedResponseHeaders } from './file-uploader.class';
+import { FileUploader, FileUploaderOptions, ParsedResponseHeaders } from './file-uploader.class';
 
 export interface ChunkedFileUploaderOptions extends FileUploaderOptions {
   chunkSize?: number;
@@ -21,7 +21,7 @@ interface ChunkState {
   cancelled?: boolean;
 }
 
-export class ChunkedFileUploader extends BaseFileUploader {
+export class ChunkedFileUploader extends FileUploader {
   declare options: ChunkedFileUploaderOptions;
 
   protected _chunks = new WeakMap<FileItem, ChunkState>();
@@ -164,14 +164,19 @@ export class ChunkedFileUploader extends BaseFileUploader {
     this._runChunkHook(item, () => this._sendChunk(item, next));
   }
 
-  // hooks after the first chunk run in XHR callbacks; report a throw as an item error instead of stalling the queue
+  // hooks after the first chunk run in XHR callbacks: fail the item instead of stalling the queue, then rethrow
   protected _runChunkHook(item: FileItem, hook: () => void): boolean {
     try {
       hook();
 
       return true;
     } catch (e) {
-      this._finishItem(item, '_onErrorItem', '', 0, {});
+      if (item.isUploading) {
+        this._finishItem(item, '_onErrorItem', '', 0, {});
+      }
+      setTimeout(() => {
+        throw e;
+      });
 
       return false;
     }
