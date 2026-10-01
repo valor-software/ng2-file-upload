@@ -83,7 +83,7 @@ Easy to use Angular2 directives for files upload ([demo](http://valor-software.g
   6. `formatDataFunctionIsAsync` - Informs if the function sent in 'formatDataFunction' is asynchronous. Defaults to false.
   7. `parametersBeforeFiles` - States if additional parameters should be appended before or after the file. Defaults to false.
   8. `chunkSize` - Upload files in chunks of this many bytes, one request per chunk. Disabled by default. In multipart mode each chunk is sent as the file field together with `chunkIndex` and `totalChunks` fields; with `disableMultipart` the raw chunk is sent with a `Content-Range` header (`formatDataFunction` is not used for chunks).
-  9. `chunkRetries` - How many times a failed chunk is retried before the item fails. Defaults to 0.
+  9. `chunkRetries` - How many times a failed chunk is retried before the item fails. Only network errors and 408, 429 and 5xx responses are retried. Defaults to 0.
   10. `chunkIndexParam` / `totalChunksParam` - Form field names for the chunk index and total chunk count. Default to `chunkIndex` and `totalChunks`.
 
   Chunk callbacks on `FileUploader`: `onBeforeUploadChunk(item, chunk)` and `onCompleteChunk(item, chunk, response, status, headers)`. Change `item.url`, `item.method` or `item.headers` in them to target the next chunk request, e.g. with an upload id returned by your server. `item.cancel()` stops the remaining chunks.

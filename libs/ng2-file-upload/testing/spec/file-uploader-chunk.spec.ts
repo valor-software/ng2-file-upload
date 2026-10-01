@@ -200,6 +200,73 @@ describe('FileUploader: chunked upload', () => {
     expect(uploader.isUploading).toBe(false);
   });
 
+  it('does not retry client errors', () => {
+    const uploader = createUploader({ chunkSize: 4 * KB, chunkRetries: 3 });
+    const item = uploader.queue[ 0 ];
+    const error = jest.spyOn(uploader, 'onErrorItem');
+
+    uploader.uploadAll();
+    last().respond(404);
+
+    expect(FakeXhr.instances.length).toBe(1);
+    expect(error).toHaveBeenCalledTimes(1);
+    expect(item.isError).toBe(true);
+  });
+
+  it('retries timeouts and rate limits', () => {
+    const uploader = createUploader({ chunkSize: 4 * KB, chunkRetries: 2 });
+    const success = jest.spyOn(uploader, 'onSuccessItem');
+
+    uploader.uploadAll();
+    last().respond(408);
+    last().respond(429);
+    last().respond(200);
+    last().respond(200);
+    last().respond(200);
+
+    expect(FakeXhr.instances.length).toBe(5);
+    expect(success).toHaveBeenCalledTimes(1);
+  });
+
+  it('fails the item when a chunk hook throws instead of leaving it stuck', () => {
+    const uploader = createUploader({ chunkSize: 4 * KB });
+    const item = uploader.queue[ 0 ];
+    const error = jest.spyOn(uploader, 'onErrorItem');
+    const complete = jest.spyOn(uploader, 'onCompleteItem');
+    uploader.onBeforeUploadChunk = (_item, chunk) => {
+      if (chunk.index === 1) {
+        throw new Error('hook failed');
+      }
+    };
+
+    uploader.uploadAll();
+    expect(() => last().respond(200)).not.toThrow();
+
+    expect(FakeXhr.instances.length).toBe(1);
+    expect(error).toHaveBeenCalledTimes(1);
+    expect(complete).toHaveBeenCalledTimes(1);
+    expect(item.isError).toBe(true);
+    expect(item.isUploading).toBe(false);
+    expect(uploader.isUploading).toBe(false);
+  });
+
+  it('fails the item when onCompleteChunk throws', () => {
+    const uploader = createUploader({ chunkSize: 4 * KB });
+    const item = uploader.queue[ 0 ];
+    const error = jest.spyOn(uploader, 'onErrorItem');
+    uploader.onCompleteChunk = () => {
+      throw new Error('hook failed');
+    };
+
+    uploader.uploadAll();
+    expect(() => last().respond(200)).not.toThrow();
+
+    expect(FakeXhr.instances.length).toBe(1);
+    expect(error).toHaveBeenCalledTimes(1);
+    expect(item.isError).toBe(true);
+    expect(uploader.isUploading).toBe(false);
+  });
+
   it('cancel aborts the chunk in flight and stops the upload', () => {
     const uploader = createUploader({ chunkSize: 4 * KB });
     const item = uploader.queue[ 0 ];

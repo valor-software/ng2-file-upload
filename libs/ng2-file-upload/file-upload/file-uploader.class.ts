@@ -361,16 +361,20 @@ export class FileUploader {
   protected _onChunkDone(item: FileItem, chunk: FileChunk, isSuccess: boolean, response: string, status: number,
                          headers: ParsedResponseHeaders): boolean {
     if (!isSuccess) {
-      if (chunk.retry < (this.options.chunkRetries || 0) && !item._cancelRequested) {
-        item.chunk = { ...chunk, retry: chunk.retry + 1 };
-        this._sendXhr(item, item.chunk);
+      if (this._isRetryableChunkStatus(status) && chunk.retry < (this.options.chunkRetries || 0) && !item._cancelRequested) {
+        this._runChunkStep(item, response, status, headers, () => {
+          item.chunk = { ...chunk, retry: chunk.retry + 1 };
+          this._sendXhr(item, item.chunk);
+        });
 
         return true;
       }
 
       return false;
     }
-    this.onCompleteChunk(item, chunk, response, status, headers);
+    if (!this._runChunkStep(item, response, status, headers, () => this.onCompleteChunk(item, chunk, response, status, headers))) {
+      return true;
+    }
     if (chunk.index + 1 >= chunk.total) {
       return false;
     }
@@ -380,9 +384,34 @@ export class FileUploader {
 
       return true;
     }
-    this._uploadChunk(item, chunk.index + 1);
+
+    this._runChunkStep(item, response, status, headers, () => this._uploadChunk(item, chunk.index + 1));
 
     return true;
+  }
+
+  /**
+   * Chunk steps run inside XHR callbacks, outside FileItem.upload()'s try/catch,
+   * so a throwing hook or request fails the item here instead of leaving the upload stuck.
+   * Returns false when the step failed and the item was reported as an error.
+   */
+  protected _runChunkStep(item: FileItem, response: string, status: number, headers: ParsedResponseHeaders,
+                          step: () => void): boolean {
+    try {
+      step();
+
+      return true;
+    } catch (e) {
+      this._onErrorItem(item, response, status, headers);
+      this._onCompleteItem(item, response, status, headers);
+
+      return false;
+    }
+  }
+
+  // network errors (status 0), timeouts, rate limits and server errors may succeed on retry
+  protected _isRetryableChunkStatus(status: number): boolean {
+    return status === 0 || status === 408 || status === 429 || status >= 500;
   }
 
   protected _sendXhr(item: FileItem, chunk?: FileChunk): void {
