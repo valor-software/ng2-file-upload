@@ -1,5 +1,5 @@
 import { FileLikeObject } from './file-like-object.class';
-import { FileUploader, ParsedResponseHeaders, FileUploaderOptions } from './file-uploader.class';
+import { FileUploader, ParsedResponseHeaders, FileUploaderOptions, FileChunk } from './file-uploader.class';
 
 export class FileItem {
    file: FileLikeObject;
@@ -18,8 +18,10 @@ export class FileItem {
    isError = false;
    progress = 0;
    index?: number;
+   chunk?: FileChunk;
    _xhr?: XMLHttpRequest;
    _form: any;
+   _cancelRequested = false;
 
   protected uploader: FileUploader;
   protected some: File;
@@ -91,6 +93,8 @@ export class FileItem {
     this.isCancel = false;
     this.isError = false;
     this.progress = 0;
+    this.chunk = undefined;
+    this._cancelRequested = false;
     this.onBeforeUpload();
   }
 
