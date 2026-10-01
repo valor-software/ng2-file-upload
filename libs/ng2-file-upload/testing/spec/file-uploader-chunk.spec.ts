@@ -13,6 +13,7 @@ class FakeXhr {
   body: any;
   requestHeaders: { [ name: string ]: string } = {};
   aborted = false;
+  sent = false;
   onload?: () => void;
   onerror?: () => void;
   onabort?: () => void;
@@ -33,11 +34,11 @@ class FakeXhr {
 
   send(body: any): void {
     this.body = body;
+    this.sent = true;
   }
 
   abort(): void {
-    // like a real XHR, aborting a finished request fires no events
-    if (this.readyState === 4) {
+    if (!this.sent || this.readyState === 4) {
       return;
     }
     this.aborted = true;
@@ -67,8 +68,14 @@ function createUploader(options: Partial<FileUploaderOptions>): FileUploader {
   return uploader;
 }
 
+function sent(): FakeXhr[] {
+  return FakeXhr.instances.filter(xhr => xhr.sent);
+}
+
 function last(): FakeXhr {
-  return FakeXhr.instances[ FakeXhr.instances.length - 1 ];
+  const requests = sent();
+
+  return requests[ requests.length - 1 ];
 }
 
 describe('FileUploader: chunked upload', () => {
@@ -91,7 +98,7 @@ describe('FileUploader: chunked upload', () => {
     uploader.uploadAll();
     last().respond(200);
 
-    expect(FakeXhr.instances.length).toBe(1);
+    expect(sent().length).toBe(1);
     expect((last().body as FormData).get('chunkIndex')).toBeNull();
     expect(success).toHaveBeenCalledTimes(1);
   });
@@ -100,7 +107,7 @@ describe('FileUploader: chunked upload', () => {
     const uploader = createUploader({ chunkSize: 4 * KB });
     const item = uploader.queue[ 0 ];
     const beforeChunk = jest.spyOn(uploader, 'onBeforeUploadChunk');
-    const completeChunk = jest.spyOn(uploader, 'onCompleteChunk');
+    const completeChunk = jest.spyOn(uploader, 'onSuccessChunk');
     const success = jest.spyOn(uploader, 'onSuccessItem');
     const complete = jest.spyOn(uploader, 'onCompleteItem');
 
@@ -113,7 +120,7 @@ describe('FileUploader: chunked upload', () => {
       last().respond(200, `chunk-${i}`);
     }
 
-    expect(FakeXhr.instances.length).toBe(3);
+    expect(sent().length).toBe(3);
     expect(beforeChunk).toHaveBeenCalledTimes(3);
     expect(completeChunk).toHaveBeenCalledTimes(3);
     expect(success).toHaveBeenCalledTimes(1);
@@ -133,9 +140,9 @@ describe('FileUploader: chunked upload', () => {
     expect(form.get('total_chunks')).toBe('3');
   });
 
-  it('lets onCompleteChunk change the url and method of the next chunk', () => {
+  it('lets onSuccessChunk change the url and method of the next chunk', () => {
     const uploader = createUploader({ chunkSize: 4 * KB });
-    uploader.onCompleteChunk = (item, chunk, response) => {
+    uploader.onSuccessChunk = (item, chunk, response) => {
       item.url = `/upload/${response}`;
       item.method = 'PUT';
     };
@@ -181,7 +188,7 @@ describe('FileUploader: chunked upload', () => {
     last().respond(200);
     last().respond(200);
 
-    expect(FakeXhr.instances.length).toBe(5);
+    expect(sent().length).toBe(5);
     expect(error).not.toHaveBeenCalled();
     expect(success).toHaveBeenCalledTimes(1);
   });
@@ -196,7 +203,7 @@ describe('FileUploader: chunked upload', () => {
     last().respond(500);
     last().respond(500);
 
-    expect(FakeXhr.instances.length).toBe(3);
+    expect(sent().length).toBe(3);
     expect(error).toHaveBeenCalledTimes(1);
     expect(item.isError).toBe(true);
     expect(uploader.isUploading).toBe(false);
@@ -210,7 +217,7 @@ describe('FileUploader: chunked upload', () => {
     uploader.uploadAll();
     last().respond(404);
 
-    expect(FakeXhr.instances.length).toBe(1);
+    expect(sent().length).toBe(1);
     expect(error).toHaveBeenCalledTimes(1);
     expect(item.isError).toBe(true);
   });
@@ -226,7 +233,7 @@ describe('FileUploader: chunked upload', () => {
     last().respond(200);
     last().respond(200);
 
-    expect(FakeXhr.instances.length).toBe(5);
+    expect(sent().length).toBe(5);
     expect(success).toHaveBeenCalledTimes(1);
   });
 
@@ -244,7 +251,7 @@ describe('FileUploader: chunked upload', () => {
     uploader.uploadAll();
     expect(() => last().respond(200)).not.toThrow();
 
-    expect(FakeXhr.instances.length).toBe(1);
+    expect(sent().length).toBe(1);
     expect(error).toHaveBeenCalledTimes(1);
     expect(complete).toHaveBeenCalledTimes(1);
     expect(item.isError).toBe(true);
@@ -252,18 +259,18 @@ describe('FileUploader: chunked upload', () => {
     expect(uploader.isUploading).toBe(false);
   });
 
-  it('fails the item when onCompleteChunk throws', () => {
+  it('fails the item when onSuccessChunk throws', () => {
     const uploader = createUploader({ chunkSize: 4 * KB });
     const item = uploader.queue[ 0 ];
     const error = jest.spyOn(uploader, 'onErrorItem');
-    uploader.onCompleteChunk = () => {
+    uploader.onSuccessChunk = () => {
       throw new Error('hook failed');
     };
 
     uploader.uploadAll();
     expect(() => last().respond(200)).not.toThrow();
 
-    expect(FakeXhr.instances.length).toBe(1);
+    expect(sent().length).toBe(1);
     expect(error).toHaveBeenCalledTimes(1);
     expect(item.isError).toBe(true);
     expect(uploader.isUploading).toBe(false);
@@ -279,21 +286,21 @@ describe('FileUploader: chunked upload', () => {
     item.cancel();
 
     expect(last().aborted).toBe(true);
-    expect(FakeXhr.instances.length).toBe(2);
+    expect(sent().length).toBe(2);
     expect(cancel).toHaveBeenCalledTimes(1);
     expect(item.isCancel).toBe(true);
   });
 
-  it('cancel from onCompleteChunk stops before the next chunk', () => {
+  it('cancel from onSuccessChunk stops before the next chunk', () => {
     const uploader = createUploader({ chunkSize: 4 * KB });
     const item = uploader.queue[ 0 ];
     const cancel = jest.spyOn(uploader, 'onCancelItem');
-    uploader.onCompleteChunk = (fileItem) => fileItem.cancel();
+    uploader.onSuccessChunk = (fileItem) => fileItem.cancel();
 
     uploader.uploadAll();
     last().respond(200);
 
-    expect(FakeXhr.instances.length).toBe(1);
+    expect(sent().length).toBe(1);
     expect(cancel).toHaveBeenCalledTimes(1);
     expect(item.isCancel).toBe(true);
     expect(uploader.isUploading).toBe(false);
@@ -373,7 +380,7 @@ describe('FileUploader: chunked upload', () => {
 
     uploader.uploadAll();
 
-    expect(FakeXhr.instances.length).toBe(0);
+    expect(sent().length).toBe(0);
     expect(cancel).toHaveBeenCalledTimes(1);
     expect(error).not.toHaveBeenCalled();
     expect(item.isCancel).toBe(true);
@@ -394,17 +401,17 @@ describe('FileUploader: chunked upload', () => {
     last().respond(200);
     last().respond(200);
 
-    expect(FakeXhr.instances.length).toBe(2);
+    expect(sent().length).toBe(2);
     expect(success).not.toHaveBeenCalled();
     expect(item.isCancel).toBe(true);
     expect(uploader.isUploading).toBe(false);
   });
 
-  it('cancel from onCompleteChunk on the last chunk reports cancel', () => {
+  it('cancel from onSuccessChunk on the last chunk reports cancel', () => {
     const uploader = createUploader({ chunkSize: 4 * KB });
     const item = uploader.queue[ 0 ];
     const success = jest.spyOn(uploader, 'onSuccessItem');
-    uploader.onCompleteChunk = (fileItem, chunk) => {
+    uploader.onSuccessChunk = (fileItem, chunk) => {
       if (chunk.index === chunk.total - 1) {
         fileItem.cancel();
       }
@@ -436,7 +443,7 @@ describe('FileUploader: chunked upload', () => {
     uploader.uploadAll();
     last().respond(501);
 
-    expect(FakeXhr.instances.length).toBe(1);
+    expect(sent().length).toBe(1);
     expect(uploader.queue[ 0 ].isError).toBe(true);
   });
 
@@ -479,7 +486,7 @@ describe('FileUploader: chunked upload', () => {
     last().respond(200);
     last().respond(200);
 
-    expect(FakeXhr.instances.length).toBe(3);
+    expect(sent().length).toBe(3);
     expect(uploader.queue.length).toBe(0);
     expect(completeAll).toHaveBeenCalledTimes(1);
   });
@@ -492,6 +499,167 @@ describe('FileUploader: chunked upload', () => {
     expect((last().body as FormData).get('chunkIndex')).toBe('0');
   });
 
+  it('creates the request before onBeforeUploadItem without chunking', () => {
+    const uploader = createUploader({});
+    let xhrInHook: unknown;
+    uploader.onBeforeUploadItem = (fileItem) => xhrInHook = fileItem._xhr;
+
+    uploader.uploadAll();
+
+    expect(xhrInHook).toBe(last());
+  });
+
+  it('creates each chunk request before onBeforeUploadChunk', () => {
+    const uploader = createUploader({ chunkSize: 4 * KB });
+    const seen: unknown[] = [];
+    uploader.onBeforeUploadChunk = (fileItem) => seen.push(fileItem._xhr);
+
+    uploader.uploadAll();
+    last().respond(200);
+
+    expect(seen).toEqual(sent());
+  });
+
+  it('cancel from onBuildItemForm stops before the chunk is sent', () => {
+    const uploader = createUploader({ chunkSize: 4 * KB });
+    const item = uploader.queue[ 0 ];
+    const error = jest.spyOn(uploader, 'onErrorItem');
+    uploader.onBuildItemForm = (fileItem) => {
+      if (fileItem.chunk?.index === 1) {
+        fileItem.cancel();
+      }
+    };
+
+    uploader.uploadAll();
+    last().respond(200);
+
+    expect(sent().length).toBe(1);
+    expect(error).not.toHaveBeenCalled();
+    expect(item.isCancel).toBe(true);
+    expect(uploader.isUploading).toBe(false);
+  });
+
+  it('reports cancel, not error, when a cancelled chunk then fails', () => {
+    const uploader = createUploader({ chunkSize: 4 * KB, chunkRetries: 2, chunkRetryDelay: 0 });
+    const item = uploader.queue[ 0 ];
+    const error = jest.spyOn(uploader, 'onErrorItem');
+
+    uploader.uploadAll();
+    item._cancelRequested = true;
+    last().respond(500);
+
+    expect(sent().length).toBe(1);
+    expect(error).not.toHaveBeenCalled();
+    expect(item.isCancel).toBe(true);
+  });
+
+  it('does not call onSuccessChunk for a failed chunk', () => {
+    const uploader = createUploader({ chunkSize: 4 * KB });
+    const successChunk = jest.spyOn(uploader, 'onSuccessChunk');
+
+    uploader.uploadAll();
+    last().respond(400);
+
+    expect(successChunk).not.toHaveBeenCalled();
+  });
+
+  it('starts a re-upload at the original url after hooks changed it', () => {
+    const uploader = createUploader({ chunkSize: 4 * KB });
+    const item = uploader.queue[ 0 ];
+    uploader.onSuccessChunk = (fileItem) => {
+      fileItem.url = '/upload/session-1';
+      fileItem.method = 'PUT';
+    };
+
+    uploader.uploadAll();
+    last().respond(200);
+    last().respond(404);
+    item.upload();
+
+    expect(last().url).toBe('/upload');
+    expect(last().method).toBe('POST');
+  });
+
+  it('keeps a url set by the app between uploads', () => {
+    const uploader = createUploader({ chunkSize: 4 * KB });
+    const item = uploader.queue[ 0 ];
+    uploader.onSuccessChunk = (fileItem) => fileItem.url = '/upload/session-1';
+
+    uploader.uploadAll();
+    last().respond(200);
+    last().respond(404);
+    item.url = '/other';
+    item.upload();
+
+    expect(last().url).toBe('/other');
+  });
+
+  it('does not report the item twice when onCompleteItem throws during a cancel', () => {
+    const uploader = createUploader({ chunkSize: 4 * KB });
+    const item = uploader.queue[ 0 ];
+    const error = jest.spyOn(uploader, 'onErrorItem');
+    uploader.onBeforeUploadChunk = (fileItem, chunk) => {
+      if (chunk.index === 1) {
+        fileItem.cancel();
+      }
+    };
+    uploader.onCompleteItem = () => {
+      throw new Error('app failed');
+    };
+
+    uploader.uploadAll();
+
+    expect(() => last().respond(200)).toThrow('app failed');
+    expect(error).not.toHaveBeenCalled();
+    expect(item.isCancel).toBe(true);
+  });
+
+  it('keeps a Content-Range header set by the app', () => {
+    const uploader = createUploader({
+      chunkSize: 4 * KB,
+      disableMultipart: true,
+      headers: [ { name: 'Content-Range', value: 'custom' } ]
+    });
+
+    uploader.uploadAll();
+
+    expect(last().requestHeaders[ 'Content-Range' ]).toBe('custom');
+  });
+
+  it('sends headers and the auth token with every chunk', () => {
+    const uploader = createUploader({ chunkSize: 4 * KB, authToken: 'Bearer t', headers: [ { name: 'X-App', value: '1' } ] });
+
+    uploader.uploadAll();
+    last().respond(200);
+    last().respond(200);
+
+    expect(sent().map(xhr => [ xhr.requestHeaders[ 'Authorization' ], xhr.requestHeaders[ 'X-App' ] ]))
+      .toEqual([ [ 'Bearer t', '1' ], [ 'Bearer t', '1' ], [ 'Bearer t', '1' ] ]);
+  });
+
+  it('ignores formatDataFunction for chunks', () => {
+    const formatDataFunction = jest.fn(() => Promise.resolve({ name: 'x' }));
+    const uploader = createUploader({ chunkSize: 4 * KB, disableMultipart: true, formatDataFunction, formatDataFunctionIsAsync: true });
+
+    uploader.uploadAll();
+
+    expect(formatDataFunction).not.toHaveBeenCalled();
+    expect(last().body).toBeInstanceOf(Blob);
+  });
+
+  it('still uses formatDataFunction without chunking', async () => {
+    const uploader = createUploader({
+      disableMultipart: true,
+      formatDataFunction: () => Promise.resolve({ name: 'x' }),
+      formatDataFunctionIsAsync: true
+    });
+
+    uploader.uploadAll();
+    await Promise.resolve();
+
+    expect(last().body).toBe('{"name":"x"}');
+  });
+
   describe('retry delay', () => {
     beforeEach(() => jest.useFakeTimers());
     afterEach(() => jest.useRealTimers());
@@ -502,15 +670,15 @@ describe('FileUploader: chunked upload', () => {
       uploader.uploadAll();
       last().respond(503);
       jest.advanceTimersByTime(999);
-      expect(FakeXhr.instances.length).toBe(1);
+      expect(sent().length).toBe(1);
       jest.advanceTimersByTime(1);
-      expect(FakeXhr.instances.length).toBe(2);
+      expect(sent().length).toBe(2);
 
       last().respond(503);
       jest.advanceTimersByTime(1999);
-      expect(FakeXhr.instances.length).toBe(2);
+      expect(sent().length).toBe(2);
       jest.advanceTimersByTime(1);
-      expect(FakeXhr.instances.length).toBe(3);
+      expect(sent().length).toBe(3);
     });
 
     it('uses the Retry-After header when the server sends one', () => {
@@ -520,9 +688,9 @@ describe('FileUploader: chunked upload', () => {
       last().responseHeaders = 'Retry-After: 3';
       last().respond(429);
       jest.advanceTimersByTime(2999);
-      expect(FakeXhr.instances.length).toBe(1);
+      expect(sent().length).toBe(1);
       jest.advanceTimersByTime(1);
-      expect(FakeXhr.instances.length).toBe(2);
+      expect(sent().length).toBe(2);
     });
 
     it('cancel during the delay reports cancel right away and never retries', () => {
@@ -537,7 +705,49 @@ describe('FileUploader: chunked upload', () => {
       jest.advanceTimersByTime(10000);
 
       expect(cancel).toHaveBeenCalledTimes(1);
-      expect(FakeXhr.instances.length).toBe(1);
+      expect(sent().length).toBe(1);
+      expect(item.isCancel).toBe(true);
+      expect(uploader.isUploading).toBe(false);
+    });
+
+    it('caps the delay at 30 seconds', () => {
+      const uploader = createUploader({ chunkSize: 4 * KB, chunkRetries: 1 });
+
+      uploader.uploadAll();
+      last().responseHeaders = 'Retry-After: 3600';
+      last().respond(503);
+      jest.advanceTimersByTime(30000);
+
+      expect(sent().length).toBe(2);
+    });
+
+    it('accepts Retry-After as an HTTP date', () => {
+      jest.setSystemTime(new Date('2026-01-01T00:00:00Z'));
+      const uploader = createUploader({ chunkSize: 4 * KB, chunkRetries: 1, chunkRetryDelay: 0 });
+
+      uploader.uploadAll();
+      last().responseHeaders = 'Retry-After: Thu, 01 Jan 2026 00:00:05 GMT';
+      last().respond(503);
+      jest.advanceTimersByTime(4999);
+      expect(sent().length).toBe(1);
+      jest.advanceTimersByTime(1);
+      expect(sent().length).toBe(2);
+    });
+
+    it.each([
+      [ 'removeFromQueue', (uploader: FileUploader) => uploader.removeFromQueue(uploader.queue[ 0 ]) ],
+      [ 'clearQueue', (uploader: FileUploader) => uploader.clearQueue() ],
+      [ 'cancelAll', (uploader: FileUploader) => uploader.cancelAll() ]
+    ])('%s during the delay stops the upload', (_name, action) => {
+      const uploader = createUploader({ chunkSize: 4 * KB, chunkRetries: 1 });
+      const item = uploader.queue[ 0 ];
+
+      uploader.uploadAll();
+      last().respond(503);
+      action(uploader);
+      jest.advanceTimersByTime(10000);
+
+      expect(sent().length).toBe(1);
       expect(item.isCancel).toBe(true);
       expect(uploader.isUploading).toBe(false);
     });
