@@ -1,5 +1,5 @@
 import { TestBed, ComponentFixture } from '@angular/core/testing';
-import { Component, DebugElement } from '@angular/core';
+import { Component, DebugElement, ChangeDetectionStrategy } from '@angular/core';
 import { By } from '@angular/platform-browser';
 
 import { FileUploadModule } from '../../file-upload/file-upload.module';
@@ -13,6 +13,7 @@ import { FileUploader } from '../../file-upload/file-uploader.class';
                     [uploader]="uploader"
              />`,
   imports: [FileUploadModule],
+  changeDetection: ChangeDetectionStrategy.Eager,
 })
 export class ContainerComponent {
   public get url(): string { return 'localhost:3000'; }

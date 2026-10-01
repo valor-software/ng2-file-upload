@@ -1,11 +1,11 @@
 {
   "name": "ng2-file-upload",
-  "version": "8.0.0",
+  "version": "11.0.0",
   "description": "Angular file uploader",
   "author": "Dmitriy Shekhovtsov <valorkin@gmail.com>",
   "license": "MIT",
   "peerDependencies": {
-    "@angular/core": "^19.0.0"
+    "@angular/core": "^22.x.x"
   },
   "sideEffects": false,
   "publishConfig": {

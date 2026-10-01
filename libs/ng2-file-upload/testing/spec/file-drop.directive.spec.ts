@@ -1,4 +1,4 @@
-import { Component, DebugElement } from '@angular/core';
+import { Component, DebugElement, ChangeDetectionStrategy } from '@angular/core';
 import { By } from '@angular/platform-browser';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
@@ -13,6 +13,7 @@ import { FileDropDirective } from '../../file-upload/file-drop.directive';
                     [uploader]="uploader"
              ></div>`,
   imports: [FileUploadModule],
+  changeDetection: ChangeDetectionStrategy.Eager,
 })
 export class ContainerComponent {
   public get url(): string { return 'localhost:3000'; }
