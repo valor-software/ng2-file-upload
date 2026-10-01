@@ -23,7 +23,7 @@ export class FileItem {
    _form: any;
    _cancelRequested = false;
    _chunkRetryTimer?: ReturnType<typeof setTimeout>;
-   _chunkTarget?: { url: string; method?: string; headers: string; end?: string };
+   _chunkTarget?: { url: string; method?: string; headers: any };
 
   protected uploader: FileUploader;
   protected some: File;
