@@ -42,7 +42,7 @@ export interface FileUploaderOptions {
   formatDataFunctionIsAsync?: boolean;
 }
 
-export class FileUploader {
+export class BaseFileUploader {
 
   authToken?: string;
   isUploading = false;
@@ -299,9 +299,6 @@ export class FileUploader {
   }
 
   protected _xhrTransport(item: FileItem): any {
-    // tslint:disable-next-line:no-this-assignment
-    // eslint-disable-next-line @typescript-eslint/no-this-alias
-    const that = this;
     const xhr = item._xhr = new XMLHttpRequest();
     let sendable: any;
     this._onBeforeUploadItem(item);
@@ -310,28 +307,7 @@ export class FileUploader {
       throw new TypeError('The file specified is no longer valid');
     }
     if (!this.options.disableMultipart) {
-      sendable = new FormData();
-      this._onBuildItemForm(item, sendable);
-      const appendFile = () => sendable.append(item.alias, item._file, item.file.name);
-      if (!this.options.parametersBeforeFiles) {
-        appendFile();
-      }
-
-      // For AWS, Additional Parameters must come BEFORE Files
-      if (this.options.additionalParameter !== undefined) {
-        Object.keys(this.options.additionalParameter).forEach((key: string) => {
-          let paramVal = this.options.additionalParameter?.[ key ];
-          // Allow an additional parameter to include the filename
-          if (typeof paramVal === 'string' && paramVal.indexOf('{{file_name}}') >= 0 && item.file?.name) {
-            paramVal = paramVal.replace('{{file_name}}', item.file.name);
-          }
-          sendable.append(key, paramVal);
-        });
-      }
-
-      if (appendFile && this.options.parametersBeforeFiles) {
-        appendFile();
-      }
+      sendable = this._buildFormData(item, item._file);
     } else {
       if (this.options.formatDataFunction) {
         sendable = this.options.formatDataFunction(item);
@@ -362,6 +338,49 @@ export class FileUploader {
       this._onCancelItem(item, response, xhr.status, headers);
       this._onCompleteItem(item, response, xhr.status, headers);
     };
+    this._openRequest(xhr, item);
+    if (this.options.formatDataFunctionIsAsync) {
+      sendable.then(
+        (result: any) => xhr.send(JSON.stringify(result))
+      );
+    } else {
+      xhr.send(sendable);
+    }
+    this._render();
+  }
+
+  protected _buildFormData(item: FileItem, file: Blob, extraParameters: { [ key: string ]: string } = {}): FormData {
+    const sendable = new FormData();
+    this._onBuildItemForm(item, sendable);
+    const appendFile = () => sendable.append(item.alias as string, file, item.file.name);
+    if (!this.options.parametersBeforeFiles) {
+      appendFile();
+    }
+
+    // For AWS, Additional Parameters must come BEFORE Files
+    if (this.options.additionalParameter !== undefined) {
+      Object.keys(this.options.additionalParameter).forEach((key: string) => {
+        let paramVal = this.options.additionalParameter?.[ key ];
+        // Allow an additional parameter to include the filename
+        if (typeof paramVal === 'string' && paramVal.indexOf('{{file_name}}') >= 0 && item.file?.name) {
+          paramVal = paramVal.replace('{{file_name}}', item.file.name);
+        }
+        sendable.append(key, paramVal);
+      });
+    }
+    Object.keys(extraParameters).forEach((key: string) => sendable.append(key, extraParameters[ key ]));
+
+    if (appendFile && this.options.parametersBeforeFiles) {
+      appendFile();
+    }
+
+    return sendable;
+  }
+
+  protected _openRequest(xhr: XMLHttpRequest, item: FileItem): void {
+    // tslint:disable-next-line:no-this-assignment
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
+    const that = this;
     if (item.method && item.url) {
       xhr.open(item.method, item.url, true);
     }
@@ -384,14 +403,6 @@ export class FileUploader {
         that.response.emit(xhr.responseText);
       }
     };
-    if (this.options.formatDataFunctionIsAsync) {
-      sendable.then(
-        (result: any) => xhr.send(JSON.stringify(result))
-      );
-    } else {
-      xhr.send(sendable);
-    }
-    this._render();
   }
 
   protected _getTotalProgress(value = 0): number {
@@ -510,4 +521,7 @@ export class FileUploader {
     item._onCancel(response, status, headers);
     this.onCancelItem(item, response, status, headers);
   }
+}
+
+export class FileUploader extends BaseFileUploader {
 }

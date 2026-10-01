@@ -1,5 +1,6 @@
 import { ChunkedFileUploader, ChunkedFileUploaderOptions } from '../../file-upload/chunked-file-uploader.class';
 import { FileItem } from '../../file-upload/file-item.class';
+import { FileUploader } from '../../file-upload/file-uploader.class';
 
 class FakeXhr {
   static instances: FakeXhr[] = [];
@@ -94,6 +95,12 @@ describe('ChunkedFileUploader', () => {
 
   afterEach(() => {
     (globalThis as any).XMLHttpRequest = originalXhr;
+  });
+
+  it('can be passed where a FileUploader is expected', () => {
+    const uploader: FileUploader = new ChunkedFileUploader({ url: '/upload', chunkSize: 4 * KB });
+
+    expect(uploader.options.url).toBe('/upload');
   });
 
   it('uploads the whole file in one request without chunkSize', () => {
@@ -316,6 +323,52 @@ describe('ChunkedFileUploader', () => {
     });
   });
 
+  describe('callbacks that throw', () => {
+    it('fail the item instead of stalling the queue', () => {
+      const uploader = createUploader({ chunkSize: 4 * KB });
+      const item = uploader.queue[ 0 ];
+      const error = jest.spyOn(uploader, 'onErrorItem');
+      uploader.onSuccessChunk = (_item, _chunk, response) => JSON.parse(response);
+
+      uploader.uploadAll();
+      expect(() => last().respond(200, 'not json')).not.toThrow();
+
+      expect(sent().length).toBe(1);
+      expect(error).toHaveBeenCalledTimes(1);
+      expect(item.isError).toBe(true);
+      expect(uploader.isUploading).toBe(false);
+    });
+
+    it('fail the item when onBeforeUploadChunk throws on a later chunk', () => {
+      const uploader = createUploader({ chunkSize: 4 * KB });
+      uploader.onBeforeUploadChunk = (_item, chunk) => {
+        if (chunk.index === 1) {
+          throw new Error('hook failed');
+        }
+      };
+
+      uploader.uploadAll();
+      last().respond(200);
+
+      expect(uploader.queue[ 0 ].isError).toBe(true);
+      expect(uploader.isUploading).toBe(false);
+    });
+
+    it('report the item once when onErrorChunk throws', () => {
+      const uploader = createUploader({ chunkSize: 4 * KB });
+      const error = jest.spyOn(uploader, 'onErrorItem');
+      uploader.onErrorChunk = () => {
+        throw new Error('hook failed');
+      };
+
+      uploader.uploadAll();
+      last().respond(500);
+
+      expect(error).toHaveBeenCalledTimes(1);
+      expect(uploader.isUploading).toBe(false);
+    });
+  });
+
   describe('resumeItem', () => {
     it('continues from the failed chunk', () => {
       const uploader = createUploader({ chunkSize: 4 * KB });
@@ -354,6 +407,51 @@ describe('ChunkedFileUploader', () => {
       expect(sent().every(xhr => (xhr.body as FormData).get('chunkIndex') === '0')).toBe(true);
       expect(uploader.queue[ 0 ].isError).toBe(true);
       expect(uploader.isUploading).toBe(false);
+    });
+
+    it('continues after the last successful chunk when cancelled from onSuccessChunk', () => {
+      const uploader = createUploader({ chunkSize: 4 * KB });
+      const item = uploader.queue[ 0 ];
+      uploader.onSuccessChunk = (fileItem, chunk) => {
+        if (chunk.index === 0) {
+          fileItem.cancel();
+        }
+      };
+
+      uploader.uploadAll();
+      last().respond(200);
+      uploader.onSuccessChunk = () => undefined;
+      uploader.resumeItem(item);
+
+      expect(form().get('chunkIndex')).toBe('1');
+    });
+
+    it('does nothing for an item no longer in the queue', () => {
+      const uploader = createUploader({ chunkSize: 4 * KB, removeAfterUpload: true });
+      const item = uploader.queue[ 0 ];
+
+      uploader.uploadAll();
+      last().respond(500);
+
+      expect(uploader.queue.length).toBe(0);
+      expect(() => uploader.resumeItem(item)).not.toThrow();
+      expect(sent().length).toBe(1);
+    });
+
+    it('resumes an item behind another one in the queue', () => {
+      const uploader = new ChunkedFileUploader({ url: '/upload', chunkSize: 4 * KB });
+      uploader.addToQueue([ new File([ 'x'.repeat(10 * KB) ], 'a.bin'), new File([ 'y'.repeat(2 * KB) ], 'b.bin') ]);
+      const [ a, b ] = uploader.queue;
+
+      a.upload();
+      last().respond(200);
+      last().respond(500);
+      b.upload();
+      uploader.resumeItem(a);
+      last().respond(200);
+
+      expect(sent().map(xhr => [ ((xhr.body as FormData).get('file') as File).name, (xhr.body as FormData).get('chunkIndex') ]))
+        .toEqual([ [ 'a.bin', '0' ], [ 'a.bin', '1' ], [ 'b.bin', '0' ], [ 'a.bin', '1' ] ]);
     });
 
     it('continues from the cancelled chunk', () => {
@@ -436,10 +534,9 @@ describe('ChunkedFileUploader', () => {
       expectCancelled(uploader, item);
     });
 
-    it('from onSuccessChunk on the last chunk reports cancel', () => {
+    it('from onSuccessChunk on the last chunk has no effect, the file is uploaded', () => {
       const uploader = createUploader({ chunkSize: 4 * KB });
       const item = uploader.queue[ 0 ];
-      const success = jest.spyOn(uploader, 'onSuccessItem');
       uploader.onSuccessChunk = (fileItem, chunk) => {
         if (chunk.index === chunk.total - 1) {
           fileItem.cancel();
@@ -451,8 +548,20 @@ describe('ChunkedFileUploader', () => {
       last().respond(200);
       last().respond(200);
 
-      expect(success).not.toHaveBeenCalled();
-      expectCancelled(uploader, item);
+      expect(item.isSuccess).toBe(true);
+      expect(uploader.isUploading).toBe(false);
+    });
+
+    it('from onErrorChunk leaves the item failed', () => {
+      const uploader = createUploader({ chunkSize: 4 * KB });
+      const item = uploader.queue[ 0 ];
+      uploader.onErrorChunk = (fileItem) => fileItem.cancel();
+
+      uploader.uploadAll();
+      last().respond(500);
+
+      expect(item.isError).toBe(true);
+      expect(uploader.isUploading).toBe(false);
     });
 
     it('through removeFromQueue stops the upload', () => {

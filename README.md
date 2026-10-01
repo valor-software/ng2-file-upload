@@ -108,12 +108,14 @@ Easy to use Angular2 directives for files upload ([demo](http://valor-software.g
   - `onBeforeUploadChunk(item, chunk)` - before each chunk request.
   - `onSuccessChunk(item, chunk, response, status, headers)` - after each successful chunk. Change `item.url`, `item.method` or `item.headers` here to target the next chunk, e.g. with an upload id from your server.
   - `onErrorChunk(item, chunk, response, status, headers)` - when a chunk fails; the item then fails as usual (`onErrorItem`, `onCompleteItem`) and no more chunks are sent.
-  - `resumeItem(item)` - uploads a failed or cancelled item again, starting from the chunk that did not complete. Use it to retry, e.g. from `onErrorItem`:
+  - `resumeItem(item)` - uploads a failed or cancelled item again, starting from the chunk that did not complete. Use it to retry, e.g. from `onErrorItem` (with `removeAfterUpload` off, so failed items stay in the queue):
 
   ```typescript
-  let retries = 0;
+  const retries = new Map<FileItem, number>();
   uploader.onErrorItem = (item, response, status) => {
-    if (status >= 500 && retries++ < 3) {
+    const count = retries.get(item) ?? 0;
+    if (status >= 500 && count < 3) {
+      retries.set(item, count + 1);
       setTimeout(() => uploader.resumeItem(item), 1000);
     }
   };
@@ -121,7 +123,7 @@ Easy to use Angular2 directives for files upload ([demo](http://valor-software.g
 
   - `getChunk(item)` - the chunk being sent, or the last one sent.
 
-  `onBuildItemForm` and the `response` emitter fire once per chunk; the other item callbacks once per file. `item.cancel()` stops the remaining chunks.
+  `onBuildItemForm` and the `response` emitter fire once per chunk; the other item callbacks once per file. `item.cancel()` stops the remaining chunks; it has no effect once the last chunk is sent, and an item whose chunk failed stays failed. If a chunk callback throws, the item fails with status 0.
 
 # Troubleshooting
 

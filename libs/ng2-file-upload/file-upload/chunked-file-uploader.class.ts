@@ -1,5 +1,5 @@
 import { FileItem } from './file-item.class';
-import { FileUploader, FileUploaderOptions, ParsedResponseHeaders } from './file-uploader.class';
+import { BaseFileUploader, FileUploaderOptions, ParsedResponseHeaders } from './file-uploader.class';
 
 export interface ChunkedFileUploaderOptions extends FileUploaderOptions {
   chunkSize?: number;
@@ -21,7 +21,7 @@ interface ChunkState {
   cancelled?: boolean;
 }
 
-export class ChunkedFileUploader extends FileUploader {
+export class ChunkedFileUploader extends BaseFileUploader {
   declare options: ChunkedFileUploaderOptions;
 
   protected _chunks = new WeakMap<FileItem, ChunkState>();
@@ -40,7 +40,7 @@ export class ChunkedFileUploader extends FileUploader {
 
   resumeItem(item: FileItem): void {
     const state = this._chunks.get(item);
-    if (item.isUploading) {
+    if (item.isUploading || this.getIndexOfItem(item) < 0) {
       return;
     }
     if (state?.chunk && !item.isSuccess) {
@@ -86,10 +86,10 @@ export class ChunkedFileUploader extends FileUploader {
       throw new TypeError('The file specified is no longer valid');
     }
     const total = Math.max(1, Math.ceil(item._file.size / chunkSize));
-    this._sendChunk(item, resume || this._getChunk(item, 0, 0, chunkSize, total));
+    this._sendChunk(item, resume || this._sliceChunk(item, 0, 0, chunkSize, total));
   }
 
-  protected _getChunk(item: FileItem, index: number, start: number, length: number, total: number): FileChunk {
+  protected _sliceChunk(item: FileItem, index: number, start: number, length: number, total: number): FileChunk {
     const end = Math.min(start + length, item._file.size);
 
     return { index, total, start, end, blob: item._file.slice(start, end, item._file.type) };
@@ -98,30 +98,14 @@ export class ChunkedFileUploader extends FileUploader {
   protected _sendChunk(item: FileItem, chunk: FileChunk): void {
     const state = this._chunks.get(item) as ChunkState;
     const xhr = item._xhr = new XMLHttpRequest();
-    let sendable: any = chunk.blob;
     state.chunk = chunk;
     this.onBeforeUploadChunk(item, chunk);
-
-    if (!this.options.disableMultipart) {
-      sendable = new FormData();
-      this._onBuildItemForm(item, sendable);
-      const appendFile = () => sendable.append(item.alias, chunk.blob, item.file.name);
-      if (!this.options.parametersBeforeFiles) {
-        appendFile();
-      }
-      Object.keys(this.options.additionalParameter || {}).forEach((key: string) => {
-        const paramVal = this.options.additionalParameter?.[ key ];
-        sendable.append(key, typeof paramVal === 'string' && item.file?.name ? paramVal.replace('{{file_name}}', item.file.name) : paramVal);
-      });
-      sendable.append(this.options.chunkIndexParam || 'chunkIndex', chunk.index.toString());
-      sendable.append(this.options.totalChunksParam || 'totalChunks', chunk.total.toString());
-      if (this.options.parametersBeforeFiles) {
-        appendFile();
-      }
-    }
+    const sendable = this.options.disableMultipart ? chunk.blob : this._buildFormData(item, chunk.blob, {
+      [ this.options.chunkIndexParam || 'chunkIndex' ]: chunk.index.toString(),
+      [ this.options.totalChunksParam || 'totalChunks' ]: chunk.total.toString()
+    });
     if (state.cancelled) {
-      this._onCancelItem(item, '', 0, {});
-      this._onCompleteItem(item, '', 0, {});
+      this._finishItem(item, '_onCancelItem', '', 0, {});
 
       return;
     }
@@ -136,26 +120,12 @@ export class ChunkedFileUploader extends FileUploader {
       state.cancelled = true;
       this._onChunkDone(item, chunk, xhr, false);
     };
-    if (item.method && item.url) {
-      xhr.open(item.method, item.url, true);
-    }
-    xhr.withCredentials = item.withCredentials;
-    const headers = [ ...(this.options.headers || []), ...item.headers ];
-    for (const header of headers) {
-      xhr.setRequestHeader(header.name, header.value);
-    }
-    if (this.authToken && this.authTokenHeader) {
-      xhr.setRequestHeader(this.authTokenHeader, this.authToken);
-    }
-    if (this.options.disableMultipart && !headers.some(header => header.name.toLowerCase() === 'content-range')) {
+    this._openRequest(xhr, item);
+    const hasContentRange = [ ...(this.options.headers || []), ...item.headers ].some(header => header.name.toLowerCase() === 'content-range');
+    if (this.options.disableMultipart && !hasContentRange) {
       const range = chunk.end > chunk.start ? `${ chunk.start }-${ chunk.end - 1 }` : '*';
       xhr.setRequestHeader('Content-Range', `bytes ${ range }/${ item._file.size }`);
     }
-    xhr.onreadystatechange = () => {
-      if (xhr.readyState === XMLHttpRequest.DONE) {
-        this.response.emit(xhr.responseText);
-      }
-    };
     xhr.send(sendable);
     this._render();
   }
@@ -164,29 +134,52 @@ export class ChunkedFileUploader extends FileUploader {
     const state = this._chunks.get(item) as ChunkState;
     const headers = this._parseHeaders(xhr.getAllResponseHeaders());
     const response = this._transformResponse(xhr.response);
-    if (!state.cancelled && !isSuccess) {
-      this.onErrorChunk(item, chunk, response, xhr.status, headers);
-      this._onErrorItem(item, response, xhr.status, headers);
-      this._onCompleteItem(item, response, xhr.status, headers);
-
-      return;
-    }
-    if (!state.cancelled) {
-      this.onSuccessChunk(item, chunk, response, xhr.status, headers);
-    }
-    // cancel() between chunks has no request to abort, so it is picked up here
     if (state.cancelled) {
-      this._onCancelItem(item, response, xhr.status, headers);
-      this._onCompleteItem(item, response, xhr.status, headers);
+      this._finishItem(item, '_onCancelItem', response, xhr.status, headers);
 
       return;
     }
-    if (chunk.index + 1 < chunk.total) {
-      this._sendChunk(item, this._getChunk(item, chunk.index + 1, chunk.end, chunk.end - chunk.start, chunk.total));
+    if (!isSuccess) {
+      if (this._runChunkHook(item, () => this.onErrorChunk(item, chunk, response, xhr.status, headers))) {
+        this._finishItem(item, '_onErrorItem', response, xhr.status, headers);
+      }
 
       return;
     }
-    this._onSuccessItem(item, response, xhr.status, headers);
-    this._onCompleteItem(item, response, xhr.status, headers);
+    if (!this._runChunkHook(item, () => this.onSuccessChunk(item, chunk, response, xhr.status, headers))) {
+      return;
+    }
+    if (chunk.index + 1 >= chunk.total) {
+      this._finishItem(item, '_onSuccessItem', response, xhr.status, headers);
+
+      return;
+    }
+    const next = this._sliceChunk(item, chunk.index + 1, chunk.end, chunk.end - chunk.start, chunk.total);
+    if (state.cancelled) {
+      state.chunk = next;
+      this._finishItem(item, '_onCancelItem', response, xhr.status, headers);
+
+      return;
+    }
+    this._runChunkHook(item, () => this._sendChunk(item, next));
+  }
+
+  // hooks after the first chunk run in XHR callbacks; report a throw as an item error instead of stalling the queue
+  protected _runChunkHook(item: FileItem, hook: () => void): boolean {
+    try {
+      hook();
+
+      return true;
+    } catch (e) {
+      this._finishItem(item, '_onErrorItem', '', 0, {});
+
+      return false;
+    }
+  }
+
+  protected _finishItem(item: FileItem, method: '_onSuccessItem' | '_onErrorItem' | '_onCancelItem', response: string,
+                        status: number, headers: ParsedResponseHeaders): void {
+    this[ method ](item, response, status, headers);
+    this._onCompleteItem(item, response, status, headers);
   }
 }
