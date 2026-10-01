@@ -11,7 +11,7 @@ import { FileUploadSectionComponent } from './components/file-upload-section';
 import { SimpleDemoComponent } from './components/file-upload/simple-demo';
 
 @NgModule({
-  imports: [BrowserModule, CommonModule, FileUploadModule, TabsModule.forRoot(), FormsModule],
+  imports: [BrowserModule, CommonModule, FileUploadModule, TabsModule, FormsModule],
   declarations: [AppComponent, FileUploadSectionComponent, SimpleDemoComponent],
   bootstrap: [AppComponent],
   providers: []

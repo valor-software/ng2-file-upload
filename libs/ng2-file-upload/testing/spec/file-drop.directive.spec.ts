@@ -1,4 +1,4 @@
-import { Component, DebugElement } from '@angular/core';
+import { Component, DebugElement, ChangeDetectionStrategy } from '@angular/core';
 import { By } from '@angular/platform-browser';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
@@ -12,6 +12,7 @@ import { FileDropDirective } from '../../file-upload/file-drop.directive';
                     ng2FileDrop
                     [uploader]="uploader"
              ></div>`,
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class ContainerComponent {

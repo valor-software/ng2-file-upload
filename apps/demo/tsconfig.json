@@ -24,6 +24,11 @@
   "compilerOptions": {
     "target": "ES2022",
     "useDefineForClassFields": false,
-    "moduleResolution": "bundler"
+    "moduleResolution": "bundler",
+    "strict": false,
+    "types": ["node"]
+  },
+  "angularCompilerOptions": {
+    "strictTemplates": false
   }
 }

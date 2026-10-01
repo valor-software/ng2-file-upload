@@ -63,7 +63,7 @@
               <tr>
                 <td data-label="Name"><strong>{{ item?.file?.name }}</strong></td>
                 @if (uploader.options.isHTML5) {
-                  <td data-label="Size" nowrap>{{ item?.file?.size/1024/1024 | number:'.2' }} MB</td>
+                  <td data-label="Size" nowrap>{{ item.file.size/1024/1024 | number:'.2' }} MB</td>
                 }
                 @if (uploader.options.isHTML5) {
                   <td data-label="Progress">

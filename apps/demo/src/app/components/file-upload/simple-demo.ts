@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { FileUploader } from 'ng2-file-upload';
 
 // const URL = '/api/';
@@ -7,6 +7,7 @@ const URL = 'https://evening-anchorage-3159.herokuapp.com/api/';
 @Component({
   selector: 'simple-demo',
   templateUrl: './simple-demo.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class SimpleDemoComponent {

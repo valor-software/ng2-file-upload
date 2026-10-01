@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const doc = require('html-loader!markdown-loader!../../doc.md');
 
@@ -17,6 +17,7 @@ const tabDesc: Array<any> = [
 @Component({
   selector: 'file-upload-section',
   templateUrl: './file-upload-section.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class FileUploadSectionComponent {
