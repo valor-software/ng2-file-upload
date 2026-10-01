@@ -40,21 +40,6 @@ export interface FileUploaderOptions {
   // eslint-disable-next-line
   formatDataFunction?: Function;
   formatDataFunctionIsAsync?: boolean;
-  chunkSize?: number;
-  chunkRetries?: number;
-  chunkRetryDelay?: number;
-  chunkMaxRetryDelay?: number;
-  chunkIndexParam?: string;
-  totalChunksParam?: string;
-}
-
-export interface FileChunk {
-  index: number;
-  total: number;
-  start: number;
-  end: number;
-  blob: Blob;
-  retry: number;
 }
 
 export class FileUploader {
@@ -151,9 +136,6 @@ export class FileUploader {
   removeFromQueue(value: FileItem): void {
     const index = this.getIndexOfItem(value);
     const item = this.queue[ index ];
-    if (!item) {
-      return;
-    }
     if (item.isUploading) {
       item.cancel();
     }
@@ -185,15 +167,7 @@ export class FileUploader {
     const item = this.queue[ index ];
     const prop = this.options.isHTML5 ? item._xhr : item._form;
     if (item && item.isUploading) {
-      item._cancelRequested = true;
-      if (item._chunkRetryTimer !== undefined) {
-        clearTimeout(item._chunkRetryTimer);
-        item._chunkRetryTimer = undefined;
-        this._cancelChunkedItem(item, '', 0, {});
-
-        return;
-      }
-      prop?.abort();
+      prop.abort();
     }
   }
 
@@ -281,14 +255,6 @@ export class FileUploader {
     return void 0;
   }
 
-  onBeforeUploadChunk(item: FileItem, chunk: FileChunk): any {
-    return { item, chunk };
-  }
-
-  onSuccessChunk(item: FileItem, chunk: FileChunk, response: string, status: number, headers: ParsedResponseHeaders): any {
-    return { item, chunk, response, status, headers };
-  }
-
   _mimeTypeFilter(item: FileLikeObject): boolean {
     return !(item?.type && this.options.allowedMimeType && this.options.allowedMimeType?.indexOf(item.type) === -1);
   }
@@ -303,7 +269,6 @@ export class FileUploader {
   }
 
   _onErrorItem(item: FileItem, response: string, status: number, headers: ParsedResponseHeaders): void {
-    this._restoreChunkTarget(item);
     item._onError(response, status, headers);
     this.onErrorItem(item, response, status, headers);
   }
@@ -334,156 +299,20 @@ export class FileUploader {
   }
 
   protected _xhrTransport(item: FileItem): any {
-    const chunkSize = Math.max(0, Math.floor(this.options.chunkSize || 0));
-    if (chunkSize) {
-      item._chunkTarget = { url: item.url, method: item.method, headers: [ ...item.headers ] };
-      this._runChunkStep(item, () => {
-        const total = Math.max(1, Math.ceil(item._file.size / chunkSize));
-        this._sendXhr(item, this._getChunk(item, 0, 0, chunkSize, total));
-      });
-
-      return;
-    }
-    this._sendXhr(item);
-  }
-
-  // hooks may retarget chunk requests; the item's own callbacks see its original url/method/headers
-  protected _restoreChunkTarget(item: FileItem): void {
-    const target = item._chunkTarget;
-    if (target) {
-      item.url = target.url;
-      item.method = target.method;
-      item.headers = target.headers;
-      item._chunkTarget = undefined;
-    }
-  }
-
-  protected _getChunk(item: FileItem, index: number, start: number, length: number, total: number): FileChunk {
-    const end = Math.min(start + length, item._file.size);
-
-    return { index, total, start, end, blob: item._file.slice(start, end, item._file.type), retry: 0 };
-  }
-
-  // true when the chunk flow handled the result, false to report it as the item's outcome
-  protected _onChunkDone(item: FileItem, chunk: FileChunk, isSuccess: boolean, response: string, status: number,
-                         headers: ParsedResponseHeaders): boolean {
-    if (!isSuccess) {
-      if (item._cancelRequested) {
-        this._cancelChunkedItem(item, response, status, headers);
-
-        return true;
-      }
-      if (this._isRetryableChunkStatus(status) && chunk.retry < (this.options.chunkRetries || 0)) {
-        this._retryChunk(item, chunk);
-
-        return true;
-      }
-
-      return false;
-    }
-    if (!this._runChunkStep(item, () => this.onSuccessChunk(item, chunk, response, status, headers))) {
-      return true;
-    }
-    if (item._cancelRequested) {
-      this._cancelChunkedItem(item, response, status, headers);
-
-      return true;
-    }
-    if (chunk.index + 1 >= chunk.total) {
-      return false;
-    }
-    this._runChunkStep(item, () => {
-      this._sendXhr(item, this._getChunk(item, chunk.index + 1, chunk.end, chunk.end - chunk.start, chunk.total));
-    });
-
-    return true;
-  }
-
-  protected _cancelChunkedItem(item: FileItem, response: string, status: number, headers: ParsedResponseHeaders): void {
-    this._onCancelItem(item, response, status, headers);
-    this._onCompleteItem(item, response, status, headers);
-  }
-
-  protected _retryChunk(item: FileItem, chunk: FileChunk): void {
-    const retry = () => this._runChunkStep(item, () => this._sendXhr(item, { ...chunk, retry: chunk.retry + 1 }));
-    const delay = Math.min(
-      this.options.chunkMaxRetryDelay ?? 30000,
-      Math.max(0, this.options.chunkRetryDelay ?? 1000) * Math.pow(2, chunk.retry)
-    );
-    if (!delay) {
-      retry();
-
-      return;
-    }
-    item._chunkRetryTimer = setTimeout(() => {
-      item._chunkRetryTimer = undefined;
-      retry();
-    }, delay);
-  }
-
-  // chunk steps run in XHR callbacks: fail the item, then rethrow so the app's error handler sees it
-  protected _runChunkStep(item: FileItem, step: () => void): boolean {
-    try {
-      step();
-
-      return true;
-    } catch (e) {
-      this._throwLater(e);
-      if (item.isUploading) {
-        const xhr = item._xhr;
-        if (xhr) {
-          xhr.onload = xhr.onerror = xhr.onabort = null;
-          xhr.abort();
-        }
-        for (const report of [ () => this._onErrorItem(item, '', 0, {}), () => this._onCompleteItem(item, '', 0, {}) ]) {
-          try {
-            report();
-          } catch (reportError) {
-            this._throwLater(reportError);
-          }
-        }
-      }
-
-      return false;
-    }
-  }
-
-  protected _throwLater(error: unknown): void {
-    setTimeout(() => {
-      throw error;
-    });
-  }
-
-  protected _hasRequestHeader(item: FileItem, name: string): boolean {
-    return [ ...(this.options.headers || []), ...item.headers ]
-      .some((header: Headers) => header.name.toLowerCase() === name);
-  }
-
-  protected _isRetryableChunkStatus(status: number): boolean {
-    return status === 0 || status === 408 || status === 429 || (status >= 500 && status !== 501 && status !== 505);
-  }
-
-  protected _sendXhr(item: FileItem, chunk?: FileChunk): void {
     // tslint:disable-next-line:no-this-assignment
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     const that = this;
     const xhr = item._xhr = new XMLHttpRequest();
     let sendable: any;
-    if (!chunk || (chunk.index === 0 && chunk.retry === 0)) {
-      this._onBeforeUploadItem(item);
-    }
+    this._onBeforeUploadItem(item);
 
     if (typeof item._file.size !== 'number') {
       throw new TypeError('The file specified is no longer valid');
     }
-    if (chunk) {
-      item.chunk = chunk;
-      this.onBeforeUploadChunk(item, chunk);
-    }
     if (!this.options.disableMultipart) {
       sendable = new FormData();
       this._onBuildItemForm(item, sendable);
-      const appendFile = () => sendable.append(item.alias, chunk ? chunk.blob : item._file, item.file.name);
+      const appendFile = () => sendable.append(item.alias, item._file, item.file.name);
       if (!this.options.parametersBeforeFiles) {
         appendFile();
       }
@@ -500,43 +329,23 @@ export class FileUploader {
         });
       }
 
-      if (chunk) {
-        sendable.append(this.options.chunkIndexParam || 'chunkIndex', chunk.index.toString());
-        sendable.append(this.options.totalChunksParam || 'totalChunks', chunk.total.toString());
-      }
-
       if (appendFile && this.options.parametersBeforeFiles) {
         appendFile();
       }
-    } else if (chunk) {
-      sendable = chunk.blob;
     } else {
       if (this.options.formatDataFunction) {
         sendable = this.options.formatDataFunction(item);
       }
     }
-    if (chunk && item._cancelRequested) {
-      this._cancelChunkedItem(item, '', 0, {});
-
-      return;
-    }
 
     xhr.upload.onprogress = (event: any) => {
-      let progress = Math.round(event.lengthComputable ? event.loaded * 100 / event.total : 0);
-      if (chunk && item._file.size) {
-        const sent = event.lengthComputable ? event.loaded / event.total * (chunk.end - chunk.start) : 0;
-        progress = Math.round((chunk.start + sent) * 100 / item._file.size);
-      }
+      const progress = Math.round(event.lengthComputable ? event.loaded * 100 / event.total : 0);
       this._onProgressItem(item, progress);
     };
     xhr.onload = () => {
       const headers = this._parseHeaders(xhr.getAllResponseHeaders());
       const response = this._transformResponse(xhr.response);
-      const isSuccess = this._isSuccessCode(xhr.status);
-      if (chunk && this._onChunkDone(item, chunk, isSuccess, response, xhr.status, headers)) {
-        return;
-      }
-      const gist = isSuccess ? 'Success' : 'Error';
+      const gist = this._isSuccessCode(xhr.status) ? 'Success' : 'Error';
       const method = `_on${gist}Item`;
       (this as any)[ method ](item, response, xhr.status, headers);
       this._onCompleteItem(item, response, xhr.status, headers);
@@ -544,9 +353,6 @@ export class FileUploader {
     xhr.onerror = () => {
       const headers = this._parseHeaders(xhr.getAllResponseHeaders());
       const response = this._transformResponse(xhr.response);
-      if (chunk && this._onChunkDone(item, chunk, false, response, xhr.status, headers)) {
-        return;
-      }
       this._onErrorItem(item, response, xhr.status, headers);
       this._onCompleteItem(item, response, xhr.status, headers);
     };
@@ -573,16 +379,12 @@ export class FileUploader {
     if (this.authToken && this.authTokenHeader) {
       xhr.setRequestHeader(this.authTokenHeader, this.authToken);
     }
-    if (chunk && this.options.disableMultipart && !this._hasRequestHeader(item, 'content-range')) {
-      const range = chunk.end > chunk.start ? `${chunk.start}-${chunk.end - 1}` : '*';
-      xhr.setRequestHeader('Content-Range', `bytes ${range}/${item._file.size}`);
-    }
     xhr.onreadystatechange = function () {
       if (xhr.readyState == XMLHttpRequest.DONE) {
         that.response.emit(xhr.responseText);
       }
     };
-    if (this.options.formatDataFunctionIsAsync && !chunk) {
+    if (this.options.formatDataFunctionIsAsync) {
       sendable.then(
         (result: any) => xhr.send(JSON.stringify(result))
       );
@@ -700,13 +502,11 @@ export class FileUploader {
   }
 
   protected _onSuccessItem(item: FileItem, response: string, status: number, headers: ParsedResponseHeaders): void {
-    this._restoreChunkTarget(item);
     item._onSuccess(response, status, headers);
     this.onSuccessItem(item, response, status, headers);
   }
 
   protected _onCancelItem(item: FileItem, response: string, status: number, headers: ParsedResponseHeaders): void {
-    this._restoreChunkTarget(item);
     item._onCancel(response, status, headers);
     this.onCancelItem(item, response, status, headers);
   }

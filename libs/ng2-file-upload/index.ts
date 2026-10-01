@@ -1,4 +1,5 @@
 export * from './file-upload/file-uploader.class';
+export * from './file-upload/chunked-file-uploader.class';
 export * from './file-upload/file-item.class';
 export * from './file-upload/file-like-object.class';
 export * from './file-upload/file-like-object.class';

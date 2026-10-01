@@ -29,15 +29,6 @@ import { FileSelectDirective, FileDropDirective, FileUploader } from 'ng2-file-u
   5. `formatDataFunction` - Function to modify the request body. 'DisableMultipart' must be 'true' for this function to be called.
   6. `formatDataFunctionIsAsync` - Informs if the function sent in 'formatDataFunction' is asynchronous. Defaults to false.
   7. `parametersBeforeFiles` - States if additional parameters should be appended before or after the file. Defaults to false.
-  8. `chunkSize` - Upload files in chunks of this many bytes, one request per chunk. Disabled by default. In multipart mode each chunk is sent as the file field together with `chunkIndex` and `totalChunks` fields (and any `additionalParameter`); with `disableMultipart` the raw chunk is sent with a `Content-Range` header unless you set that header yourself (`formatDataFunction` is not used for chunks).
-  9. `chunkRetries` - How many times a failed chunk is retried before the item fails. Only network errors and 408, 429 and 5xx (except 501 and 505) responses are retried. Defaults to 0.
-  10. `chunkRetryDelay` - Milliseconds to wait before the first retry, doubled for every further retry. Defaults to 1000; 0 retries immediately.
-  11. `chunkMaxRetryDelay` - Longest wait in milliseconds before a retry, however often `chunkRetryDelay` has doubled. Defaults to 30000 (30 seconds).
-  12. `chunkIndexParam` / `totalChunksParam` - Form field names for the chunk index and total chunk count. Default to `chunkIndex` and `totalChunks`.
-
-  Chunk callbacks on `FileUploader`: `onBeforeUploadChunk(item, chunk)` runs before every chunk request (retries included, with `chunk.retry` increased) and `onSuccessChunk(item, chunk, response, status, headers)` after every successful one. Changing `item.url`, `item.method` or `item.headers` in `onBeforeUploadChunk` applies to the request about to be sent, in `onSuccessChunk` to the next one, e.g. with an upload id returned by your server. When the upload finishes they are reset to the values they had when it started, before `onSuccessItem`, `onErrorItem` or `onCancelItem` run. An error thrown by a chunk callback fails the item and is rethrown asynchronously, so it still reaches your error handler. Callbacks are synchronous, so protocol steps that need their own requests (creating or completing an S3 multipart upload, committing Azure blocks) belong before `upload()` and in `onSuccessItem`. `item.cancel()` stops the remaining chunks, also when called from any callback or while waiting to retry. Chunking needs `isHTML5` (the default).
-
-  With `chunkSize` set, `onBuildItemForm` and the `response` emitter fire once per chunk request (retries included), while `onSuccessItem`, `onErrorItem` and `onCompleteItem` fire once per file. `item.chunk` holds the current chunk, so `onBuildItemForm` can add per-chunk fields, e.g. a file id, byte offset or total size if your server needs to tell parallel uploads apart.
 
 ### Events
  - `onFileSelected` - fires when files are selected and added to the uploader queue
@@ -54,3 +45,36 @@ import { FileSelectDirective, FileDropDirective, FileUploader } from 'ng2-file-u
   See using in [ts demo](https://github.com/valor-software/ng2-file-upload/blob/master/demo/components/file-upload/simple-demo.ts) and
   [html demo](https://github.com/valor-software/ng2-file-upload/blob/master/demo/components/file-upload/simple-demo.html)
   - `onFileDrop` - it fires after a file has been dropped on a Drop Area; you can pass in `$event` to get the list of files that were dropped. i.e. `(onFileDrop)="dropped($event)"`
+
+## Chunked uploads
+
+  Use `ChunkedFileUploader` instead of `FileUploader` to send large files in several requests. It works with the same directives, options and callbacks; without `chunkSize` it behaves exactly like `FileUploader`.
+
+  ```typescript
+  uploader = new ChunkedFileUploader({ url: URL, chunkSize: 2 * 1024 * 1024 });
+  ```
+
+  Additional options:
+
+  1. `chunkSize` - Bytes per request. Multipart requests send the chunk as the file field plus `chunkIndex` and `totalChunks` fields; with `disableMultipart` the raw chunk is sent with a `Content-Range` header (`formatDataFunction` is not used).
+  2. `chunkIndexParam` / `totalChunksParam` - Names of those form fields. Default to `chunkIndex` and `totalChunks`.
+
+  Additional callbacks and methods:
+
+  - `onBeforeUploadChunk(item, chunk)` - before each chunk request.
+  - `onSuccessChunk(item, chunk, response, status, headers)` - after each successful chunk. Change `item.url`, `item.method` or `item.headers` here to target the next chunk, e.g. with an upload id from your server.
+  - `onErrorChunk(item, chunk, response, status, headers)` - when a chunk fails; the item then fails as usual (`onErrorItem`, `onCompleteItem`) and no more chunks are sent.
+  - `resumeItem(item)` - uploads a failed or cancelled item again, starting from the chunk that did not complete. Use it to retry, e.g. from `onErrorItem`:
+
+  ```typescript
+  let retries = 0;
+  uploader.onErrorItem = (item, response, status) => {
+    if (status >= 500 && retries++ < 3) {
+      setTimeout(() => uploader.resumeItem(item), 1000);
+    }
+  };
+  ```
+
+  - `getChunk(item)` - the chunk being sent, or the last one sent.
+
+  `onBuildItemForm` and the `response` emitter fire once per chunk; the other item callbacks once per file. `item.cancel()` stops the remaining chunks.
