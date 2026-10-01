@@ -1,17 +1,17 @@
-import { Directive, EventEmitter, ElementRef, Input, HostListener, Output, inject } from '@angular/core';
+import { Directive, ElementRef, HostListener, inject, input, output } from '@angular/core';
 
 import { FileUploader, FileUploaderOptions } from './file-uploader.class';
 
-@Directive({ selector: '[ng2FileSelect]', standalone: false })
+@Directive({ selector: '[ng2FileSelect]' })
 export class FileSelectDirective {
-  @Input() uploader?: FileUploader;
+  readonly uploader = input<FileUploader>();
   // eslint-disable-next-line @angular-eslint/no-output-on-prefix
-  @Output() onFileSelected: EventEmitter<File[]> = new EventEmitter<File[]>();
+  readonly onFileSelected = output<File[]>();
 
-  protected element: ElementRef= inject(ElementRef);
+  protected element = inject(ElementRef);
 
   getOptions(): FileUploaderOptions | undefined {
-    return this.uploader?.options;
+    return this.uploader()?.options;
   }
 
   getFilters(): string {
@@ -27,7 +27,7 @@ export class FileSelectDirective {
     const files = this.element.nativeElement.files;
     const options = this.getOptions();
     const filters = this.getFilters();
-    this.uploader?.addToQueue(files, options, filters);
+    this.uploader()?.addToQueue(files, options, filters);
 
     this.onFileSelected.emit(files);
     if (this.isEmptyAfterSelection()) {
