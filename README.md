@@ -18,6 +18,22 @@ Easy to use Angular2 directives for files upload ([demo](http://valor-software.g
 3. More information regarding using of ***ng2-file-upload*** is located in
   [demo](http://valor-software.github.io/ng2-file-upload/) and [demo sources](https://github.com/valor-software/ng2-file-upload/tree/master/demo).
 
+## Compatibility
+
+| Angular     | ng2-file-upload |
+|-------------|-----------------|
+| 22.x        | 11.x            |
+| 21.x        | 10.x            |
+| 20.x        | 9.x             |
+| 19.x        | 8.x             |
+| 18.x        | 7.x             |
+| 17.x        | 6.x             |
+| 16.x        | 5.x             |
+| 15.x        | 4.x             |
+| 14.x        | 3.x             |
+| 11.x - 12.x | 2.0.0-x         |
+| 2.x - 10.x  | 1.x             |
+
 ## Using ***ng2-file-upload*** in a project
 
 1. Install as shown in the above section.
