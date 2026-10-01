@@ -22,6 +22,7 @@ export class FileItem {
    _xhr?: XMLHttpRequest;
    _form: any;
    _cancelRequested = false;
+   _chunkRetryTimer?: ReturnType<typeof setTimeout>;
 
   protected uploader: FileUploader;
   protected some: File;
@@ -95,6 +96,7 @@ export class FileItem {
     this.progress = 0;
     this.chunk = undefined;
     this._cancelRequested = false;
+    this._chunkRetryTimer = undefined;
     this.onBeforeUpload();
   }
 

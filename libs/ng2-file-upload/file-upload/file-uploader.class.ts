@@ -42,6 +42,7 @@ export interface FileUploaderOptions {
   formatDataFunctionIsAsync?: boolean;
   chunkSize?: number;
   chunkRetries?: number;
+  chunkRetryDelay?: number;
   chunkIndexParam?: string;
   totalChunksParam?: string;
 }
@@ -182,7 +183,15 @@ export class FileUploader {
     if (item && item.isUploading) {
       // between chunks there is no request in flight to abort, so the next chunk checks this flag
       item._cancelRequested = true;
-      prop.abort();
+      if (item._chunkRetryTimer !== undefined) {
+        clearTimeout(item._chunkRetryTimer);
+        item._chunkRetryTimer = undefined;
+        this._onCancelItem(item, '', 0, {});
+        this._onCompleteItem(item, '', 0, {});
+
+        return;
+      }
+      prop?.abort();
     }
   }
 
@@ -327,16 +336,21 @@ export class FileUploader {
     if (typeof item._file.size !== 'number') {
       throw new TypeError('The file specified is no longer valid');
     }
-    if (this.options.chunkSize && this.options.chunkSize > 0) {
-      this._uploadChunk(item, 0);
+    if (this._getChunkSize()) {
+      this._runChunkStep(item, '', 0, {}, () => this._uploadChunk(item, 0));
 
       return;
     }
     this._sendXhr(item);
   }
 
-  protected _uploadChunk(item: FileItem, index: number): void {
-    const chunkSize = this.options.chunkSize as number;
+  // whole bytes only, so slices and Content-Range stay valid; 0 disables chunking
+  protected _getChunkSize(): number {
+    return Math.max(0, Math.floor(this.options.chunkSize || 0));
+  }
+
+  protected _uploadChunk(item: FileItem, index: number, retry = 0): void {
+    const chunkSize = this._getChunkSize();
     const size = item._file.size;
     const start = index * chunkSize;
     const end = Math.min(start + chunkSize, size);
@@ -345,11 +359,18 @@ export class FileUploader {
       total: Math.max(1, Math.ceil(size / chunkSize)),
       start,
       end,
-      blob: item._file.slice(start, end),
-      retry: 0
+      // keep the file's MIME type so servers checking the part's content type accept it
+      blob: item._file.slice(start, end, item._file.type),
+      retry
     };
     item.chunk = chunk;
     this.onBeforeUploadChunk(item, chunk);
+    if (item._cancelRequested) {
+      this._onCancelItem(item, '', 0, {});
+      this._onCompleteItem(item, '', 0, {});
+
+      return;
+    }
     this._sendXhr(item, chunk);
   }
 
@@ -362,10 +383,7 @@ export class FileUploader {
                          headers: ParsedResponseHeaders): boolean {
     if (!isSuccess) {
       if (this._isRetryableChunkStatus(status) && chunk.retry < (this.options.chunkRetries || 0) && !item._cancelRequested) {
-        this._runChunkStep(item, response, status, headers, () => {
-          item.chunk = { ...chunk, retry: chunk.retry + 1 };
-          this._sendXhr(item, item.chunk);
-        });
+        this._retryChunk(item, chunk, response, status, headers);
 
         return true;
       }
@@ -375,19 +393,50 @@ export class FileUploader {
     if (!this._runChunkStep(item, response, status, headers, () => this.onCompleteChunk(item, chunk, response, status, headers))) {
       return true;
     }
-    if (chunk.index + 1 >= chunk.total) {
-      return false;
-    }
     if (item._cancelRequested) {
       this._onCancelItem(item, response, status, headers);
       this._onCompleteItem(item, response, status, headers);
 
       return true;
     }
-
+    if (chunk.index + 1 >= chunk.total) {
+      return false;
+    }
     this._runChunkStep(item, response, status, headers, () => this._uploadChunk(item, chunk.index + 1));
 
     return true;
+  }
+
+  protected _retryChunk(item: FileItem, chunk: FileChunk, response: string, status: number, headers: ParsedResponseHeaders): void {
+    const retry = () => this._runChunkStep(item, response, status, headers, () => this._uploadChunk(item, chunk.index, chunk.retry + 1));
+    const delay = this._getChunkRetryDelay(chunk.retry, headers);
+    if (!delay) {
+      retry();
+
+      return;
+    }
+    item._chunkRetryTimer = setTimeout(() => {
+      item._chunkRetryTimer = undefined;
+      retry();
+    }, delay);
+  }
+
+  // Retry-After from the server wins, otherwise chunkRetryDelay doubled on every retry
+  protected _getChunkRetryDelay(retry: number, headers: ParsedResponseHeaders): number {
+    const retryAfter = headers[ 'retry-after' ];
+    if (retryAfter) {
+      const seconds = Number(retryAfter);
+      if (!isNaN(seconds)) {
+        return Math.max(0, seconds * 1000);
+      }
+      const date = Date.parse(retryAfter);
+      if (!isNaN(date)) {
+        return Math.max(0, date - Date.now());
+      }
+    }
+    const delay = this.options.chunkRetryDelay ?? 1000;
+
+    return Math.max(0, delay) * Math.pow(2, retry);
   }
 
   /**
@@ -402,6 +451,12 @@ export class FileUploader {
 
       return true;
     } catch (e) {
+      // a request may already be in flight; detach it so it can't report the item a second time
+      const xhr = item._xhr;
+      if (xhr) {
+        xhr.onload = xhr.onerror = xhr.onabort = null;
+        xhr.abort();
+      }
       this._onErrorItem(item, response, status, headers);
       this._onCompleteItem(item, response, status, headers);
 
@@ -409,9 +464,9 @@ export class FileUploader {
     }
   }
 
-  // network errors (status 0), timeouts, rate limits and server errors may succeed on retry
+  // network errors (status 0), timeouts, rate limits and temporary server errors may succeed on retry
   protected _isRetryableChunkStatus(status: number): boolean {
-    return status === 0 || status === 408 || status === 429 || status >= 500;
+    return status === 0 || status === 408 || status === 429 || (status >= 500 && status !== 501 && status !== 505);
   }
 
   protected _sendXhr(item: FileItem, chunk?: FileChunk): void {
@@ -509,8 +564,10 @@ export class FileUploader {
     if (this.authToken && this.authTokenHeader) {
       xhr.setRequestHeader(this.authTokenHeader, this.authToken);
     }
-    if (chunk && this.options.disableMultipart && chunk.end > chunk.start) {
-      xhr.setRequestHeader('Content-Range', `bytes ${chunk.start}-${chunk.end - 1}/${item._file.size}`);
+    if (chunk && this.options.disableMultipart) {
+      // an empty file has no byte range, only its length
+      const range = chunk.end > chunk.start ? `${chunk.start}-${chunk.end - 1}` : '*';
+      xhr.setRequestHeader('Content-Range', `bytes ${range}/${item._file.size}`);
     }
     xhr.onreadystatechange = function () {
       if (xhr.readyState == XMLHttpRequest.DONE) {
