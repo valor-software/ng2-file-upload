@@ -3,8 +3,6 @@ import { FileLikeObject } from './file-like-object.class';
 import { FileItem } from './file-item.class';
 import { FileType } from './file-type.class';
 
-const MAX_CHUNK_RETRY_DELAY = 30000;
-
 function isFile(value: any): boolean {
   return (File && value instanceof File);
 }
@@ -45,6 +43,7 @@ export interface FileUploaderOptions {
   chunkSize?: number;
   chunkRetries?: number;
   chunkRetryDelay?: number;
+  chunkMaxRetryDelay?: number;
   chunkIndexParam?: string;
   totalChunksParam?: string;
 }
@@ -375,7 +374,7 @@ export class FileUploader {
         return true;
       }
       if (this._isRetryableChunkStatus(status) && chunk.retry < (this.options.chunkRetries || 0)) {
-        this._retryChunk(item, chunk, response, status, headers);
+        this._retryChunk(item, chunk);
 
         return true;
       }
@@ -405,9 +404,12 @@ export class FileUploader {
     this._onCompleteItem(item, response, status, headers);
   }
 
-  protected _retryChunk(item: FileItem, chunk: FileChunk, response: string, status: number, headers: ParsedResponseHeaders): void {
+  protected _retryChunk(item: FileItem, chunk: FileChunk): void {
     const retry = () => this._runChunkStep(item, () => this._sendXhr(item, { ...chunk, retry: chunk.retry + 1 }));
-    const delay = this._getChunkRetryDelay(chunk.retry, headers);
+    const delay = Math.min(
+      this.options.chunkMaxRetryDelay ?? 30000,
+      Math.max(0, this.options.chunkRetryDelay ?? 1000) * Math.pow(2, chunk.retry)
+    );
     if (!delay) {
       retry();
 
@@ -417,22 +419,6 @@ export class FileUploader {
       item._chunkRetryTimer = undefined;
       retry();
     }, delay);
-  }
-
-  protected _getChunkRetryDelay(retry: number, headers: ParsedResponseHeaders): number {
-    const retryAfter = headers[ 'retry-after' ];
-    let delay = Math.max(0, this.options.chunkRetryDelay ?? 1000) * Math.pow(2, retry);
-    if (retryAfter) {
-      const seconds = Number(retryAfter);
-      const date = Date.parse(retryAfter);
-      if (!isNaN(seconds)) {
-        delay = seconds * 1000;
-      } else if (!isNaN(date)) {
-        delay = date - Date.now();
-      }
-    }
-
-    return Math.min(MAX_CHUNK_RETRY_DELAY, Math.max(0, delay));
   }
 
   // chunk steps run in XHR callbacks: fail the item, then rethrow so the app's error handler sees it

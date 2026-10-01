@@ -779,15 +779,14 @@ describe('FileUploader: chunked upload', () => {
       expect(sent().length).toBe(3);
     });
 
-    it('uses the Retry-After header when the server sends one', () => {
+    it('ignores the Retry-After header', () => {
       const uploader = createUploader({ chunkSize: 4 * KB, chunkRetries: 1, chunkRetryDelay: 100 });
 
       uploader.uploadAll();
       last().responseHeaders = 'Retry-After: 3';
       last().respond(429);
-      jest.advanceTimersByTime(2999);
-      expect(sent().length).toBe(1);
-      jest.advanceTimersByTime(1);
+      jest.advanceTimersByTime(100);
+
       expect(sent().length).toBe(2);
     });
 
@@ -808,23 +807,25 @@ describe('FileUploader: chunked upload', () => {
       expect(uploader.isUploading).toBe(false);
     });
 
-    it('caps the delay at 30 seconds', () => {
-      const uploader = createUploader({ chunkSize: 4 * KB, chunkRetries: 1 });
+    it('caps the doubled delay at 30 seconds by default', () => {
+      const uploader = createUploader({ chunkSize: 4 * KB, chunkRetries: 2, chunkRetryDelay: 20000 });
 
       uploader.uploadAll();
-      last().responseHeaders = 'Retry-After: 3600';
       last().respond(503);
-      jest.advanceTimersByTime(30000);
-
+      jest.advanceTimersByTime(20000);
       expect(sent().length).toBe(2);
+
+      last().respond(503);
+      jest.advanceTimersByTime(29999);
+      expect(sent().length).toBe(2);
+      jest.advanceTimersByTime(1);
+      expect(sent().length).toBe(3);
     });
 
-    it('accepts Retry-After as an HTTP date', () => {
-      jest.setSystemTime(new Date('2026-01-01T00:00:00Z'));
-      const uploader = createUploader({ chunkSize: 4 * KB, chunkRetries: 1, chunkRetryDelay: 0 });
+    it('uses chunkMaxRetryDelay as the cap', () => {
+      const uploader = createUploader({ chunkSize: 4 * KB, chunkRetries: 1, chunkRetryDelay: 10000, chunkMaxRetryDelay: 5000 });
 
       uploader.uploadAll();
-      last().responseHeaders = 'Retry-After: Thu, 01 Jan 2026 00:00:05 GMT';
       last().respond(503);
       jest.advanceTimersByTime(4999);
       expect(sent().length).toBe(1);
