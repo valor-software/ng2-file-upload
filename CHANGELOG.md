@@ -1,3 +1,17 @@
+# [11.0.0](https://github.com/valor-software/ng2-file-upload/compare/v10.0.0...v11.0.0) (2026-10-01)
+
+
+### Bug Fixes
+
+* **ci:** make npm ci work on CI and npm 10 ([58e927f](https://github.com/valor-software/ng2-file-upload/commit/58e927f15fb818e8861a8fad813e5dd3f42ad60c))
+
+
+### Features
+
+* **Angular:** update to v22 ([d06efc3](https://github.com/valor-software/ng2-file-upload/commit/d06efc37bc6bc96a02ed1c632a8c117b74fffcdc))
+
+
+
 ## [10.0.0](https://github.com/valor-software/ng2-file-upload/compare/v9.0.0...v10.0.0) (2026-03-05)
 
 
