@@ -93,4 +93,33 @@ describe('Directive: FileSelectDirective', () => {
 
     expect(addToQueue).toHaveBeenCalledWith(directiveElement.nativeElement.files, fileSelectDirective.getOptions(), fileSelectDirective.getFilters());
   });
+
+  describe('on click', () => {
+    const file = new File([ 'hello' ], 'report.pdf', { type: 'application/pdf' });
+    let value: string;
+
+    beforeEach(() => {
+      value = 'C:\\fakepath\\report.pdf';
+      Object.defineProperty(directiveElement.nativeElement, 'files', { get: () => [ file ] });
+      Object.defineProperty(directiveElement.nativeElement, 'value', {
+        get: () => value,
+        set: (newValue: string) => value = newValue
+      });
+      hostComponent.uploader.addToQueue([ file ]);
+    });
+
+    it('keeps the selection while its file is queued', () => {
+      directiveElement.nativeElement.click();
+
+      expect(value).toBe('C:\\fakepath\\report.pdf');
+    });
+
+    it('clears the selection once its file is removed, so the same file can be chosen again', () => {
+      hostComponent.uploader.queue[ 0 ].remove();
+
+      directiveElement.nativeElement.click();
+
+      expect(value).toBe('');
+    });
+  });
 });
