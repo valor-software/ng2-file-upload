@@ -12,7 +12,6 @@ function createUploader(options: Partial<ChunkedFileUploaderOptions>, file = new
   return uploader;
 }
 
-
 function form(xhr: FakeXhr = last()): FormData {
   return xhr.body as FormData;
 }
@@ -75,6 +74,22 @@ describe('ChunkedFileUploader', () => {
 
     expect(seen).toEqual([ 0, 1 ]);
     expect(uploader.getChunk(item)?.index).toBe(1);
+    last().respond(200);
+    last().respond(200);
+    expect(uploader.getChunk(item)).toBeUndefined();
+  });
+
+  it('forgets chunk state when the item is uploaded without chunkSize', () => {
+    const uploader = createUploader({ chunkSize: 4 * KB });
+    const item = uploader.queue[ 0 ];
+
+    uploader.uploadAll();
+    last().respond(500);
+    uploader.setOptions({ url: '/upload', chunkSize: 0 });
+    item.upload();
+    last().respond(200);
+
+    expect(uploader.getChunk(item)).toBeUndefined();
   });
 
   it('uses custom chunk field names', () => {
@@ -251,17 +266,18 @@ describe('ChunkedFileUploader', () => {
   describe('callbacks that throw', () => {
     it('fail the item so the queue moves on, then rethrow', () => {
       const uploader = createUploader({ chunkSize: 4 * KB });
-      const item = uploader.queue[ 0 ];
+      uploader.addToQueue([ new File([ 'y' ], 'next.bin') ]);
+      const [ item, next ] = uploader.queue;
       const error = jest.spyOn(uploader, 'onErrorItem');
-      uploader.onSuccessChunk = (_item, _chunk, response) => JSON.parse(response);
+      uploader.onSuccessChunk = (fileItem, _chunk, response) => fileItem === item && JSON.parse(response);
 
       uploader.uploadAll();
       expect(() => last().respond(200, 'not json')).toThrow(SyntaxError);
 
-      expect(sent().length).toBe(1);
       expect(error).toHaveBeenCalledTimes(1);
       expect(item.isError).toBe(true);
-      expect(uploader.isUploading).toBe(false);
+      expect(((last().body as FormData).get('file') as File).name).toBe('next.bin');
+      expect(next.isUploading).toBe(true);
     });
 
     it('fail the item when onBeforeUploadChunk throws on a later chunk', () => {
@@ -326,54 +342,6 @@ describe('ChunkedFileUploader', () => {
 
       expect(error).not.toHaveBeenCalled();
       expect(item.isCancel).toBe(true);
-    });
-  });
-
-  describe('status after cancel from a hook', () => {
-    it('reports cancel when a response subscriber cancels on the last chunk', () => {
-      const uploader = createUploader({ chunkSize: 4 * KB });
-      const item = uploader.queue[ 0 ];
-      uploader.response.subscribe(() => {
-        if (uploader.getChunk(item)?.index === 2) {
-          item.cancel();
-        }
-      });
-
-      uploader.uploadAll();
-      last().respond(200);
-      last().respond(200);
-      last().respond(200);
-
-      expect(item.isCancel).toBe(true);
-      expect(uploader.isUploading).toBe(false);
-    });
-
-    it('keeps the server status when cancelling from the last onSuccessChunk', () => {
-      const uploader = createUploader({ chunkSize: 4 * KB });
-      const success = jest.spyOn(uploader, 'onSuccessItem');
-      uploader.onSuccessChunk = (fileItem, chunk) => {
-        if (chunk.index === chunk.total - 1) {
-          fileItem.cancel();
-        }
-      };
-
-      uploader.uploadAll();
-      last().respond(201);
-      last().respond(201);
-      last().respond(201, 'ok');
-
-      expect(success.mock.calls[ 0 ].slice(1, 3)).toEqual([ 'ok', 201 ]);
-    });
-
-    it('keeps the server status when cancelling from onErrorChunk', () => {
-      const uploader = createUploader({ chunkSize: 4 * KB });
-      const error = jest.spyOn(uploader, 'onErrorItem');
-      uploader.onErrorChunk = (fileItem) => fileItem.cancel();
-
-      uploader.uploadAll();
-      last().respond(503, 'busy');
-
-      expect(error.mock.calls[ 0 ].slice(1, 3)).toEqual([ 'busy', 503 ]);
     });
   });
 
@@ -495,6 +463,24 @@ describe('ChunkedFileUploader', () => {
 
       expect(sent().length).toBe(1);
     });
+
+    it('keeps the resume point when onBeforeUploadItem throws', () => {
+      const uploader = createUploader({ chunkSize: 4 * KB });
+      const item = uploader.queue[ 0 ];
+
+      uploader.uploadAll();
+      last().respond(200);
+      last().respond(500);
+      uploader.onBeforeUploadItem = () => {
+        throw new Error('token refresh failed');
+      };
+      uploader.resumeItem(item);
+      uploader.onBeforeUploadItem = () => undefined;
+      uploader.resumeItem(item);
+
+      expect(item.isUploading).toBe(true);
+      expect(form().get('chunkIndex')).toBe('1');
+    });
   });
 
   describe('cancel', () => {
@@ -542,9 +528,10 @@ describe('ChunkedFileUploader', () => {
       expectCancelled(uploader, item);
     });
 
-    it('from onSuccessChunk on the last chunk has no effect, the file is uploaded', () => {
+    it('from onSuccessChunk on the last chunk has no effect, the file is uploaded with the server status', () => {
       const uploader = createUploader({ chunkSize: 4 * KB });
       const item = uploader.queue[ 0 ];
+      const success = jest.spyOn(uploader, 'onSuccessItem');
       uploader.onSuccessChunk = (fileItem, chunk) => {
         if (chunk.index === chunk.total - 1) {
           fileItem.cancel();
@@ -552,24 +539,44 @@ describe('ChunkedFileUploader', () => {
       };
 
       uploader.uploadAll();
-      last().respond(200);
-      last().respond(200);
-      last().respond(200);
+      last().respond(201);
+      last().respond(201);
+      last().respond(201, 'ok');
 
       expect(item.isSuccess).toBe(true);
+      expect(success.mock.calls[ 0 ].slice(1, 3)).toEqual([ 'ok', 201 ]);
       expect(uploader.isUploading).toBe(false);
     });
 
-    it('from onErrorChunk leaves the item failed', () => {
+    it('from onErrorChunk leaves the item failed with the server status', () => {
       const uploader = createUploader({ chunkSize: 4 * KB });
       const item = uploader.queue[ 0 ];
+      const error = jest.spyOn(uploader, 'onErrorItem');
       uploader.onErrorChunk = (fileItem) => fileItem.cancel();
 
       uploader.uploadAll();
-      last().respond(500);
+      last().respond(503, 'busy');
 
       expect(item.isError).toBe(true);
+      expect(error.mock.calls[ 0 ].slice(1, 3)).toEqual([ 'busy', 503 ]);
       expect(uploader.isUploading).toBe(false);
+    });
+
+    it('from a response subscriber on the last chunk counts as a cancel', () => {
+      const uploader = createUploader({ chunkSize: 4 * KB });
+      const item = uploader.queue[ 0 ];
+      uploader.response.subscribe(() => {
+        if (uploader.getChunk(item)?.index === 2) {
+          item.cancel();
+        }
+      });
+
+      uploader.uploadAll();
+      last().respond(200);
+      last().respond(200);
+      last().respond(200);
+
+      expectCancelled(uploader, item);
     });
 
     it('through removeFromQueue stops the upload', () => {
@@ -582,19 +589,6 @@ describe('ChunkedFileUploader', () => {
       expect(uploader.queue.length).toBe(0);
       expect(uploader.isUploading).toBe(false);
     });
-  });
-
-  it('forgets chunk state when the item is uploaded without chunkSize', () => {
-    const uploader = createUploader({ chunkSize: 4 * KB });
-    const item = uploader.queue[ 0 ];
-
-    uploader.uploadAll();
-    last().respond(500);
-    uploader.setOptions({ url: '/upload', chunkSize: 0 });
-    item.upload();
-    last().respond(200);
-
-    expect(uploader.getChunk(item)).toBeUndefined();
   });
 
   describe('queue', () => {

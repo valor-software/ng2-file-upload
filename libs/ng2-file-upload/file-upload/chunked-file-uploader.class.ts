@@ -43,7 +43,7 @@ export class ChunkedFileUploader extends FileUploader {
     if (item.isUploading || this.getIndexOfItem(item) < 0) {
       return;
     }
-    if (state?.chunk && !item.isSuccess) {
+    if (state?.chunk) {
       state.resume = state.chunk;
     }
     item.upload();
@@ -81,7 +81,7 @@ export class ChunkedFileUploader extends FileUploader {
       return super._xhrTransport(item);
     }
     const resume = this._chunks.get(item)?.resume;
-    this._chunks.set(item, {});
+    this._chunks.set(item, { chunk: resume });
     this._onBeforeUploadItem(item);
 
     if (typeof item._file.size !== 'number') {
@@ -91,13 +91,13 @@ export class ChunkedFileUploader extends FileUploader {
     this._sendChunk(item, resume || this._sliceChunk(item, 0, 0, chunkSize, total));
   }
 
-  protected _sliceChunk(item: FileItem, index: number, start: number, length: number, total: number): FileChunk {
+  private _sliceChunk(item: FileItem, index: number, start: number, length: number, total: number): FileChunk {
     const end = Math.min(start + length, item._file.size);
 
     return { index, total, start, end, blob: item._file.slice(start, end, item._file.type) };
   }
 
-  protected _sendChunk(item: FileItem, chunk: FileChunk): void {
+  private _sendChunk(item: FileItem, chunk: FileChunk): void {
     const state = this._chunks.get(item) as ChunkState;
     const xhr = item._xhr = new XMLHttpRequest();
     state.chunk = chunk;
@@ -132,7 +132,7 @@ export class ChunkedFileUploader extends FileUploader {
     this._render();
   }
 
-  protected _onChunkDone(item: FileItem, chunk: FileChunk, xhr: XMLHttpRequest, isSuccess: boolean): void {
+  private _onChunkDone(item: FileItem, chunk: FileChunk, xhr: XMLHttpRequest, isSuccess: boolean): void {
     const state = this._chunks.get(item) as ChunkState;
     const headers = this._parseHeaders(xhr.getAllResponseHeaders());
     const response = this._transformResponse(xhr.response);
@@ -154,6 +154,7 @@ export class ChunkedFileUploader extends FileUploader {
     }
     this._runChunkHook(item, () => this.onSuccessChunk(item, chunk, response, status, headers));
     if (chunk.index + 1 >= chunk.total) {
+      state.chunk = undefined;
       this._finishItem(item, '_onSuccessItem', response, status, headers);
 
       return;
@@ -169,7 +170,7 @@ export class ChunkedFileUploader extends FileUploader {
   }
 
   // hooks after the first chunk run in XHR callbacks: fail the item so the queue moves on, then rethrow
-  protected _runChunkHook(item: FileItem, hook: () => void): void {
+  private _runChunkHook(item: FileItem, hook: () => void): void {
     try {
       hook();
     } catch (e) {
@@ -180,7 +181,7 @@ export class ChunkedFileUploader extends FileUploader {
     }
   }
 
-  protected _finishItem(item: FileItem, method: '_onSuccessItem' | '_onErrorItem' | '_onCancelItem', response: string,
+  private _finishItem(item: FileItem, method: '_onSuccessItem' | '_onErrorItem' | '_onCancelItem', response: string,
                         status: number, headers: ParsedResponseHeaders): void {
     this[ method ](item, response, status, headers);
     this._onCompleteItem(item, response, status, headers);

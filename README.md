@@ -100,7 +100,7 @@ Easy to use Angular2 directives for files upload ([demo](http://valor-software.g
 
   Additional options:
 
-  1. `chunkSize` - Bytes per request. Multipart requests send the chunk as the file field, preceded by `chunkIndex` and `totalChunks` fields; with `disableMultipart` the raw chunk is sent with a `Content-Range` header unless you set one (`formatDataFunction` is not used).
+  1. `chunkSize` - Bytes per request, fixed when an upload starts; other options apply to each request. Multipart requests send the chunk as the file field, preceded by `chunkIndex` and `totalChunks` fields; with `disableMultipart` the raw chunk is sent with a `Content-Range` header unless you set one (`formatDataFunction` is not used).
   2. `chunkIndexParam` / `totalChunksParam` - Names of those form fields. Default to `chunkIndex` and `totalChunks`.
 
   Additional callbacks and methods:
@@ -108,8 +108,8 @@ Easy to use Angular2 directives for files upload ([demo](http://valor-software.g
   - `onBeforeUploadChunk(item, chunk)` - before each chunk request; change `item.url`, `item.method` or `item.headers` here to change that request.
   - `onSuccessChunk(item, chunk, response, status, headers)` - after each successful chunk. Change `item.url`, `item.method` or `item.headers` here to target the next chunk, e.g. with an upload id from your server. They stay changed, so reset them before uploading the item from the start again; `setOptions` also resets `item.url` for every queued item.
   - `onErrorChunk(item, chunk, response, status, headers)` - when a chunk fails; the item then fails as usual (`onErrorItem`, `onCompleteItem`) with the same response and no more chunks are sent.
-  - `getChunk(item)` - the chunk being sent, or the one `resumeItem` will send next.
-  - `resumeItem(item)` - uploads a failed or cancelled item again, starting from the chunk that did not complete (an uploaded item starts over). Use it to retry, e.g. from `onErrorItem` (with `removeAfterUpload` off, so failed items stay in the queue):
+  - `getChunk(item)` - the chunk being sent, or the one `resumeItem` will send next; `undefined` once the file is uploaded.
+  - `resumeItem(item)` - uploads a failed or cancelled item again, starting from the chunk that did not complete (an uploaded item starts over). It is ignored while the item is uploading, so call it from `onErrorItem` or later, not from `onErrorChunk`, and keep `removeAfterUpload` off so failed items stay in the queue:
 
   ```typescript
   const retries = new Map<FileItem, number>();
@@ -124,7 +124,11 @@ Easy to use Angular2 directives for files upload ([demo](http://valor-software.g
 
   Each attempt reports the item again (`onErrorItem`, `onCompleteItem`, and `onCompleteAll` when no other item is waiting), restarts its progress, and queues the item behind items that are already waiting.
 
-  `onBuildItemForm` and the `response` emitter fire once per chunk; the other item callbacks once per file. `item.cancel()` stops the remaining chunks. Called from `onSuccessChunk` of the last chunk it has no effect, and from `onErrorChunk` the item stays failed; from a `response` subscriber it always counts as a cancel. If `onBeforeUploadChunk` or `onBuildItemForm` throws before the first request of an upload, it is handled like an error in `onBeforeUploadItem`. If a chunk callback throws later, the item fails (with status 0, or with the server's response for `onErrorChunk`) and the error is rethrown; resuming then resends that chunk, so servers should accept a repeated chunk.
+  `onBuildItemForm` and the `response` emitter fire once per chunk; the other item callbacks once per file.
+
+  `item.cancel()` stops the remaining chunks. From `onSuccessChunk` of the last chunk it has no effect (the file is uploaded), and from `onErrorChunk` the item stays failed.
+
+  A chunk callback that throws fails the item and the error is rethrown, except before the first request, where it is handled like an error in `onBeforeUploadItem`. Resuming resends that chunk, so servers should accept a repeated chunk.
 
 # Troubleshooting
 
