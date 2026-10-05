@@ -55,8 +55,8 @@ export class FakeXhr {
     this.response = response;
     this.responseText = response;
     this.readyState = 4;
-    this.onload?.();
     this.onreadystatechange?.();
+    this.onload?.();
   }
 }
 

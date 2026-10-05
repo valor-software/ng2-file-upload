@@ -24,7 +24,7 @@ interface ChunkState {
 export class ChunkedFileUploader extends FileUploader {
   declare options: ChunkedFileUploaderOptions;
 
-  protected _chunks = new WeakMap<FileItem, ChunkState>();
+  private _chunks = new WeakMap<FileItem, ChunkState>();
 
   constructor(options: ChunkedFileUploaderOptions) {
     super(options);
@@ -76,6 +76,8 @@ export class ChunkedFileUploader extends FileUploader {
   protected _xhrTransport(item: FileItem): any {
     const chunkSize = Math.floor(this.options.chunkSize || 0);
     if (chunkSize <= 0) {
+      this._chunks.delete(item);
+
       return super._xhrTransport(item);
     }
     const resume = this._chunks.get(item)?.resume;
@@ -142,8 +144,11 @@ export class ChunkedFileUploader extends FileUploader {
       return;
     }
     if (!isSuccess) {
-      this._runChunkHook(item, () => this.onErrorChunk(item, chunk, response, status, headers));
-      this._finishItem(item, '_onErrorItem', response, status, headers);
+      try {
+        this.onErrorChunk(item, chunk, response, status, headers);
+      } finally {
+        this._finishItem(item, '_onErrorItem', response, status, headers);
+      }
 
       return;
     }

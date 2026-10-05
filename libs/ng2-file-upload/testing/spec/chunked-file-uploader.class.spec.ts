@@ -279,7 +279,7 @@ describe('ChunkedFileUploader', () => {
       expect(uploader.isUploading).toBe(false);
     });
 
-    it('report the item once when onErrorChunk throws', () => {
+    it('report the item once with the server status when onErrorChunk throws', () => {
       const uploader = createUploader({ chunkSize: 4 * KB });
       const error = jest.spyOn(uploader, 'onErrorItem');
       uploader.onErrorChunk = () => {
@@ -287,8 +287,23 @@ describe('ChunkedFileUploader', () => {
       };
 
       uploader.uploadAll();
-      expect(() => last().respond(500)).toThrow('hook failed');
+      expect(() => last().respond(503, 'busy')).toThrow('hook failed');
 
+      expect(error).toHaveBeenCalledTimes(1);
+      expect(error.mock.calls[ 0 ].slice(1, 3)).toEqual([ 'busy', 503 ]);
+      expect(uploader.isUploading).toBe(false);
+    });
+
+    it('handle a throw before the first request like FileUploader does', () => {
+      const uploader = createUploader({ chunkSize: 4 * KB });
+      const error = jest.spyOn(uploader, 'onErrorItem');
+      uploader.onBeforeUploadChunk = () => {
+        throw new Error('hook failed');
+      };
+
+      expect(() => uploader.uploadAll()).not.toThrow();
+
+      expect(sent().length).toBe(0);
       expect(error).toHaveBeenCalledTimes(1);
       expect(uploader.isUploading).toBe(false);
     });
@@ -315,6 +330,24 @@ describe('ChunkedFileUploader', () => {
   });
 
   describe('status after cancel from a hook', () => {
+    it('reports cancel when a response subscriber cancels on the last chunk', () => {
+      const uploader = createUploader({ chunkSize: 4 * KB });
+      const item = uploader.queue[ 0 ];
+      uploader.response.subscribe(() => {
+        if (uploader.getChunk(item)?.index === 2) {
+          item.cancel();
+        }
+      });
+
+      uploader.uploadAll();
+      last().respond(200);
+      last().respond(200);
+      last().respond(200);
+
+      expect(item.isCancel).toBe(true);
+      expect(uploader.isUploading).toBe(false);
+    });
+
     it('keeps the server status when cancelling from the last onSuccessChunk', () => {
       const uploader = createUploader({ chunkSize: 4 * KB });
       const success = jest.spyOn(uploader, 'onSuccessItem');
@@ -549,6 +582,19 @@ describe('ChunkedFileUploader', () => {
       expect(uploader.queue.length).toBe(0);
       expect(uploader.isUploading).toBe(false);
     });
+  });
+
+  it('forgets chunk state when the item is uploaded without chunkSize', () => {
+    const uploader = createUploader({ chunkSize: 4 * KB });
+    const item = uploader.queue[ 0 ];
+
+    uploader.uploadAll();
+    last().respond(500);
+    uploader.setOptions({ url: '/upload', chunkSize: 0 });
+    item.upload();
+    last().respond(200);
+
+    expect(uploader.getChunk(item)).toBeUndefined();
   });
 
   describe('queue', () => {
