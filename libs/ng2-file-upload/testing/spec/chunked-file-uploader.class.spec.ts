@@ -249,23 +249,19 @@ describe('ChunkedFileUploader', () => {
   });
 
   describe('callbacks that throw', () => {
-    beforeEach(() => jest.useFakeTimers());
-    afterEach(() => jest.useRealTimers());
-
-    it('fail the item instead of stalling the queue, then rethrow', () => {
+    it('fail the item so the queue moves on, then rethrow', () => {
       const uploader = createUploader({ chunkSize: 4 * KB });
       const item = uploader.queue[ 0 ];
       const error = jest.spyOn(uploader, 'onErrorItem');
       uploader.onSuccessChunk = (_item, _chunk, response) => JSON.parse(response);
 
       uploader.uploadAll();
-      expect(() => last().respond(200, 'not json')).not.toThrow();
+      expect(() => last().respond(200, 'not json')).toThrow(SyntaxError);
 
       expect(sent().length).toBe(1);
       expect(error).toHaveBeenCalledTimes(1);
       expect(item.isError).toBe(true);
       expect(uploader.isUploading).toBe(false);
-      expect(() => jest.runOnlyPendingTimers()).toThrow(SyntaxError);
     });
 
     it('fail the item when onBeforeUploadChunk throws on a later chunk', () => {
@@ -277,11 +273,10 @@ describe('ChunkedFileUploader', () => {
       };
 
       uploader.uploadAll();
-      last().respond(200);
+      expect(() => last().respond(200)).toThrow('hook failed');
 
       expect(uploader.queue[ 0 ].isError).toBe(true);
       expect(uploader.isUploading).toBe(false);
-      expect(() => jest.runOnlyPendingTimers()).toThrow('hook failed');
     });
 
     it('report the item once when onErrorChunk throws', () => {
@@ -292,11 +287,10 @@ describe('ChunkedFileUploader', () => {
       };
 
       uploader.uploadAll();
-      last().respond(500);
+      expect(() => last().respond(500)).toThrow('hook failed');
 
       expect(error).toHaveBeenCalledTimes(1);
       expect(uploader.isUploading).toBe(false);
-      expect(() => jest.runOnlyPendingTimers()).toThrow('hook failed');
     });
 
     it('do not report an already finished item again', () => {
@@ -313,11 +307,40 @@ describe('ChunkedFileUploader', () => {
       };
 
       uploader.uploadAll();
-      last().respond(200);
+      expect(() => last().respond(200)).toThrow('app failed');
 
       expect(error).not.toHaveBeenCalled();
       expect(item.isCancel).toBe(true);
-      expect(() => jest.runOnlyPendingTimers()).toThrow('app failed');
+    });
+  });
+
+  describe('status after cancel from a hook', () => {
+    it('keeps the server status when cancelling from the last onSuccessChunk', () => {
+      const uploader = createUploader({ chunkSize: 4 * KB });
+      const success = jest.spyOn(uploader, 'onSuccessItem');
+      uploader.onSuccessChunk = (fileItem, chunk) => {
+        if (chunk.index === chunk.total - 1) {
+          fileItem.cancel();
+        }
+      };
+
+      uploader.uploadAll();
+      last().respond(201);
+      last().respond(201);
+      last().respond(201, 'ok');
+
+      expect(success.mock.calls[ 0 ].slice(1, 3)).toEqual([ 'ok', 201 ]);
+    });
+
+    it('keeps the server status when cancelling from onErrorChunk', () => {
+      const uploader = createUploader({ chunkSize: 4 * KB });
+      const error = jest.spyOn(uploader, 'onErrorItem');
+      uploader.onErrorChunk = (fileItem) => fileItem.cancel();
+
+      uploader.uploadAll();
+      last().respond(503, 'busy');
+
+      expect(error.mock.calls[ 0 ].slice(1, 3)).toEqual([ 'busy', 503 ]);
     });
   });
 

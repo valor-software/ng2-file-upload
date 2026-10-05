@@ -36,6 +36,9 @@ export class FakeXhr {
   }
 
   abort(): void {
+    if (this.readyState === 4) {
+      this.status = 0;
+    }
     if (!this.sent || this.readyState === 4) {
       return;
     }

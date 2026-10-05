@@ -134,51 +134,44 @@ export class ChunkedFileUploader extends FileUploader {
     const state = this._chunks.get(item) as ChunkState;
     const headers = this._parseHeaders(xhr.getAllResponseHeaders());
     const response = this._transformResponse(xhr.response);
+    // cancel() from a hook aborts the finished request, which resets xhr.status to 0
+    const status = xhr.status;
     if (state.cancelled) {
-      this._finishItem(item, '_onCancelItem', response, xhr.status, headers);
+      this._finishItem(item, '_onCancelItem', response, status, headers);
 
       return;
     }
     if (!isSuccess) {
-      if (this._runChunkHook(item, () => this.onErrorChunk(item, chunk, response, xhr.status, headers))) {
-        this._finishItem(item, '_onErrorItem', response, xhr.status, headers);
-      }
+      this._runChunkHook(item, () => this.onErrorChunk(item, chunk, response, status, headers));
+      this._finishItem(item, '_onErrorItem', response, status, headers);
 
       return;
     }
-    if (!this._runChunkHook(item, () => this.onSuccessChunk(item, chunk, response, xhr.status, headers))) {
-      return;
-    }
+    this._runChunkHook(item, () => this.onSuccessChunk(item, chunk, response, status, headers));
     if (chunk.index + 1 >= chunk.total) {
-      this._finishItem(item, '_onSuccessItem', response, xhr.status, headers);
+      this._finishItem(item, '_onSuccessItem', response, status, headers);
 
       return;
     }
     const next = this._sliceChunk(item, chunk.index + 1, chunk.end, chunk.end - chunk.start, chunk.total);
     if (state.cancelled) {
       state.chunk = next;
-      this._finishItem(item, '_onCancelItem', response, xhr.status, headers);
+      this._finishItem(item, '_onCancelItem', response, status, headers);
 
       return;
     }
     this._runChunkHook(item, () => this._sendChunk(item, next));
   }
 
-  // hooks after the first chunk run in XHR callbacks: fail the item instead of stalling the queue, then rethrow
-  protected _runChunkHook(item: FileItem, hook: () => void): boolean {
+  // hooks after the first chunk run in XHR callbacks: fail the item so the queue moves on, then rethrow
+  protected _runChunkHook(item: FileItem, hook: () => void): void {
     try {
       hook();
-
-      return true;
     } catch (e) {
       if (item.isUploading) {
         this._finishItem(item, '_onErrorItem', '', 0, {});
       }
-      setTimeout(() => {
-        throw e;
-      });
-
-      return false;
+      throw e;
     }
   }
 

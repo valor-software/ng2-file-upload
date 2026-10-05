@@ -100,15 +100,16 @@ Easy to use Angular2 directives for files upload ([demo](http://valor-software.g
 
   Additional options:
 
-  1. `chunkSize` - Bytes per request. Multipart requests send the chunk as the file field, preceded by `chunkIndex` and `totalChunks` fields; with `disableMultipart` the raw chunk is sent with a `Content-Range` header (`formatDataFunction` is not used).
+  1. `chunkSize` - Bytes per request. Multipart requests send the chunk as the file field, preceded by `chunkIndex` and `totalChunks` fields; with `disableMultipart` the raw chunk is sent with a `Content-Range` header unless you set one (`formatDataFunction` is not used).
   2. `chunkIndexParam` / `totalChunksParam` - Names of those form fields. Default to `chunkIndex` and `totalChunks`.
 
   Additional callbacks and methods:
 
-  - `onBeforeUploadChunk(item, chunk)` - before each chunk request.
-  - `onSuccessChunk(item, chunk, response, status, headers)` - after each successful chunk. Change `item.url`, `item.method` or `item.headers` here to target the next chunk, e.g. with an upload id from your server.
+  - `onBeforeUploadChunk(item, chunk)` - before each chunk request; `item._xhr` is already that chunk's request.
+  - `onSuccessChunk(item, chunk, response, status, headers)` - after each successful chunk. Change `item.url`, `item.method` or `item.headers` here to target the next chunk, e.g. with an upload id from your server. They stay changed, so reset them before uploading the item from the start again; `setOptions` also resets `item.url` for every queued item.
   - `onErrorChunk(item, chunk, response, status, headers)` - when a chunk fails; the item then fails as usual (`onErrorItem`, `onCompleteItem`) and no more chunks are sent.
-  - `resumeItem(item)` - uploads a failed or cancelled item again, starting from the chunk that did not complete. Use it to retry, e.g. from `onErrorItem` (with `removeAfterUpload` off, so failed items stay in the queue):
+  - `getChunk(item)` - the chunk being sent, or the last one sent.
+  - `resumeItem(item)` - uploads a failed or cancelled item again, starting from the chunk that did not complete (an uploaded item starts over). Use it to retry, e.g. from `onErrorItem` (with `removeAfterUpload` off, so failed items stay in the queue):
 
   ```typescript
   const retries = new Map<FileItem, number>();
@@ -123,9 +124,7 @@ Easy to use Angular2 directives for files upload ([demo](http://valor-software.g
 
   Each attempt reports the item again (`onErrorItem`, `onCompleteItem`, and `onCompleteAll` when the queue is empty) and restarts its progress.
 
-  - `getChunk(item)` - the chunk being sent, or the last one sent.
-
-  `onBuildItemForm` and the `response` emitter fire once per chunk; the other item callbacks once per file. `item.cancel()` stops the remaining chunks; it has no effect once the last chunk has completed, and an item whose chunk failed stays failed. If a chunk callback throws, the item fails with status 0 and the error is rethrown; resuming then resends that chunk.
+  `onBuildItemForm` and the `response` emitter fire once per chunk; the other item callbacks once per file. `item.cancel()` stops the remaining chunks; it has no effect once the last chunk has completed, and an item whose chunk failed stays failed. If a chunk callback throws after the first chunk, the item fails with status 0 and the error is rethrown; resuming then resends that chunk. On the first chunk it is handled like an error in `onBeforeUploadItem`.
 
 # Troubleshooting
 
