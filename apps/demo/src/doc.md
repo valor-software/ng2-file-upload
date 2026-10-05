@@ -50,6 +50,8 @@ import { FileSelectDirective, FileDropDirective, FileUploader } from 'ng2-file-u
 
   Use `ChunkedFileUploader` (a `FileUploader` subclass) instead of `FileUploader` to send large files in several requests. It works with the same directives, options and callbacks; without `chunkSize` it behaves exactly like `FileUploader`.
 
+  The demo's "Chunked" tab shows a complete example: retargeting chunks to an upload id, app-side retries with `resumeItem`, and a backend that reassembles the file.
+
   ```typescript
   uploader = new ChunkedFileUploader({ url: URL, chunkSize: 2 * 1024 * 1024 });
   ```
