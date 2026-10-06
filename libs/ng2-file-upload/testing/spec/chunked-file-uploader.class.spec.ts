@@ -432,14 +432,14 @@ describe('ChunkedFileUploader', () => {
       expect(uploader.isUploading).toBe(false);
     });
 
-    it('handle a throw before the first request like FileUploader does', () => {
+    it('handle a throw before the first request like FileUploader does: fail the item, then rethrow', () => {
       const uploader = createUploader({ chunkSize: 4 * KB });
       const error = jest.spyOn(uploader, 'onErrorItem');
       uploader.onBeforeUploadChunk = () => {
         throw new Error('hook failed');
       };
 
-      expect(() => uploader.uploadAll()).not.toThrow();
+      expect(() => uploader.uploadAll()).toThrow('hook failed');
 
       expect(sent().length).toBe(0);
       expect(error).toHaveBeenCalledTimes(1);
@@ -596,7 +596,7 @@ describe('ChunkedFileUploader', () => {
       uploader.onBeforeUploadItem = () => {
         throw new Error('token refresh failed');
       };
-      uploader.resumeItem(item);
+      expect(() => uploader.resumeItem(item)).toThrow('token refresh failed');
       uploader.onBeforeUploadItem = () => undefined;
       uploader.resumeItem(item);
 

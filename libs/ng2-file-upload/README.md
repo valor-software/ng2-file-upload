@@ -141,7 +141,7 @@ See the [demo sources](https://github.com/valor-software/ng2-file-upload/tree/de
   - `onSuccessItem`, `onErrorItem`, `onCancelItem`, `onCompleteItem` - `(item, response, status, headers)` when an item finishes; `onCompleteItem` follows each of the others. Status `0` means there was no response: a network error, a request blocked by CORS, or an error thrown by a callback before the request was sent.
   - `onCompleteAll()` - when no more items are waiting.
 
-  An error thrown by a callback is rethrown after the item is finished, so the queue still moves on.
+  An error thrown by a callback is rethrown after the item is finished, so the queue still moves on and the error reaches your error handling. An error thrown before the request is sent (e.g. in `onBeforeUploadItem` or `onBuildItemForm`) fails the item with status `0` and is rethrown from the call that started the upload, such as `uploadAll()`, `item.upload()` or `addToQueue()` with `autoUpload`, or, when the item was waiting in the queue, from the response handling of the item before it.
 
 ## Chunked uploads
 

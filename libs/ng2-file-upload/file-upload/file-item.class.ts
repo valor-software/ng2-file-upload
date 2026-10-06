@@ -42,11 +42,13 @@ export class FileItem {
     try {
       this.uploader.uploadItem(this);
     } catch (e) {
+      // a callback that threw before the request: fail the item so the queue moves on, then rethrow
       try {
         this.uploader._onErrorItem(this, '', 0, {});
       } finally {
         this.uploader._onCompleteItem(this, '', 0, {});
       }
+      throw e;
     }
   }
 
