@@ -11,6 +11,15 @@ const tabDesc: Array<any> = [
     html: require('!!raw-loader!./file-upload/simple-demo.html').default,
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     js: require('!!raw-loader!./file-upload/file-catcher.js').default
+  },
+  {
+    heading: 'Chunked',
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    ts: require('!!raw-loader!./file-upload/chunked-demo.ts').default,
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    html: require('!!raw-loader!./file-upload/chunked-demo.html').default,
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    js: require('!!raw-loader!./file-upload/chunk-catcher.js').default
   }
 ];
 

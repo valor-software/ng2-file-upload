@@ -4,7 +4,11 @@
       @for (desc of tabs; track desc) {
         <tab heading="{{desc.heading}}" (select)="select($event)">
           <div class="card card-block p-3 border-top-0">
-            <simple-demo></simple-demo>
+            @if (desc.heading === 'Chunked') {
+              <chunked-demo></chunked-demo>
+            } @else {
+              <simple-demo></simple-demo>
+            }
             <br>
               <div class="container p-0">
                 <div class="row" style="margin: 0px;">
