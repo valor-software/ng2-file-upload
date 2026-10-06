@@ -1,5 +1,6 @@
 import { FileLikeObject } from '../../file-upload/file-like-object.class';
 import { FileUploader, FilterFunction } from '../../file-upload/file-uploader.class';
+import { createFileList } from './file-list';
 
 describe('FileUploader: onWhenAddingFileFailed', () => {
     const fileName = 'file.jpg';
@@ -137,5 +138,26 @@ describe('FileUploader: onWhenAddingFileFailed', () => {
         uploader.addToQueue(files);
 
         expect(onWhenAddingFileFailed).toHaveBeenCalledTimes(files.length);
+    });
+});
+
+describe('FileUploader: addToQueue', () => {
+    const first = new File([ 'a' ], 'a.txt');
+    const second = new File([ 'b' ], 'b.txt');
+
+    it('adds files from an array', () => {
+        const uploader = new FileUploader({ url: '' });
+
+        uploader.addToQueue([ first, second ]);
+
+        expect(uploader.queue.map(item => item._file)).toEqual([ first, second ]);
+    });
+
+    it('adds files from a FileList', () => {
+        const uploader = new FileUploader({ url: '' });
+
+        uploader.addToQueue(createFileList(first, second));
+
+        expect(uploader.queue.map(item => item._file)).toEqual([ first, second ]);
     });
 });
