@@ -70,6 +70,8 @@ Requests are sent with `withCredentials` on, so a server on another origin must 
 
 To keep uploads running while the user navigates between routes, create the uploader in a service instead of a component.
 
+The directives add files to the uploader as soon as they are selected or dropped. To change files first, e.g. resize images, handle the input's `change` event or your own drop zone instead, and call `uploader.addToQueue(files)` with the results. The filters run on the files you add.
+
 ## API for `ng2FileSelect`
 
 ### Properties
@@ -117,15 +119,16 @@ See the [demo sources](https://github.com/valor-software/ng2-file-upload/tree/de
   17. `allowedFileType` - Accepted file classes: `image`, `video`, `audio`, `pdf`, `compress`, `doc`, `xls`, `ppt`, or `application` for anything else. The class comes from the MIME type, then from the file extension.
   18. `queueLimit` - Largest number of items in the queue.
   19. `filters` - Your own filters, as `{ name, fn: (file: FileLikeObject, options) => boolean }`.
+  20. `isHTML5` - Keep the default (true); there is no other transport.
 
   `setOptions` merges the given options into the current ones, so pass only what changes (plus `url`, which the type requires). It also resets `item.url` of every queued item to the new `url`. Filters apply to files added afterwards.
 
 ### Properties and methods
 
   - `queue` - the `FileItem`s added to the uploader. Each item has the file's `name`, `size` and `type` in `item.file`, the `File` itself in `item._file`, its `progress` (0 to 100), the state flags `isReady`, `isUploading`, `isUploaded`, `isSuccess`, `isError` and `isCancel`, and `upload()`, `cancel()` and `remove()` methods. `item.url`, `item.method`, `item.headers` and `item.withCredentials` apply to that item's requests.
-  - `progress` - progress of the whole queue (0 to 100); `isUploading` - whether a request is in progress.
+  - `progress` - progress of the whole queue (0 to 100): the average over the items in the queue, each counted from 0 to 100 whatever its size, so it drops when files are added. With `removeAfterUpload` it is the progress of the item being uploaded. `isUploading` - whether a request is in progress.
   - `addToQueue(files)` - adds a `FileList` or an array of `File`s, applying the filters.
-  - `uploadAll()` / `cancelAll()` - uploads, or cancels, every item that has not been uploaded. Items upload one at a time; cancelling an item that is waiting for its turn takes it out of the queue without a request.
+  - `uploadAll()` / `cancelAll()` - uploads, or cancels, every item that has not been uploaded. Items upload one at a time; an item that is waiting for its turn is cancelled without sending a request. Cancelled items stay in `queue` with `isCancel` set; remove them with `item.remove()`.
   - `removeFromQueue(item)` / `clearQueue()` - removes items, cancelling an upload in progress.
   - `response` - an `EventEmitter` with the response text of every request.
 
@@ -134,14 +137,14 @@ See the [demo sources](https://github.com/valor-software/ng2-file-upload/tree/de
   Assign these to react to the queue. Each is a single property, so put all your handling for an event in one function.
 
   - `onAfterAddingFile(item)` / `onAfterAddingAll(items)` - after files pass the filters and are added.
-  - `onWhenAddingFileFailed(file, filter, options)` - when a file is rejected; `filter.name` is `fileSize`, `mimeType`, `fileType`, `queueLimit` or the name of your own filter.
+  - `onWhenAddingFileFailed(file, filter, options)` - when a file is rejected; `filter.name` is `fileSize`, `mimeType`, `fileType`, `queueLimit` or the name of your own filter. A file has to pass every filter. They run in the order `mimeType`, `fileType`, `fileSize`, `queueLimit`, then your own filters, and only the first one that rejects the file is reported.
   - `onBuildItemForm(item, form)` - before a multipart request is sent; append your own fields to the `FormData`.
   - `onBeforeUploadItem(item)` - before an item is uploaded; change `item.url`, `item.method` or `item.headers` here.
   - `onProgressItem(item, progress)` / `onProgressAll(progress)` - upload progress, 0 to 100.
   - `onSuccessItem`, `onErrorItem`, `onCancelItem`, `onCompleteItem` - `(item, response, status, headers)` when an item finishes; `onCompleteItem` follows each of the others. Status `0` means there was no response: a network error, a request blocked by CORS, or an error thrown by a callback before the request was sent.
   - `onCompleteAll()` - when no more items are waiting.
 
-  An error thrown by a callback is rethrown after the item is finished, so the queue still moves on.
+  An error thrown by a callback is rethrown after the item is finished, so the queue still moves on and the error reaches your error handling. If another callback for the same item throws as well, the first error is rethrown and the later one is reported asynchronously, so it still reaches `window.onerror` and Angular's `ErrorHandler`. An error thrown before the request is sent (e.g. in `onBeforeUploadItem` or `onBuildItemForm`) fails the item with status `0` and is rethrown from the call that started the upload, such as `uploadAll()`, `item.upload()` or `addToQueue()` with `autoUpload`, or, when the item was waiting in the queue, from the response handling of the item before it.
 
 ## Chunked uploads
 
@@ -202,11 +205,19 @@ See the [demo sources](https://github.com/valor-software/ng2-file-upload/tree/de
 
   `WeakMap`s drop the entries of items removed from the queue, and a restarted upload replaces the old upload id when its first chunk succeeds.
 
-  The retry budget resets after every successful chunk, so a large file is not given up on after a few unrelated failures. Status `0` means no response: a dropped connection or an offline browser, but also a request blocked by CORS or a callback that threw, which fail the same way on every attempt until the budget runs out. If the user can pause an item, clear its pending retry timer at that point, otherwise the timer resumes it; `resumeItem` ignores items removed from the queue.
+  The retry budget resets after every successful chunk, so a large file is not given up on after a few unrelated failures. Status `0` means no response: a dropped connection or an offline browser, but also a request blocked by CORS or a callback that threw, which fail the same way on every attempt until the budget runs out. If the user can pause an item, clear its pending retry timer at that point, otherwise the timer resumes it; `resumeItem` ignores items removed from the queue. When `navigator.onLine` is false, wait for the window `online` event before resuming instead of spending the retry budget; a request that was already sent can still complete while the browser is offline.
 
   Each attempt reports the item again (`onErrorItem`, `onCompleteItem`, and `onCompleteAll` when no other item is waiting) and queues the item behind items that are already waiting. Because `onCompleteAll` also fires while a retry is pending, check the queue (e.g. `uploader.queue.every(item => item.isSuccess)`) before showing the upload as finished.
 
   `onBuildItemForm` and the `response` emitter fire once per chunk, `onBuildItemForm` after `onBeforeUploadChunk` and only for multipart requests; the other item callbacks fire once per file, and `onSuccessItem` / `onErrorItem` receive the response of the last chunk sent. Chunk requests carry only the chunk fields, so if your server needs to tell files apart, use an upload id as above, add a field in `onBuildItemForm`, or, with `disableMultipart`, add a header in `onBeforeUploadChunk`.
+
+  **Uploading parts directly to storage** (e.g. S3 multipart uploads with presigned URLs): set `disableMultipart: true` so each chunk is sent as the request body, and set `item.url` and `item.method` (`PUT`) for each chunk in `onBeforeUploadChunk`. Keep in mind:
+
+  - `onBeforeUploadChunk` must set the URL synchronously; a returned promise is not awaited. Get the part URLs before the upload starts (e.g. when the upload is created on your server), and when one has expired (usually status `403`), get a new one in `onErrorItem` and call `resumeItem` to resend that part.
+  - Read each part's `ETag` in `onSuccessChunk` from `headers['etag']` (header names are lower-case). The storage service must list `ETag` in `Access-Control-Expose-Headers`, otherwise the browser hides it.
+  - Set `item.withCredentials = false` (e.g. in `onAfterAddingFile`), since storage services usually do not allow credentials. Otherwise the request fails with status `0`.
+  - Each part is sent with a `Content-Range` header, which makes the browser send a CORS preflight, so the storage CORS rules must allow `PUT` and the `Content-Range` header. The request's `Content-Type` is the file's type, which matters if it is part of the signature.
+  - After the last part, complete the upload on your server from `onSuccessItem` with the collected ETags.
 
   `item.cancel()` stops the remaining chunks. From `onSuccessChunk` of the last chunk it has no effect (the file is uploaded), and from `onErrorChunk` the item stays failed.
 

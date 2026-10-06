@@ -139,7 +139,7 @@ describe('FileUploader: callbacks that throw', () => {
     });
   });
 
-  it('report a throw before the request as an error, then completion', () => {
+  it('report a throw before the request as an error, then completion, then rethrow it', () => {
     const uploader = createUploader();
     const events: string[] = [];
     uploader.onBeforeUploadItem = item => {
@@ -151,10 +151,86 @@ describe('FileUploader: callbacks that throw', () => {
     uploader.onCompleteItem = item => events.push(`complete ${ item.file.name } ${ item.isError }`);
     uploader.onCompleteAll = () => events.push('all');
 
-    uploader.queue[ 0 ].upload();
+    expect(() => uploader.queue[ 0 ].upload()).toThrow('hook failed');
 
     expect(events).toEqual([ 'error a.txt', 'complete a.txt true', 'all' ]);
     expect(uploader.isUploading).toBe(false);
+  });
+
+  it('rethrow an error from onBuildItemForm and send nothing for that item', () => {
+    const uploader = createUploader();
+    uploader.onBuildItemForm = () => {
+      throw new Error('form failed');
+    };
+
+    expect(() => uploader.queue[ 0 ].upload()).toThrow('form failed');
+
+    expect(sent().length).toBe(0);
+    expect(uploader.queue[ 0 ].isError).toBe(true);
+    expect(uploader.isUploading).toBe(false);
+  });
+
+  it('rethrow a hook error for a later item and continue with the items after it', () => {
+    const uploader = createUploader();
+    uploader.onBeforeUploadItem = item => {
+      if (item.file.name === 'b.txt') {
+        throw new Error('hook failed');
+      }
+    };
+
+    uploader.uploadAll();
+    expect(() => last().respond(200)).toThrow('hook failed');
+    last().respond(200);
+
+    expect(uploader.queue.map(item => item.isSuccess)).toEqual([ true, false, true ]);
+    expect(uploader.queue[ 1 ].isError).toBe(true);
+    expect(uploader.isUploading).toBe(false);
+  });
+
+  it('rethrow a hook error from addToQueue with autoUpload, keeping the files added', () => {
+    const uploader = new FileUploader({ url: '/upload', autoUpload: true });
+    uploader.onBeforeUploadItem = () => {
+      throw new Error('hook failed');
+    };
+
+    expect(() => uploader.addToQueue([ new File([ 'a' ], 'a.txt') ])).toThrow('hook failed');
+
+    expect(uploader.queue.length).toBe(1);
+    expect(uploader.queue[ 0 ].isError).toBe(true);
+  });
+
+  describe('when two callbacks throw for one item', () => {
+    beforeEach(() => jest.useFakeTimers());
+    afterEach(() => jest.useRealTimers());
+
+    function failing(message: string): () => never {
+      return () => {
+        throw new Error(message);
+      };
+    }
+
+    it('rethrow the first error and report the second later', () => {
+      const uploader = createUploader();
+      uploader.onSuccessItem = failing('first');
+      uploader.onCompleteItem = failing('second');
+
+      uploader.uploadAll();
+      expect(() => last().respond(200)).toThrow('first');
+
+      expect(() => jest.runAllTimers()).toThrow('second');
+      expect(uploader.queue[ 1 ].isUploading).toBe(true);
+    });
+
+    it('rethrow a hook error and report a failing onErrorItem later', () => {
+      const uploader = createUploader();
+      uploader.onBeforeUploadItem = failing('hook');
+      uploader.onErrorItem = failing('error callback');
+
+      expect(() => uploader.queue[ 0 ].upload()).toThrow('hook');
+
+      expect(() => jest.runAllTimers()).toThrow('error callback');
+      expect(uploader.isUploading).toBe(false);
+    });
   });
 
   it('give onCompleteAll the final progress', () => {

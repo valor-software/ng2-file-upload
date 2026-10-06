@@ -1,4 +1,5 @@
 import { EventEmitter } from '@angular/core';
+import { runThen } from './callback-errors';
 import { FileLikeObject } from './file-like-object.class';
 import { FileItem } from './file-item.class';
 import { FileType } from './file-type.class';
@@ -298,21 +299,15 @@ export class FileUploader {
 
   _onCompleteItem(item: FileItem, response: string, status: number, headers: ParsedResponseHeaders): void {
     // the queue moves on even when an app callback throws
-    try {
+    runThen(() => {
       item._onComplete(response, status, headers);
       this.onCompleteItem(item, response, status, headers);
-    } finally {
-      this._uploadNext();
-    }
+    }, () => this._uploadNext());
   }
 
   protected _finishItem(item: FileItem, method: '_onSuccessItem' | '_onErrorItem' | '_onCancelItem', response: string,
                         status: number, headers: ParsedResponseHeaders): void {
-    try {
-      this[ method ](item, response, status, headers);
-    } finally {
-      this._onCompleteItem(item, response, status, headers);
-    }
+    runThen(() => this[ method ](item, response, status, headers), () => this._onCompleteItem(item, response, status, headers));
   }
 
   private _uploadNext(): void {

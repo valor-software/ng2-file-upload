@@ -302,6 +302,27 @@ describe('ChunkedFileUploader', () => {
     });
   });
 
+  it('rethrows onErrorChunk and reports a failing onErrorItem later', () => {
+    jest.useFakeTimers();
+    try {
+      const uploader = createUploader({ chunkSize: 4 * KB });
+      uploader.onErrorChunk = () => {
+        throw new Error('chunk callback');
+      };
+      uploader.onErrorItem = () => {
+        throw new Error('item callback');
+      };
+
+      uploader.uploadAll();
+      expect(() => last().respond(500)).toThrow('chunk callback');
+
+      expect(() => jest.runAllTimers()).toThrow('item callback');
+      expect(uploader.isUploading).toBe(false);
+    } finally {
+      jest.useRealTimers();
+    }
+  });
+
   it('moves the queue on when onSuccessItem throws', () => {
     const uploader = new ChunkedFileUploader({ url: '/upload', chunkSize: 4 * KB });
     uploader.addToQueue([ new File([ 'x'.repeat(2 * KB) ], 'a.bin'), new File([ 'y'.repeat(2 * KB) ], 'b.bin') ]);
@@ -432,14 +453,14 @@ describe('ChunkedFileUploader', () => {
       expect(uploader.isUploading).toBe(false);
     });
 
-    it('handle a throw before the first request like FileUploader does', () => {
+    it('handle a throw before the first request like FileUploader does: fail the item, then rethrow', () => {
       const uploader = createUploader({ chunkSize: 4 * KB });
       const error = jest.spyOn(uploader, 'onErrorItem');
       uploader.onBeforeUploadChunk = () => {
         throw new Error('hook failed');
       };
 
-      expect(() => uploader.uploadAll()).not.toThrow();
+      expect(() => uploader.uploadAll()).toThrow('hook failed');
 
       expect(sent().length).toBe(0);
       expect(error).toHaveBeenCalledTimes(1);
@@ -596,7 +617,7 @@ describe('ChunkedFileUploader', () => {
       uploader.onBeforeUploadItem = () => {
         throw new Error('token refresh failed');
       };
-      uploader.resumeItem(item);
+      expect(() => uploader.resumeItem(item)).toThrow('token refresh failed');
       uploader.onBeforeUploadItem = () => undefined;
       uploader.resumeItem(item);
 
