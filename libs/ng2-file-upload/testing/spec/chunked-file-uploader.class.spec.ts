@@ -302,6 +302,27 @@ describe('ChunkedFileUploader', () => {
     });
   });
 
+  it('rethrows onErrorChunk and reports a failing onErrorItem later', () => {
+    jest.useFakeTimers();
+    try {
+      const uploader = createUploader({ chunkSize: 4 * KB });
+      uploader.onErrorChunk = () => {
+        throw new Error('chunk callback');
+      };
+      uploader.onErrorItem = () => {
+        throw new Error('item callback');
+      };
+
+      uploader.uploadAll();
+      expect(() => last().respond(500)).toThrow('chunk callback');
+
+      expect(() => jest.runAllTimers()).toThrow('item callback');
+      expect(uploader.isUploading).toBe(false);
+    } finally {
+      jest.useRealTimers();
+    }
+  });
+
   it('moves the queue on when onSuccessItem throws', () => {
     const uploader = new ChunkedFileUploader({ url: '/upload', chunkSize: 4 * KB });
     uploader.addToQueue([ new File([ 'x'.repeat(2 * KB) ], 'a.bin'), new File([ 'y'.repeat(2 * KB) ], 'b.bin') ]);

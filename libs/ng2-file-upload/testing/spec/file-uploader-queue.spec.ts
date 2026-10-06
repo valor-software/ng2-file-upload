@@ -199,6 +199,40 @@ describe('FileUploader: callbacks that throw', () => {
     expect(uploader.queue[ 0 ].isError).toBe(true);
   });
 
+  describe('when two callbacks throw for one item', () => {
+    beforeEach(() => jest.useFakeTimers());
+    afterEach(() => jest.useRealTimers());
+
+    function failing(message: string): () => never {
+      return () => {
+        throw new Error(message);
+      };
+    }
+
+    it('rethrow the first error and report the second later', () => {
+      const uploader = createUploader();
+      uploader.onSuccessItem = failing('first');
+      uploader.onCompleteItem = failing('second');
+
+      uploader.uploadAll();
+      expect(() => last().respond(200)).toThrow('first');
+
+      expect(() => jest.runAllTimers()).toThrow('second');
+      expect(uploader.queue[ 1 ].isUploading).toBe(true);
+    });
+
+    it('rethrow a hook error and report a failing onErrorItem later', () => {
+      const uploader = createUploader();
+      uploader.onBeforeUploadItem = failing('hook');
+      uploader.onErrorItem = failing('error callback');
+
+      expect(() => uploader.queue[ 0 ].upload()).toThrow('hook');
+
+      expect(() => jest.runAllTimers()).toThrow('error callback');
+      expect(uploader.isUploading).toBe(false);
+    });
+  });
+
   it('give onCompleteAll the final progress', () => {
     const uploader = createUploader();
     let progress: number | undefined;

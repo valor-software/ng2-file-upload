@@ -1,3 +1,4 @@
+import { reportLater, runThen } from './callback-errors';
 import { FileLikeObject } from './file-like-object.class';
 import { FileUploader, ParsedResponseHeaders, FileUploaderOptions } from './file-uploader.class';
 
@@ -44,9 +45,9 @@ export class FileItem {
     } catch (e) {
       // a callback that threw before the request: fail the item so the queue moves on, then rethrow
       try {
-        this.uploader._onErrorItem(this, '', 0, {});
-      } finally {
-        this.uploader._onCompleteItem(this, '', 0, {});
+        runThen(() => this.uploader._onErrorItem(this, '', 0, {}), () => this.uploader._onCompleteItem(this, '', 0, {}));
+      } catch (later) {
+        reportLater(later);
       }
       throw e;
     }

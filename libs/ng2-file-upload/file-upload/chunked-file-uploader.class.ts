@@ -1,3 +1,4 @@
+import { reportLater, runThen } from './callback-errors';
 import { FileItem } from './file-item.class';
 import { FileUploader, FileUploaderOptions, ParsedResponseHeaders } from './file-uploader.class';
 
@@ -208,11 +209,7 @@ export class ChunkedFileUploader extends FileUploader {
       return;
     }
     if (!isSuccess) {
-      try {
-        this.onErrorChunk(item, chunk, response, status, headers);
-      } finally {
-        this._finishItem(item, '_onErrorItem', response, status, headers);
-      }
+      runThen(() => this.onErrorChunk(item, chunk, response, status, headers), () => this._finishItem(item, '_onErrorItem', response, status, headers));
 
       return;
     }
@@ -239,7 +236,11 @@ export class ChunkedFileUploader extends FileUploader {
       hook();
     } catch (e) {
       if (item.isUploading) {
-        this._finishItem(item, '_onErrorItem', '', 0, {});
+        try {
+          this._finishItem(item, '_onErrorItem', '', 0, {});
+        } catch (later) {
+          reportLater(later);
+        }
       }
       throw e;
     }
