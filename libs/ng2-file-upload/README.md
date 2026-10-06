@@ -112,10 +112,11 @@ See the [demo sources](https://github.com/valor-software/ng2-file-upload/tree/de
   12. `autoUpload` - Uploads files as soon as they are added. Defaults to false.
   13. `removeAfterUpload` - Removes an item from the queue once its upload has finished, whether it succeeded or failed. Defaults to false.
   14. `maxFileSize` - Largest accepted file size in bytes.
-  15. `allowedMimeType` - Accepted MIME types, e.g. `['image/png', 'application/pdf']`. Files whose browser-reported type is empty (unknown extensions) are not checked by this filter; reject them with `allowedFileType` or your own filter if needed.
-  16. `allowedFileType` - Accepted file classes: `image`, `video`, `audio`, `pdf`, `compress`, `doc`, `xls`, `ppt`, or `application` for anything else. The class comes from the MIME type, then from the file extension.
-  17. `queueLimit` - Largest number of items in the queue.
-  18. `filters` - Your own filters, as `{ name, fn: (file: FileLikeObject, options) => boolean }`.
+  15. `allowedMimeType` - Accepted MIME types, e.g. `['image/png', 'application/pdf']`.
+  16. `allowEmptyMimeType` - Whether files with an empty MIME type pass `allowedMimeType`. Browsers report an empty type when the operating system does not know the extension, which differs between systems (e.g. `.7z`, `.mkv` or old Office files on some machines). Defaults to true. Set it to false to accept only the listed types; to accept untyped files with certain extensions instead, keep it true and add your own filter that checks the extension of files without a type.
+  17. `allowedFileType` - Accepted file classes: `image`, `video`, `audio`, `pdf`, `compress`, `doc`, `xls`, `ppt`, or `application` for anything else. The class comes from the MIME type, then from the file extension.
+  18. `queueLimit` - Largest number of items in the queue.
+  19. `filters` - Your own filters, as `{ name, fn: (file: FileLikeObject, options) => boolean }`.
 
   `setOptions` merges the given options into the current ones, so pass only what changes (plus `url`, which the type requires). It also resets `item.url` of every queued item to the new `url`. Filters apply to files added afterwards.
 
