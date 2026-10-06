@@ -6,7 +6,7 @@ import { FileUploader, FileUploaderOptions } from './file-uploader.class';
 export class FileSelectDirective {
   readonly uploader = input<FileUploader>();
   // eslint-disable-next-line @angular-eslint/no-output-on-prefix
-  readonly onFileSelected = output<File[]>();
+  readonly onFileSelected = output<FileList>();
 
   protected element = inject(ElementRef);
 

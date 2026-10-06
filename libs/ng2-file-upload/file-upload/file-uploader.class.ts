@@ -96,12 +96,9 @@ export class FileUploader {
     }
   }
 
-  addToQueue(files: File[], _options?: FileUploaderOptions, filters?: [] | string): void {
+  addToQueue(files: File[] | FileList, _options?: FileUploaderOptions, filters?: [] | string): void {
     let options = _options;
-    const list: File[] = [];
-    for (const file of files) {
-      list.push(file);
-    }
+    const list: File[] = Array.from(files);
     const arrayOfFilters = this._getFilters(filters);
     const count = this.queue.length;
     const addedFileItems: FileItem[] = [];

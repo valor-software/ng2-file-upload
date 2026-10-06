@@ -31,7 +31,7 @@ import { FileSelectDirective, FileDropDirective, FileUploader } from 'ng2-file-u
   7. `parametersBeforeFiles` - States if additional parameters should be appended before or after the file. Defaults to false.
 
 ### Events
- - `onFileSelected` - fires when files are selected and added to the uploader queue
+ - `onFileSelected` - fires when files are selected and added to the uploader queue; `$event` is the selected `FileList` (use `Array.from($event)` for an array)
 
 ## FileDrop API
 
@@ -44,7 +44,7 @@ import { FileSelectDirective, FileDropDirective, FileUploader } from 'ng2-file-u
   - `fileOver` - it fires during 'over' and 'out' events for Drop Area; returns `boolean`: `true` if file is over Drop Area, `false` in case of out.
   See using in [ts demo](https://github.com/valor-software/ng2-file-upload/blob/master/demo/components/file-upload/simple-demo.ts) and
   [html demo](https://github.com/valor-software/ng2-file-upload/blob/master/demo/components/file-upload/simple-demo.html)
-  - `onFileDrop` - it fires after a file has been dropped on a Drop Area; you can pass in `$event` to get the list of files that were dropped. i.e. `(onFileDrop)="dropped($event)"`
+  - `onFileDrop` - it fires after a file has been dropped on a Drop Area; you can pass in `$event` to get the dropped files as a `FileList` (use `Array.from($event)` for an array). i.e. `(onFileDrop)="dropped($event)"`
 
 ## Chunked uploads
 

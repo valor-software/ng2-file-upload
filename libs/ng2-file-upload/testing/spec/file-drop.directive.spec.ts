@@ -5,6 +5,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FileUploader } from '../../file-upload/file-uploader.class';
 import { FileUploadModule } from '../../file-upload/file-upload.module';
 import { FileDropDirective } from '../../file-upload/file-drop.directive';
+import { createFileList } from './file-list';
 
 @Component({
   selector: 'container',
@@ -87,7 +88,7 @@ describe('Directive: FileDropDirective', () => {
     fileDropDirective.fileOver.subscribe((data: any) => fileOverData = data);
 
     let fileDropData;
-    fileDropDirective.onFileDrop.subscribe((data: File[]) => fileDropData = data);
+    fileDropDirective.onFileDrop.subscribe((data: FileList) => fileDropData = data);
 
     fileDropDirective.onDrop(getFakeEventData());
 
@@ -96,6 +97,18 @@ describe('Directive: FileDropDirective', () => {
     expect(addToQueue).toHaveBeenCalledWith(uploadedFiles, fileDropDirective.getOptions(), fileDropDirective.getFilters());
     expect(fileOverData).toBeFalsy();
     expect(fileDropData).toEqual(uploadedFiles);
+  });
+
+  it('emits the dropped FileList and queues its files', () => {
+    const files = createFileList(new File([ 'a' ], 'a.txt'), new File([ 'b' ], 'b.txt'));
+    let fileDropData: FileList | undefined;
+    fileDropDirective.onFileDrop.subscribe(data => fileDropData = data);
+
+    fileDropDirective.onDrop({ ...getFakeEventData(), dataTransfer: { files, types: [ 'Files' ] } });
+
+    expect(fileDropData).toBe(files);
+    expect(fileDropData).toBeInstanceOf(FileList);
+    expect(hostComponent.uploader.queue.map(item => item.file.name)).toEqual([ 'a.txt', 'b.txt' ]);
   });
 
   it('handles dragover event', () => {
@@ -136,7 +149,7 @@ describe('Directive: FileDropDirective', () => {
 function getFakeEventData(): any {
   return {
     dataTransfer: {
-      files: ['foo.bar'],
+      files: createFileList(new File([ 'foo' ], 'foo.bar')),
       types: ['Files']
     },
     preventDefault: () => undefined,

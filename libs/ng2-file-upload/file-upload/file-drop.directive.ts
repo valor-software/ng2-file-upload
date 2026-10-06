@@ -9,7 +9,7 @@ export class FileDropDirective {
   readonly uploader = input<FileUploader>();
   readonly fileOver = output<any>();
   // eslint-disable-next-line @angular-eslint/no-output-on-prefix
-  readonly onFileDrop = output<File[]>();
+  readonly onFileDrop = output<FileList>();
 
   protected readonly element = inject(ElementRef);
 
@@ -62,7 +62,7 @@ export class FileDropDirective {
     this.fileOver.emit(false);
   }
 
-  protected _getTransfer(event: any): any {
+  protected _getTransfer(event: any): DataTransfer {
     return event.dataTransfer ? event.dataTransfer : event.originalEvent.dataTransfer; // jQuery fix;
   }
 

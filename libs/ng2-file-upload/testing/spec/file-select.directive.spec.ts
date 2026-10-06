@@ -94,6 +94,16 @@ describe('Directive: FileSelectDirective', () => {
     expect(addToQueue).toHaveBeenCalledWith(directiveElement.nativeElement.files, fileSelectDirective.getOptions(), fileSelectDirective.getFilters());
   });
 
+  it('emits the selected FileList', () => {
+    let selected: FileList | undefined;
+    fileSelectDirective.onFileSelected.subscribe(files => selected = files);
+
+    fileSelectDirective.onChange();
+
+    expect(selected).toBe(directiveElement.nativeElement.files);
+    expect(selected).toBeInstanceOf(FileList);
+  });
+
   describe('on click', () => {
     const file = new File([ 'hello' ], 'report.pdf', { type: 'application/pdf' });
     let value: string;
