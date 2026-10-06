@@ -7,7 +7,7 @@ import { FileUploader, FileUploaderOptions } from './file-uploader.class';
 })
 export class FileDropDirective {
   readonly uploader = input<FileUploader>();
-  readonly fileOver = output<any>();
+  readonly fileOver = output<boolean>();
   // eslint-disable-next-line @angular-eslint/no-output-on-prefix
   readonly onFileDrop = output<FileList>();
 

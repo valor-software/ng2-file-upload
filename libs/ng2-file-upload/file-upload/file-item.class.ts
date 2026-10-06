@@ -42,8 +42,11 @@ export class FileItem {
     try {
       this.uploader.uploadItem(this);
     } catch (e) {
-      this.uploader._onCompleteItem(this, '', 0, {});
-      this.uploader._onErrorItem(this, '', 0, {});
+      try {
+        this.uploader._onErrorItem(this, '', 0, {});
+      } finally {
+        this.uploader._onCompleteItem(this, '', 0, {});
+      }
     }
   }
 

@@ -113,7 +113,31 @@ export class ChunkedFileUploader extends FileUploader {
   protected _onCancelItem(item: FileItem, response: string, status: number, headers: ParsedResponseHeaders): void {
     item._onCancel(response, status, headers);
     this._keepProgress(item);
+    // an item cancelled while waiting to resume starts over on upload(), like any cancelled item
+    const state = this._chunks.get(item);
+    if (state) {
+      state.resume = undefined;
+    }
     this.onCancelItem(item, response, status, headers);
+  }
+
+  // a paused or failed chunked item counts with the progress it keeps, not as 0 or as done
+  protected _getTotalProgress(value = 0): number {
+    if (this.options.removeAfterUpload || !this.queue.length) {
+      return super._getTotalProgress(value);
+    }
+    const total = this.queue.reduce((sum: number, item: FileItem) => {
+      if (item.isUploading) {
+        return sum + value;
+      }
+      if (this._chunks.has(item) && !item.isSuccess) {
+        return sum + item.progress;
+      }
+
+      return sum + (item.isUploaded ? 100 : 0);
+    }, 0);
+
+    return Math.round(total / this.queue.length);
   }
 
   private _setResumePoint(item: FileItem): void {
@@ -219,11 +243,5 @@ export class ChunkedFileUploader extends FileUploader {
       }
       throw e;
     }
-  }
-
-  private _finishItem(item: FileItem, method: '_onSuccessItem' | '_onErrorItem' | '_onCancelItem', response: string,
-                        status: number, headers: ParsedResponseHeaders): void {
-    this[ method ](item, response, status, headers);
-    this._onCompleteItem(item, response, status, headers);
   }
 }
