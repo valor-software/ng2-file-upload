@@ -1,3 +1,44 @@
+# [12.0.0](https://github.com/valor-software/ng2-file-upload/compare/v11.0.0...v12.0.0) (2026-10-06)
+
+
+### Bug Fixes
+
+* **file-select:** allow choosing the same file again after it is removed ([400c583](https://github.com/valor-software/ng2-file-upload/commit/400c583b41f70502558c2322ae633cb9683e3478))
+* **uploader:** address chunked upload review findings ([4c8f861](https://github.com/valor-software/ng2-file-upload/commit/4c8f861e716d7bc802f58376de0c57da2c4b6beb))
+* **uploader:** address second chunked upload review ([9af8c48](https://github.com/valor-software/ng2-file-upload/commit/9af8c4846544eddd50d5ecbe2f8c77e682b524bd))
+* **uploader:** address third chunked upload review ([96a84c0](https://github.com/valor-software/ng2-file-upload/commit/96a84c08a50b9ae0775c8d1859cfd1d031b83586))
+* **uploader:** cancel waiting items without sending them, stop setOptions duplicating filters ([d696b3b](https://github.com/valor-software/ng2-file-upload/commit/d696b3b3ecd394ab9e89563dac2d144c2f77d260))
+* **uploader:** fail chunked upload on hook errors, retry only transient failures ([dd7334c](https://github.com/valor-software/ng2-file-upload/commit/dd7334cefdca982375e13d8e8e9a6595f619edce))
+* **uploader:** keep progress of paused items, add resumeAll, reset item method in setOptions ([b0a111f](https://github.com/valor-software/ng2-file-upload/commit/b0a111f106d8bc157540a197ea1fe2eac2b7f6d2))
+* **uploader:** keep resume point when onBeforeUploadItem throws, tidy docs and tests ([69e5ac2](https://github.com/valor-software/ng2-file-upload/commit/69e5ac2a02aef801f0a8616cbfa27674a41b71ec))
+* **uploader:** keep server status when onErrorChunk throws, clear stale chunk state ([692c2da](https://github.com/valor-software/ng2-file-upload/commit/692c2da249370ef8c9d4e44c1a7222a38185ca5b))
+* **uploader:** keep the first error when two callbacks throw for one item ([24a5f83](https://github.com/valor-software/ng2-file-upload/commit/24a5f8389d9c83a0895bca2e998927b0d6b305ae))
+* **uploader:** keep the queue going when callbacks throw, count kept progress in the queue ([90c5429](https://github.com/valor-software/ng2-file-upload/commit/90c54291404fa88e2c19ac042223e20ce6682bd0))
+* **uploader:** keep the server status after cancel from a chunk hook ([709a201](https://github.com/valor-software/ng2-file-upload/commit/709a2016d680916b867870b172d10567f242c749))
+* **uploader:** rethrow errors from callbacks that run before the request ([6558edf](https://github.com/valor-software/ng2-file-upload/commit/6558edf8d3eee73e97e340828e9d524229ada822))
+
+
+* fix(uploader)!: type onFileDrop and onFileSelected as FileList ([cff5190](https://github.com/valor-software/ng2-file-upload/commit/cff5190949652a6daf7141e27d1653a01ff0d54a)), closes [#1240](https://github.com/valor-software/ng2-file-upload/issues/1240) [#1287](https://github.com/valor-software/ng2-file-upload/issues/1287)
+
+
+### Features
+
+* **package:** update component to standalone: true ([0ae73e9](https://github.com/valor-software/ng2-file-upload/commit/0ae73e919eda2b807e131c57f3f0677c97277b25))
+* **package:** update to use signal API ([55d0239](https://github.com/valor-software/ng2-file-upload/commit/55d0239953a3841008fb36b0996bac45754f3b6b))
+* **uploader:** add allowEmptyMimeType to control untyped files in allowedMimeType ([872d55f](https://github.com/valor-software/ng2-file-upload/commit/872d55f3aa13a3dcbb5f6b2496391a893846ba42)), closes [#1177](https://github.com/valor-software/ng2-file-upload/issues/1177) [#1061](https://github.com/valor-software/ng2-file-upload/issues/1061) [#1102](https://github.com/valor-software/ng2-file-upload/issues/1102) [#846](https://github.com/valor-software/ng2-file-upload/issues/846) [#470](https://github.com/valor-software/ng2-file-upload/issues/470)
+* **uploader:** add chunked file upload ([9b833b2](https://github.com/valor-software/ng2-file-upload/commit/9b833b2d3e182d6f3a1a329fd247646325c6cbd9)), closes [#977](https://github.com/valor-software/ng2-file-upload/issues/977) [#880](https://github.com/valor-software/ng2-file-upload/issues/880) [#435](https://github.com/valor-software/ng2-file-upload/issues/435)
+
+
+### BREAKING CHANGES
+
+* `onFileDrop` and `onFileSelected` are typed as `FileList`
+instead of `File[]`. Handlers typed `(files: File[])` must take a `FileList`;
+use `Array.from($event)` to get an array.
+
+Co-authored-by: frozen_byte <frozen_byte@gmx.de>
+
+
+
 # [11.0.0](https://github.com/valor-software/ng2-file-upload/compare/v10.0.0...v11.0.0) (2026-10-01)
 
 
