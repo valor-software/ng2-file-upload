@@ -21,6 +21,7 @@ export interface FilterFunction {
 
 export interface FileUploaderOptions {
   allowedMimeType?: string[];
+  allowEmptyMimeType?: boolean;
   allowedFileType?: string[];
   autoUpload?: boolean;
   isHTML5?: boolean;
@@ -270,7 +271,15 @@ export class FileUploader {
   }
 
   _mimeTypeFilter(item: FileLikeObject): boolean {
-    return !(item?.type && this.options.allowedMimeType && this.options.allowedMimeType?.indexOf(item.type) === -1);
+    if (!this.options.allowedMimeType) {
+      return true;
+    }
+    // browsers report an empty type for extensions the OS does not know
+    if (!item?.type) {
+      return this.options.allowEmptyMimeType !== false;
+    }
+
+    return this.options.allowedMimeType.indexOf(item.type) !== -1;
   }
 
   _fileSizeFilter(item: FileLikeObject): boolean {

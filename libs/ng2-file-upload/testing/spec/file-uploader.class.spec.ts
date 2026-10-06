@@ -99,6 +99,46 @@ describe('FileUploader: onWhenAddingFileFailed', () => {
         expect(onWhenAddingFileFailed).toHaveBeenCalledTimes(1);
     });
 
+    describe('a file with an empty mime type', () => {
+        const untyped = new File([""], 'archive.7z');
+
+        it('passes the allowedMimeType filter by default', () => {
+            const uploader = new FileUploader({ url: '', allowedMimeType: [fileMimeType] });
+
+            uploader.addToQueue([untyped]);
+
+            expect(untyped.type).toBe('');
+            expect(uploader.queue.length).toBe(1);
+        });
+
+        it('is rejected by the allowedMimeType filter with allowEmptyMimeType false', () => {
+            const uploader = new FileUploader({ url: '', allowedMimeType: [fileMimeType], allowEmptyMimeType: false });
+            const onWhenAddingFileFailed = jest.spyOn(uploader, 'onWhenAddingFileFailed');
+
+            uploader.addToQueue([untyped, file]);
+
+            expect(uploader.queue.map(item => item.file.name)).toEqual([fileName]);
+            expect(onWhenAddingFileFailed).toHaveBeenCalledWith(expect.anything(), expect.objectContaining({ name: 'mimeType' }), expect.anything());
+        });
+
+        it('is accepted without allowedMimeType even with allowEmptyMimeType false', () => {
+            const uploader = new FileUploader({ url: '', allowEmptyMimeType: false });
+
+            uploader.addToQueue([untyped]);
+
+            expect(uploader.queue.length).toBe(1);
+        });
+
+        it('follows allowEmptyMimeType changed by setOptions', () => {
+            const uploader = new FileUploader({ url: '', allowedMimeType: [fileMimeType] });
+
+            uploader.setOptions({ url: '', allowEmptyMimeType: false });
+            uploader.addToQueue([untyped]);
+
+            expect(uploader.queue.length).toBe(0);
+        });
+    });
+
     it('does not fire when a file matches the specified custom filter', () => {
         const positiveFilter: FilterFunction = { name: 'positive filter', fn: () => true };
         const uploader = new FileUploader({ url: '', filters: [positiveFilter] });
