@@ -288,8 +288,25 @@ export class FileUploader {
   }
 
   _onCompleteItem(item: FileItem, response: string, status: number, headers: ParsedResponseHeaders): void {
-    item._onComplete(response, status, headers);
-    this.onCompleteItem(item, response, status, headers);
+    // the queue moves on even when an app callback throws
+    try {
+      item._onComplete(response, status, headers);
+      this.onCompleteItem(item, response, status, headers);
+    } finally {
+      this._uploadNext();
+    }
+  }
+
+  protected _finishItem(item: FileItem, method: '_onSuccessItem' | '_onErrorItem' | '_onCancelItem', response: string,
+                        status: number, headers: ParsedResponseHeaders): void {
+    try {
+      this[ method ](item, response, status, headers);
+    } finally {
+      this._onCompleteItem(item, response, status, headers);
+    }
+  }
+
+  private _uploadNext(): void {
     const nextItem = this.getReadyItems()[ 0 ];
     this.isUploading = false;
     if (nextItem) {
@@ -297,8 +314,8 @@ export class FileUploader {
 
       return;
     }
-    this.onCompleteAll();
     this.progress = this._getTotalProgress();
+    this.onCompleteAll();
     this._render();
   }
 
@@ -335,22 +352,17 @@ export class FileUploader {
     xhr.onload = () => {
       const headers = this._parseHeaders(xhr.getAllResponseHeaders());
       const response = this._transformResponse(xhr.response);
-      const gist = this._isSuccessCode(xhr.status) ? 'Success' : 'Error';
-      const method = `_on${gist}Item`;
-      (this as any)[ method ](item, response, xhr.status, headers);
-      this._onCompleteItem(item, response, xhr.status, headers);
+      this._finishItem(item, this._isSuccessCode(xhr.status) ? '_onSuccessItem' : '_onErrorItem', response, xhr.status, headers);
     };
     xhr.onerror = () => {
       const headers = this._parseHeaders(xhr.getAllResponseHeaders());
       const response = this._transformResponse(xhr.response);
-      this._onErrorItem(item, response, xhr.status, headers);
-      this._onCompleteItem(item, response, xhr.status, headers);
+      this._finishItem(item, '_onErrorItem', response, xhr.status, headers);
     };
     xhr.onabort = () => {
       const headers = this._parseHeaders(xhr.getAllResponseHeaders());
       const response = this._transformResponse(xhr.response);
-      this._onCancelItem(item, response, xhr.status, headers);
-      this._onCompleteItem(item, response, xhr.status, headers);
+      this._finishItem(item, '_onCancelItem', response, xhr.status, headers);
     };
     this._openRequest(xhr, item);
     if (this.options.formatDataFunctionIsAsync) {

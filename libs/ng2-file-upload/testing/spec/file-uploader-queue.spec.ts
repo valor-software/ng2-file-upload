@@ -106,6 +106,71 @@ describe('FileUploader: queue', () => {
   });
 });
 
+describe('FileUploader: callbacks that throw', () => {
+  installFakeXhr();
+
+  const callbacks: [ string, (uploader: FileUploader) => void ][] = [
+    [ 'onSuccessItem', () => last().respond(200) ],
+    [ 'onErrorItem', () => last().respond(500) ],
+    [ 'onCancelItem', uploader => uploader.queue[ 0 ].cancel() ],
+    [ 'onCompleteItem', () => last().respond(200) ]
+  ];
+
+  callbacks.forEach(([ name, finish ]) => {
+    it(`${ name } is rethrown and the queue moves on`, () => {
+      const uploader = createUploader();
+      let thrown = false;
+      (uploader as any)[ name ] = () => {
+        if (!thrown) {
+          thrown = true;
+          throw new Error('app error');
+        }
+      };
+
+      uploader.uploadAll();
+      expect(() => finish(uploader)).toThrow('app error');
+
+      expect(uploader.queue[ 0 ].isUploading).toBe(false);
+      expect(uploader.queue[ 1 ].isUploading).toBe(true);
+      last().respond(200);
+      last().respond(200);
+      expect(uploader.isUploading).toBe(false);
+      expect(sent().length).toBe(3);
+    });
+  });
+
+  it('report a throw before the request as an error, then completion', () => {
+    const uploader = createUploader();
+    const events: string[] = [];
+    uploader.onBeforeUploadItem = item => {
+      if (item.file.name === 'a.txt') {
+        throw new Error('hook failed');
+      }
+    };
+    uploader.onErrorItem = item => events.push(`error ${ item.file.name }`);
+    uploader.onCompleteItem = item => events.push(`complete ${ item.file.name } ${ item.isError }`);
+    uploader.onCompleteAll = () => events.push('all');
+
+    uploader.queue[ 0 ].upload();
+
+    expect(events).toEqual([ 'error a.txt', 'complete a.txt true', 'all' ]);
+    expect(uploader.isUploading).toBe(false);
+  });
+
+  it('give onCompleteAll the final progress', () => {
+    const uploader = createUploader();
+    let progress: number | undefined;
+    uploader.onCompleteAll = () => progress = uploader.progress;
+
+    uploader.uploadAll();
+    last().respond(200);
+    last().respond(200);
+    last().respond(200);
+
+    expect(progress).toBe(100);
+  });
+});
+
 describe('FileUploader: setOptions', () => {
   it('does not add the built-in filters again', () => {
     const custom = { name: 'custom', fn: () => true };

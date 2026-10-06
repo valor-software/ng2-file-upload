@@ -252,6 +252,73 @@ describe('ChunkedFileUploader', () => {
     expect(item.progress).toBe(0);
   });
 
+  describe('queue progress', () => {
+    function twoFiles(): ChunkedFileUploader {
+      const uploader = new ChunkedFileUploader({ url: '/upload', chunkSize: 4 * KB });
+      uploader.addToQueue([ new File([ 'x'.repeat(10 * KB) ], 'a.bin'), new File([ 'y'.repeat(2 * KB) ], 'b.bin') ]);
+
+      return uploader;
+    }
+
+    it('counts a paused item with the progress it keeps', () => {
+      const uploader = twoFiles();
+      const [ a, b ] = uploader.queue;
+
+      a.upload();
+      last().respond(200);
+      last().respond(200);
+      a.cancel();
+      b.upload();
+      last().respond(200);
+
+      expect(a.progress).toBe(80);
+      expect(uploader.progress).toBe(90);
+    });
+
+    it('counts a failed item with the progress it keeps, not as done', () => {
+      const uploader = twoFiles();
+      const all: number[] = [];
+      uploader.onProgressAll = progress => all.push(progress);
+
+      uploader.uploadAll();
+      last().respond(200);
+      last().respond(500);
+      last().upload.onprogress({ lengthComputable: true, loaded: 1, total: 2 });
+
+      expect(uploader.progress).toBe(45);
+      expect(all.every(progress => progress < 100)).toBe(true);
+    });
+
+    it('reaches 100 when everything is uploaded', () => {
+      const uploader = twoFiles();
+
+      uploader.uploadAll();
+      last().respond(200);
+      last().respond(200);
+      last().respond(200);
+      last().respond(200);
+
+      expect(uploader.progress).toBe(100);
+    });
+  });
+
+  it('moves the queue on when onSuccessItem throws', () => {
+    const uploader = new ChunkedFileUploader({ url: '/upload', chunkSize: 4 * KB });
+    uploader.addToQueue([ new File([ 'x'.repeat(2 * KB) ], 'a.bin'), new File([ 'y'.repeat(2 * KB) ], 'b.bin') ]);
+    uploader.onSuccessItem = item => {
+      if (item.file.name === 'a.bin') {
+        throw new Error('app error');
+      }
+    };
+
+    uploader.uploadAll();
+    expect(() => last().respond(200)).toThrow('app error');
+    last().respond(200);
+
+    expect(uploader.queue.every(item => item.isSuccess)).toBe(true);
+    expect(uploader.isUploading).toBe(false);
+  });
+
   it('resets item.method with item.url in setOptions', () => {
     const uploader = createUploader({ chunkSize: 4 * KB, method: 'POST' });
     const item = uploader.queue[ 0 ];
