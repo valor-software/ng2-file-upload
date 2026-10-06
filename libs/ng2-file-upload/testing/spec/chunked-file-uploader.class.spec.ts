@@ -214,6 +214,61 @@ describe('ChunkedFileUploader', () => {
     expect(item.progress).toBe(60);
   });
 
+  it('keeps progress at the resume point when the item fails', () => {
+    const uploader = createUploader({ chunkSize: 4 * KB });
+    const item = uploader.queue[ 0 ];
+    let progressOnError: number | undefined;
+    uploader.onErrorItem = fileItem => progressOnError = fileItem.progress;
+
+    uploader.uploadAll();
+    last().respond(200);
+    last().respond(503);
+
+    expect(progressOnError).toBe(40);
+    expect(item.progress).toBe(40);
+  });
+
+  it('keeps progress at the resume point when the item is cancelled', () => {
+    const uploader = createUploader({ chunkSize: 4 * KB });
+    const item = uploader.queue[ 0 ];
+
+    uploader.uploadAll();
+    last().respond(200);
+    last().respond(200);
+    item.cancel();
+
+    expect(item.isCancel).toBe(true);
+    expect(item.progress).toBe(80);
+  });
+
+  it('resets progress of a cancelled upload without chunkSize', () => {
+    const uploader = createUploader({});
+    const item = uploader.queue[ 0 ];
+
+    uploader.uploadAll();
+    last().upload.onprogress({ lengthComputable: true, loaded: 1, total: 2 });
+    item.cancel();
+
+    expect(item.progress).toBe(0);
+  });
+
+  it('resets item.method with item.url in setOptions', () => {
+    const uploader = createUploader({ chunkSize: 4 * KB, method: 'POST' });
+    const item = uploader.queue[ 0 ];
+    uploader.onSuccessChunk = fileItem => {
+      fileItem.url = '/upload/abc';
+      fileItem.method = 'PUT';
+    };
+
+    uploader.uploadAll();
+    last().respond(200);
+    item.cancel();
+    uploader.setOptions({ url: '/sessions' });
+
+    expect(item.url).toBe('/sessions');
+    expect(item.method).toBe('POST');
+  });
+
   it('emits response and builds the form once per chunk', () => {
     const uploader = createUploader({ chunkSize: 4 * KB });
     const buildForm = jest.spyOn(uploader, 'onBuildItemForm');
@@ -480,6 +535,62 @@ describe('ChunkedFileUploader', () => {
 
       expect(item.isUploading).toBe(true);
       expect(form().get('chunkIndex')).toBe('1');
+    });
+  });
+
+  describe('resumeAll', () => {
+    function chunks(): [ string, string ][] {
+      return sent().map(xhr => [ ((xhr.body as FormData).get('file') as File).name, (xhr.body as FormData).get('chunkIndex') as string ]);
+    }
+
+    it('resumes failed and cancelled items from their chunks and uploads new ones from the start', () => {
+      const uploader = new ChunkedFileUploader({ url: '/upload', chunkSize: 4 * KB });
+      uploader.addToQueue([ new File([ 'x'.repeat(10 * KB) ], 'a.bin'), new File([ 'y'.repeat(10 * KB) ], 'b.bin') ]);
+      const [ a, b ] = uploader.queue;
+
+      a.upload();
+      last().respond(200);
+      last().respond(500);
+      b.upload();
+      last().respond(200);
+      last().respond(200);
+      b.cancel();
+      uploader.addToQueue([ new File([ 'z'.repeat(2 * KB) ], 'c.bin') ]);
+      FakeXhr.instances = [];
+
+      uploader.resumeAll();
+      last().respond(200);
+      last().respond(200);
+      last().respond(200);
+      last().respond(200);
+
+      expect(chunks()).toEqual([ [ 'a.bin', '1' ], [ 'a.bin', '2' ], [ 'b.bin', '2' ], [ 'c.bin', '0' ] ]);
+      expect(uploader.queue.every(item => item.isSuccess)).toBe(true);
+    });
+
+    it('skips uploaded items', () => {
+      const uploader = createUploader({ chunkSize: 4 * KB });
+
+      uploader.uploadAll();
+      last().respond(200);
+      last().respond(200);
+      last().respond(200);
+      uploader.resumeAll();
+
+      expect(sent().length).toBe(3);
+    });
+
+    it('leaves an uploading item alone and queues the others behind it', () => {
+      const uploader = new ChunkedFileUploader({ url: '/upload', chunkSize: 4 * KB });
+      uploader.addToQueue([ new File([ 'x'.repeat(6 * KB) ], 'a.bin'), new File([ 'y'.repeat(2 * KB) ], 'b.bin') ]);
+
+      uploader.queue[ 0 ].upload();
+      uploader.resumeAll();
+      last().respond(200);
+      last().respond(200);
+      last().respond(200);
+
+      expect(chunks()).toEqual([ [ 'a.bin', '0' ], [ 'a.bin', '1' ], [ 'b.bin', '0' ] ]);
     });
   });
 

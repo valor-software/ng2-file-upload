@@ -32,6 +32,10 @@ export class ChunkedFileUploader extends FileUploader {
 
   setOptions(options: ChunkedFileUploaderOptions): void {
     super.setOptions(options);
+    // chunk hooks may retarget item.method along with item.url, so reset both
+    for (const item of this.queue) {
+      item.method = this.options.method || 'POST';
+    }
   }
 
   getChunk(item: FileItem): FileChunk | undefined {
@@ -39,14 +43,29 @@ export class ChunkedFileUploader extends FileUploader {
   }
 
   resumeItem(item: FileItem): void {
-    const state = this._chunks.get(item);
     if (item.isUploading || this.getIndexOfItem(item) < 0) {
       return;
     }
-    if (state?.chunk) {
-      state.resume = state.chunk;
-    }
+    this._setResumePoint(item);
     item.upload();
+  }
+
+  resumeAll(): void {
+    const items = this.queue.filter(item => !item.isSuccess && !item.isUploading);
+    if (!items.length) {
+      return;
+    }
+    items.forEach(item => {
+      this._setResumePoint(item);
+      item._prepareToUploading();
+    });
+    items[ 0 ].upload();
+  }
+
+  _onErrorItem(item: FileItem, response: string, status: number, headers: ParsedResponseHeaders): void {
+    item._onError(response, status, headers);
+    this._keepProgress(item);
+    this.onErrorItem(item, response, status, headers);
   }
 
   cancelItem(value: FileItem): void {
@@ -89,6 +108,27 @@ export class ChunkedFileUploader extends FileUploader {
     }
     const total = Math.max(1, Math.ceil(item._file.size / chunkSize));
     this._sendChunk(item, resume || this._sliceChunk(item, 0, 0, chunkSize, total));
+  }
+
+  protected _onCancelItem(item: FileItem, response: string, status: number, headers: ParsedResponseHeaders): void {
+    item._onCancel(response, status, headers);
+    this._keepProgress(item);
+    this.onCancelItem(item, response, status, headers);
+  }
+
+  private _setResumePoint(item: FileItem): void {
+    const state = this._chunks.get(item);
+    if (state?.chunk) {
+      state.resume = state.chunk;
+    }
+  }
+
+  // a failed or cancelled item resumes from its current chunk, so its progress stays at that chunk's start
+  private _keepProgress(item: FileItem): void {
+    const chunk = this._chunks.get(item)?.chunk;
+    if (chunk && item._file.size) {
+      item.progress = Math.round(chunk.start * 100 / item._file.size);
+    }
   }
 
   private _sliceChunk(item: FileItem, index: number, start: number, length: number, total: number): FileChunk {
