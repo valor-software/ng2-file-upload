@@ -568,6 +568,26 @@ describe('ChunkedFileUploader', () => {
       expect(uploader.queue.every(item => item.isSuccess)).toBe(true);
     });
 
+    it('lets cancelAll stop items waiting to resume, which then start over on upload', () => {
+      const uploader = new ChunkedFileUploader({ url: '/upload', chunkSize: 4 * KB });
+      uploader.addToQueue([ new File([ 'x'.repeat(10 * KB) ], 'a.bin'), new File([ 'y'.repeat(10 * KB) ], 'b.bin') ]);
+      const [ a, b ] = uploader.queue;
+
+      a.upload();
+      last().respond(200);
+      a.cancel();
+      b.upload();
+      uploader.resumeAll();
+      uploader.cancelAll();
+      FakeXhr.instances = [];
+
+      expect(a.isCancel).toBe(true);
+      expect(a.progress).toBe(40);
+      a.upload();
+
+      expect(chunks()).toEqual([ [ 'a.bin', '0' ] ]);
+    });
+
     it('skips uploaded items', () => {
       const uploader = createUploader({ chunkSize: 4 * KB });
 

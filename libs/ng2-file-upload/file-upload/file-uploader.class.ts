@@ -77,6 +77,9 @@ export class FileUploader {
     this.authToken = this.options.authToken;
     this.authTokenHeader = this.options.authTokenHeader || 'Authorization';
     this.autoUpload = this.options.autoUpload;
+    // drop the built-in filters added by an earlier call before adding them again
+    const builtIn = [ this._queueLimitFilter, this._fileSizeFilter, this._fileTypeFilter, this._mimeTypeFilter ];
+    this.options.filters = this.options.filters?.filter((filter: FilterFunction) => !builtIn.includes(filter.fn));
     this.options.filters?.unshift({ name: 'queueLimit', fn: this._queueLimitFilter });
 
     if (this.options.maxFileSize) {
@@ -162,9 +165,21 @@ export class FileUploader {
   cancelItem(value: FileItem): void {
     const index = this.getIndexOfItem(value);
     const item = this.queue[ index ];
-    const prop = this.options.isHTML5 ? item._xhr : item._form;
-    if (item && item.isUploading) {
+    if (!item) {
+      return;
+    }
+    if (item.isUploading) {
+      const prop = this.options.isHTML5 ? item._xhr : item._form;
       prop.abort();
+
+      return;
+    }
+    // a waiting item is taken out of the queue without sending a request
+    if (item.isReady) {
+      this._onCancelItem(item, '', 0, {});
+      item._onComplete('', 0, {});
+      this.onCompleteItem(item, '', 0, {});
+      this._render();
     }
   }
 
@@ -178,8 +193,10 @@ export class FileUploader {
   }
 
   cancelAll(): void {
+    // waiting items first, so cancelling the uploading item does not start the next one
     const items = this.getNotUploadedItems();
-    items.map((item: FileItem) => item.cancel());
+    items.filter((item: FileItem) => !item.isUploading).forEach((item: FileItem) => item.cancel());
+    items.filter((item: FileItem) => item.isUploading).forEach((item: FileItem) => item.cancel());
   }
 
   isFile(value: any): boolean {

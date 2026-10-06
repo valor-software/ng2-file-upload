@@ -113,6 +113,11 @@ export class ChunkedFileUploader extends FileUploader {
   protected _onCancelItem(item: FileItem, response: string, status: number, headers: ParsedResponseHeaders): void {
     item._onCancel(response, status, headers);
     this._keepProgress(item);
+    // an item cancelled while waiting to resume starts over on upload(), like any cancelled item
+    const state = this._chunks.get(item);
+    if (state) {
+      state.resume = undefined;
+    }
     this.onCancelItem(item, response, status, headers);
   }
 
