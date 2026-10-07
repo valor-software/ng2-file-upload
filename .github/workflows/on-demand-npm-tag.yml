@@ -1,0 +1,55 @@
+name: on-demand-npm-tag
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Published version to tag (e.g. 12.0.0)'
+        required: true
+        type: string
+      tag:
+        description: 'npm dist-tag to point at that version'
+        required: true
+        default: 'latest'
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  # only repo members with write access or above may move dist-tags
+  check_access:
+    runs-on: ubuntu-latest
+    steps:
+      - name: check actor permission
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ACTOR: ${{ github.actor }}
+        run: |
+          permission=$(gh api "repos/${{ github.repository }}/collaborators/${ACTOR}/permission" --jq .permission)
+          echo "${ACTOR} has '${permission}' permission"
+          case "$permission" in
+            admin|maintain|write) ;;
+            *) echo "::error::${ACTOR} is not allowed to update npm dist-tags"; exit 1 ;;
+          esac
+
+  # update npm tags
+  npm_tag_update:
+    runs-on: ubuntu-latest
+    needs: check_access
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          registry-url: https://registry.npmjs.org/
+      - name: update dist-tag
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          VERSION: ${{ inputs.version }}
+          TAG: ${{ inputs.tag }}
+        run: |
+          if [ "$(npm view "ng2-file-upload@${VERSION}" version)" != "${VERSION}" ]; then
+            echo "::error::ng2-file-upload@${VERSION} is not published"; exit 1
+          fi
+          npm dist-tag add "ng2-file-upload@${VERSION}" "${TAG}"
+          npm dist-tag ls ng2-file-upload
